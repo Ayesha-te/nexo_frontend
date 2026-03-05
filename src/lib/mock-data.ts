@@ -134,7 +134,7 @@ export const mockTree: TreeNode = {
 };
 
 export const rewardsTable = [
-  { level: 1, left: 25, right: 25, reward: "Certificate" },
+  { level: 1, left: 20, right: 20, reward: "Certificate" },
   { level: 2, left: 50, right: 50, reward: "Perfume Gifts 🎁" },
   { level: 3, left: 200, right: 200, reward: "PKR 5,000" },
   { level: 4, left: 750, right: 750, reward: "PKR 20,000" },

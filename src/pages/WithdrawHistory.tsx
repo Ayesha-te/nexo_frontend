@@ -20,7 +20,7 @@ const WithdrawHistory = () => {
       <div className="space-y-6 animate-fade-in">
         <h1 className="font-display text-2xl font-bold text-foreground flex items-center gap-2">
           <Wallet className="w-6 h-6 text-primary" />
-          Withdraw History
+          Whitdraw History
         </h1>
 
         <Card className="border-secondary/30 bg-secondary/5">

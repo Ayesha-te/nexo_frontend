@@ -45,6 +45,16 @@ const AddUser = () => {
             <p className="text-sm text-muted-foreground">Password will be automatically generated (Phone Number is the password)</p>
           </CardHeader>
           <CardContent>
+            <div className="mb-4 rounded-lg border border-secondary/20 bg-secondary/5 p-3 text-sm">
+              <p className="font-semibold text-foreground mb-2">New user account active karne ke liye required data:</p>
+              <ul className="space-y-1 text-muted-foreground">
+                <li>• User Name</li>
+                <li>• User Email</li>
+                <li>• User account number (EasyPaisa / JazzCash)</li>
+                <li>• Referral Email</li>
+              </ul>
+            </div>
+
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label>Pin Token</Label>
@@ -77,7 +87,7 @@ const AddUser = () => {
               </div>
 
               <div className="space-y-2">
-                <Label>Account Number</Label>
+                <Label>User Account Number (EasyPaisa / JazzCash)</Label>
                 <div className="relative">
                   <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input placeholder="03XXXXXXXXX" value={formData.accountNumber} onChange={(e) => handleChange("accountNumber", e.target.value)} className="pl-10" />
@@ -119,6 +129,17 @@ const AddUser = () => {
                 Activate Account
               </Button>
             </form>
+
+            <div className="mt-4 rounded-lg border border-border/50 bg-muted/30 p-3 text-sm text-muted-foreground">
+              <p className="font-semibold text-foreground mb-1">Activation Steps:</p>
+              <p>1) Pin token copy karke paste karein</p>
+              <p>2) User First Name and Second Name</p>
+              <p>3) User Email</p>
+              <p>4) User account number</p>
+              <p>5) Referral Email</p>
+              <p>6) Select Position (Left / Right)</p>
+              <p>7) Payment method for income receive (EasyPaisa / JazzCash)</p>
+            </div>
           </CardContent>
         </Card>
       </div>

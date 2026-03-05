@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,7 +12,17 @@ const ProfileSettings = () => {
   const { user, updateProfile } = useAuth();
   const [firstName, setFirstName] = useState(user?.firstName || "");
   const [lastName, setLastName] = useState(user?.lastName || "");
+  const [profilePicPreview, setProfilePicPreview] = useState<string>(user?.profilePic || "");
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { toast } = useToast();
+
+  const handleProfilePicChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    setProfilePicPreview(url);
+    toast({ title: "Profile Picture Updated", description: "Preview updated. Click Save Changes to keep profile details." });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,13 +43,33 @@ const ProfileSettings = () => {
             {/* Profile Picture */}
             <div className="flex flex-col items-center mb-6">
               <div className="relative">
-                <div className="w-24 h-24 rounded-full nexo-gradient flex items-center justify-center text-primary-foreground text-3xl font-display font-bold">
-                  {user?.firstName?.[0]}{user?.lastName?.[0]}
-                </div>
-                <button className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center shadow-lg">
+                {profilePicPreview ? (
+                  <img
+                    src={profilePicPreview}
+                    alt="Profile"
+                    className="w-24 h-24 rounded-full object-cover border border-border"
+                  />
+                ) : (
+                  <div className="w-24 h-24 rounded-full nexo-gradient flex items-center justify-center text-primary-foreground text-3xl font-display font-bold">
+                    {user?.firstName?.[0]}{user?.lastName?.[0]}
+                  </div>
+                )}
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center shadow-lg"
+                >
                   <Camera className="w-4 h-4" />
                 </button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleProfilePicChange}
+                />
               </div>
+              <p className="text-xs text-muted-foreground mt-2">Editable: Profile pic and Name</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">

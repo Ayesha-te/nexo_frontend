@@ -42,13 +42,17 @@ const PinRequest = () => {
           <CardContent className="space-y-2">
             <div className="flex items-center gap-3">
               <Phone className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium text-foreground">EasyPaisa: <span className="text-primary font-bold">03448252109</span></span>
+              <span className="text-sm font-medium text-foreground">Admin Account Number: <span className="text-primary font-bold">03448252109</span></span>
             </div>
             <div className="flex items-center gap-3">
               <CreditCard className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium text-foreground">Account: <span className="text-primary font-bold">Sardar Laeiq Ahmed</span></span>
+              <span className="text-sm font-medium text-foreground">Payment Method: <span className="text-primary font-bold">Easy Paisa</span></span>
             </div>
-            <Badge variant="secondary" className="mt-2">Joining Fee: PKR 1,000 per pin</Badge>
+            <div className="flex items-center gap-3">
+              <CreditCard className="w-4 h-4 text-primary" />
+              <span className="text-sm font-medium text-foreground">Account Title: <span className="text-primary font-bold">Sardar laeiq Ahmed</span></span>
+            </div>
+            <Badge variant="secondary" className="mt-2">Joining fee PKR 1,000 — full payment required (1k, 2k, 5k)</Badge>
           </CardContent>
         </Card>
 
@@ -56,7 +60,8 @@ const PinRequest = () => {
         <Card className="border-border/50">
           <CardContent className="pt-6">
             <p className="text-right text-sm text-muted-foreground leading-7" dir="rtl">
-              اِس نمبر سے پن ٹوکن خریدیں پیمنٹ ہمیشہ ایزی پیسہ سے کیجئے گا۔ پن ٹوکن ایڈ ہونے کا دورانیہ ایک گھنٹہ ہے جو وریفکیشن ہونے کے بعد ایڈ ہوتی ہیں۔
+              اِس نمبر سے پن ٹوکن خریدیں پیمنٹ ہمیشہ ایزی پیسہ سے کیجئے گا۔
+              پن ٹوکن ایڈ ہونے کا دورانیہ ایک گھنٹہ ہے جو وریفکیشن ہونے کے بعد ایڈ ہوتی ہیں۔
             </p>
           </CardContent>
         </Card>

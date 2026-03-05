@@ -8,7 +8,7 @@ import { DollarSign, Gift, Wallet, Key, Users, ArrowLeftRight, Trophy } from "lu
 const stats = [
   { title: "Current Income", value: "PKR 16,600", icon: DollarSign, gradient: "from-primary to-nexo-green-light" },
   { title: "Reward Income", value: "PKR 5,000", icon: Gift, gradient: "from-secondary to-nexo-gold-light" },
-  { title: "Total Withdraw", value: "PKR 12,500", icon: Wallet, gradient: "from-primary to-secondary" },
+  { title: "Total Whitdraw", value: "PKR 12,500", icon: Wallet, gradient: "from-primary to-secondary" },
   { title: "Available Pins", value: "2", icon: Key, gradient: "from-nexo-green-light to-primary" },
   { title: "Left Team", value: "45", icon: Users, gradient: "from-primary to-nexo-green-light" },
   { title: "Right Team", value: "38", icon: ArrowLeftRight, gradient: "from-secondary to-nexo-gold-light" },
@@ -24,7 +24,7 @@ const Dashboard = () => {
           <h1 className="font-display text-2xl font-bold text-foreground">
             Welcome back, <span className="nexo-gradient-text">{user?.firstName || "User"}</span> 👋
           </h1>
-          <p className="text-muted-foreground mt-1">Here's your network overview</p>
+          <p className="text-muted-foreground mt-1">Here&apos;s your network overview</p>
         </div>
 
         {/* Stats Grid */}
@@ -57,16 +57,35 @@ const Dashboard = () => {
           <CardContent className="space-y-3">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="p-4 rounded-lg bg-muted/50 border border-border/50">
-                <h3 className="font-semibold text-foreground">Referral Income</h3>
+                <h3 className="font-semibold text-foreground">Referral Income (Pair Based)</h3>
                 <p className="text-sm text-muted-foreground mt-1">First pair: <span className="text-primary font-bold">PKR 400</span></p>
                 <p className="text-sm text-muted-foreground">Remaining pairs: <span className="text-primary font-bold">PKR 200</span></p>
+                <p className="text-xs text-muted-foreground mt-2">Non-working / per-day income is not available.</p>
               </div>
               <div className="p-4 rounded-lg bg-muted/50 border border-border/50">
-                <h3 className="font-semibold text-foreground">Cap Limit</h3>
+                <h3 className="font-semibold text-foreground">Strong Side & Cap Rule</h3>
+                <p className="text-sm text-muted-foreground mt-1">If one side is strong only, income is not added.</p>
+                <p className="text-sm text-muted-foreground">Income adds only when left/right pair is complete.</p>
                 <p className="text-sm text-muted-foreground mt-1">At 50k pairs (1 Lakh members):</p>
-                <p className="text-sm text-muted-foreground">Fixed salary <span className="text-secondary font-bold">PKR 50,000/month</span></p>
+                <p className="text-sm text-muted-foreground">Earning stops and fixed salary <span className="text-secondary font-bold">PKR 50,000/month</span></p>
               </div>
             </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-secondary/30 bg-secondary/5">
+          <CardHeader>
+            <CardTitle className="font-display flex items-center gap-2">
+              <Wallet className="w-5 h-5 text-secondary" />
+              Whitdraw Policy
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2 text-sm">
+            <p className="text-foreground">• Whitdraw request is not needed. Daily base per user clear ho ga.</p>
+            <p className="text-foreground">• Cap limit: <span className="font-bold text-primary">PKR 4,000</span></p>
+            <p className="text-foreground">• Normal whitdraw tax: <span className="font-bold text-primary">5%</span></p>
+            <p className="text-foreground">• Cap limit and rewards tax cut: <span className="font-bold text-secondary">10%</span></p>
+            <p className="text-xs text-muted-foreground mt-1">Account active karte waqt number sahi likhen, warna loss ki surat mein system zimadar nahi ho ga.</p>
           </CardContent>
         </Card>
 
@@ -75,7 +94,7 @@ const Dashboard = () => {
           <CardHeader>
             <CardTitle className="font-display flex items-center gap-2">
               <Trophy className="w-5 h-5 text-secondary" />
-              Rewards Table
+              Rewards Income Table
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -101,6 +120,7 @@ const Dashboard = () => {
             </Table>
             <div className="mt-4 p-3 rounded-lg bg-secondary/10 border border-secondary/20 text-center">
               <p className="text-sm font-semibold text-secondary">Total Rewards: PKR 3,950,000</p>
+              <p className="text-xs text-muted-foreground mt-1">Total Team: 1 Lakh</p>
             </div>
           </CardContent>
         </Card>
