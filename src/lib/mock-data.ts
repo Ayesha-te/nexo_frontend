@@ -54,6 +54,7 @@ export interface Withdrawal {
 export interface TreeNode {
   id: string;
   name: string;
+  email: string;
   position: "left" | "right" | "root";
   children: { left?: TreeNode; right?: TreeNode };
 }
@@ -97,6 +98,11 @@ export const mockWithdrawals: Withdrawal[] = [
   { id: "w3", userId: "u1", userName: "Ahmed Khan", amount: 4000, tax: 400, taxType: "cap", netAmount: 3600, date: "2025-12-08", status: "processed" },
   { id: "w4", userId: "u1", userName: "Ahmed Khan", amount: 5000, tax: 500, taxType: "reward", netAmount: 4500, date: "2025-12-07", status: "processed" },
   { id: "w5", userId: "u1", userName: "Ahmed Khan", amount: 600, tax: 30, taxType: "normal", netAmount: 570, date: "2025-12-06", status: "processed" },
+  { id: "w6", userId: "u2", userName: "Ali Raza", amount: 1000, tax: 50, taxType: "normal", netAmount: 950, date: "2025-12-10", status: "processed" },
+  { id: "w7", userId: "u2", userName: "Ali Raza", amount: 500, tax: 25, taxType: "normal", netAmount: 475, date: "2025-12-09", status: "processed" },
+  { id: "w8", userId: "u3", userName: "Sara Ahmed", amount: 1200, tax: 60, taxType: "normal", netAmount: 1140, date: "2025-12-09", status: "processed" },
+  { id: "w9", userId: "u4", userName: "Usman Malik", amount: 800, tax: 40, taxType: "normal", netAmount: 760, date: "2025-12-08", status: "processed" },
+  { id: "w10", userId: "u5", userName: "Fatima Noor", amount: 1400, tax: 70, taxType: "normal", netAmount: 1330, date: "2025-12-07", status: "processed" },
 ];
 
 export const mockAllUsers: User[] = [
@@ -110,27 +116,43 @@ export const mockAllUsers: User[] = [
 export const mockTree: TreeNode = {
   id: "u1",
   name: "Ahmed Khan",
+  email: "ahmed@nexokart.com",
   position: "root",
   children: {
     left: {
       id: "u2",
       name: "Ali Raza",
+      email: "ali@test.com",
       position: "left",
       children: {
-        left: { id: "u4", name: "Usman Malik", position: "left", children: {} },
-        right: { id: "u6", name: "Hamza Ali", position: "right", children: {} },
+        left: { id: "u4", name: "Usman Malik", email: "usman@test.com", position: "left", children: {} },
+        right: { id: "u6", name: "Hamza Ali", email: "hamza@nexokart.com", position: "right", children: {} },
       },
     },
     right: {
       id: "u3",
       name: "Sara Ahmed",
+      email: "sara@test.com",
       position: "right",
       children: {
-        left: { id: "u5", name: "Fatima Noor", position: "left", children: {} },
-        right: { id: "u7", name: "Zainab Raza", position: "right", children: {} },
+        left: { id: "u5", name: "Fatima Noor", email: "fatima@test.com", position: "left", children: {} },
+        right: { id: "u7", name: "Zainab Raza", email: "zainab@nexokart.com", position: "right", children: {} },
       },
     },
   },
+};
+
+export const findTreeNodeById = (node: TreeNode, nodeId: string): TreeNode | null => {
+  if (node.id === nodeId) return node;
+  if (node.children.left) {
+    const foundLeft = findTreeNodeById(node.children.left, nodeId);
+    if (foundLeft) return foundLeft;
+  }
+  if (node.children.right) {
+    const foundRight = findTreeNodeById(node.children.right, nodeId);
+    if (foundRight) return foundRight;
+  }
+  return null;
 };
 
 export const rewardsTable = [

@@ -20,6 +20,15 @@ const PinRequest = () => {
       toast({ title: "Error", description: "Please fill all fields", variant: "destructive" });
       return;
     }
+    const requestAmount = Number(amount);
+    if (!requestAmount || requestAmount < 1000 || requestAmount % 1000 !== 0) {
+      toast({
+        title: "Invalid Amount",
+        description: "Enter amount in 1000 steps only (1000, 2000, 3000 and so on).",
+        variant: "destructive",
+      });
+      return;
+    }
     toast({ title: "Request Submitted!", description: "Your pin token request is pending verification." });
     setAccountNumber("");
     setTrxId("");
@@ -89,10 +98,15 @@ const PinRequest = () => {
               </div>
               <div className="space-y-2">
                 <Label>Amount (PKR)</Label>
-                <div className="relative">
-                  <CreditCard className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input type="number" placeholder="1000" value={amount} onChange={(e) => setAmount(e.target.value)} className="pl-10" />
-                </div>
+                <Input
+                  type="number"
+                  min={1000}
+                  step={1000}
+                  placeholder="Enter amount (e.g. 1000, 2000, 3000)"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                />
+                <p className="text-xs text-muted-foreground">Allowed format: 1000, 2000, 3000 and so on. Values like 1200 or 1500 are not allowed.</p>
               </div>
               <Button type="submit" className="w-full nexo-gradient text-primary-foreground font-semibold">
                 Submit Request

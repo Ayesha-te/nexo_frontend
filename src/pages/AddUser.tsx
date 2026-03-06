@@ -11,7 +11,7 @@ import { UserPlus, Key, Mail, Phone, User, Users } from "lucide-react";
 const AddUser = () => {
   const [formData, setFormData] = useState({
     pinToken: "", firstName: "", lastName: "", email: "",
-    accountNumber: "", referralEmail: "", position: "", paymentMethod: "",
+    accountNumber: "", referralEmail: "", position: "", paymentMethod: "", activationAmount: "",
   });
   const { toast } = useToast();
 
@@ -27,8 +27,17 @@ const AddUser = () => {
       toast({ title: "Error", description: "Please fill all fields", variant: "destructive" });
       return;
     }
+    const activationAmount = Number(formData.activationAmount);
+    if (!activationAmount || activationAmount < 1000 || activationAmount % 1000 !== 0) {
+      toast({
+        title: "Invalid Amount",
+        description: "Enter amount in 1000 steps only (1000, 2000, 3000 and so on).",
+        variant: "destructive",
+      });
+      return;
+    }
     toast({ title: "Account Activated!", description: `Account created for ${formData.firstName} ${formData.lastName}. Password is the phone number.` });
-    setFormData({ pinToken: "", firstName: "", lastName: "", email: "", accountNumber: "", referralEmail: "", position: "", paymentMethod: "" });
+    setFormData({ pinToken: "", firstName: "", lastName: "", email: "", accountNumber: "", referralEmail: "", position: "", paymentMethod: "", activationAmount: "" });
   };
 
   return (
@@ -123,6 +132,19 @@ const AddUser = () => {
                     </SelectContent>
                   </Select>
                 </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Activation Amount</Label>
+                <Input
+                  type="number"
+                  min={1000}
+                  step={1000}
+                  placeholder="Enter amount (e.g. 1000, 2000, 3000)"
+                  value={formData.activationAmount}
+                  onChange={(e) => handleChange("activationAmount", e.target.value)}
+                />
+                <p className="text-xs text-muted-foreground">Allowed format: 1000, 2000, 3000 and so on. Values like 1200 or 1500 are not allowed.</p>
               </div>
 
               <Button type="submit" className="w-full nexo-gradient text-primary-foreground font-semibold">

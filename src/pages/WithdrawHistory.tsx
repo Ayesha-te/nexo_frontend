@@ -2,10 +2,27 @@ import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { mockWithdrawals } from "@/lib/mock-data";
+import { findTreeNodeById, mockTree, mockWithdrawals, TreeNode } from "@/lib/mock-data";
+import { useLocation } from "react-router-dom";
 import { Wallet } from "lucide-react";
 
 const WithdrawHistory = () => {
+  const location = useLocation();
+  const selectedUserId = location.state?.selectedUserId as string | undefined;
+  const selectedUserName = location.state?.selectedUserName as string | undefined;
+  const selectedUserEmail = location.state?.selectedUserEmail as string | undefined;
+  const selectedNode = selectedUserId ? findTreeNodeById(mockTree, selectedUserId) : null;
+  const rows = selectedUserId ? mockWithdrawals.filter((w) => w.userId === selectedUserId) : mockWithdrawals;
+
+  const MiniTreeNode = ({ node }: { node: TreeNode }) => (
+    <div className="ml-3 mt-2 border-l border-border pl-3">
+      <p className="text-sm font-medium text-foreground">{node.name}</p>
+      <p className="text-xs text-muted-foreground">{node.email}</p>
+      {node.children.left && <MiniTreeNode node={node.children.left} />}
+      {node.children.right && <MiniTreeNode node={node.children.right} />}
+    </div>
+  );
+
   const getTaxLabel = (type: string) => {
     switch (type) {
       case "normal": return { label: "5% Tax", className: "bg-primary/10 text-primary border-primary/20" };
@@ -29,9 +46,27 @@ const WithdrawHistory = () => {
             <p className="text-foreground">• Normal tax: <span className="font-bold text-primary">5%</span></p>
             <p className="text-foreground">• Cap limit & Rewards tax: <span className="font-bold text-secondary">10%</span></p>
             <p className="text-foreground">• Cap limit: <span className="font-bold text-primary">PKR 4,000</span></p>
-            <p className="text-muted-foreground text-xs mt-2">اکاؤنٹ ایکٹو کرتے وقت نمبر صحیح لکھیں ورنہ لاس کی صورت میں سسٹم ذمہ دار نہیں ہوگا</p>
+            <p className="text-muted-foreground text-xs mt-2">Please enter the correct account number at activation time. In case of incorrect number entry, the system will not be responsible for loss.</p>
           </CardContent>
         </Card>
+
+        {selectedUserId && (
+          <Card className="border-primary/20 bg-primary/5">
+            <CardHeader>
+              <CardTitle className="text-lg font-display">Selected Account Details</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2 text-sm">
+              <p><span className="font-semibold">Name:</span> {selectedUserName}</p>
+              <p><span className="font-semibold">Email:</span> {selectedUserEmail}</p>
+              {selectedNode && (
+                <div className="pt-2">
+                  <p className="font-semibold text-foreground">Selected Account Tree Snapshot</p>
+                  <MiniTreeNode node={selectedNode} />
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
 
         <Card className="nexo-card-glow border-border/50">
           <CardContent className="pt-6">
@@ -47,7 +82,7 @@ const WithdrawHistory = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {mockWithdrawals.map((w) => {
+                {rows.map((w) => {
                   const taxInfo = getTaxLabel(w.taxType);
                   return (
                     <TableRow key={w.id}>
@@ -60,6 +95,13 @@ const WithdrawHistory = () => {
                     </TableRow>
                   );
                 })}
+                {rows.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
+                      No withdraw records found for this account.
+                    </TableCell>
+                  </TableRow>
+                )}
               </TableBody>
             </Table>
           </CardContent>

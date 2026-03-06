@@ -1,12 +1,24 @@
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { mockTree, TreeNode as TreeNodeType } from "@/lib/mock-data";
+import { useNavigate } from "react-router-dom";
 import { GitBranch, User } from "lucide-react";
 
-const TreeNodeComponent = ({ node, depth = 0 }: { node: TreeNodeType; depth?: number }) => {
+const TreeNodeComponent = ({
+  node,
+  depth = 0,
+  onNodeClick,
+}: {
+  node: TreeNodeType;
+  depth?: number;
+  onNodeClick: (node: TreeNodeType) => void;
+}) => {
   return (
     <div className="flex flex-col items-center">
-      <div className={`px-4 py-3 rounded-xl border text-center min-w-[120px] transition-all duration-200 hover:scale-105 ${
+      <button
+        type="button"
+        onClick={() => onNodeClick(node)}
+        className={`px-4 py-3 rounded-xl border text-center min-w-[160px] transition-all duration-200 hover:scale-105 ${
         node.position === "root"
           ? "nexo-gradient text-primary-foreground nexo-gold-glow"
           : node.position === "left"
@@ -15,8 +27,9 @@ const TreeNodeComponent = ({ node, depth = 0 }: { node: TreeNodeType; depth?: nu
       }`}>
         <User className="w-4 h-4 mx-auto mb-1 opacity-70" />
         <p className="text-sm font-semibold">{node.name}</p>
+        <p className="text-[11px] opacity-80 break-all">{node.email}</p>
         <p className="text-xs opacity-60 capitalize">{node.position}</p>
-      </div>
+      </button>
 
       {(node.children.left || node.children.right) && (
         <>
@@ -27,7 +40,7 @@ const TreeNodeComponent = ({ node, depth = 0 }: { node: TreeNodeType; depth?: nu
             <div className="flex flex-col items-center">
               <div className="w-px h-4 bg-border" />
               {node.children.left ? (
-                <TreeNodeComponent node={node.children.left} depth={depth + 1} />
+                <TreeNodeComponent node={node.children.left} depth={depth + 1} onNodeClick={onNodeClick} />
               ) : (
                 <div className="px-4 py-3 rounded-xl border border-dashed border-border text-muted-foreground text-sm min-w-[120px] text-center">
                   Empty
@@ -37,7 +50,7 @@ const TreeNodeComponent = ({ node, depth = 0 }: { node: TreeNodeType; depth?: nu
             <div className="flex flex-col items-center">
               <div className="w-px h-4 bg-border" />
               {node.children.right ? (
-                <TreeNodeComponent node={node.children.right} depth={depth + 1} />
+                <TreeNodeComponent node={node.children.right} depth={depth + 1} onNodeClick={onNodeClick} />
               ) : (
                 <div className="px-4 py-3 rounded-xl border border-dashed border-border text-muted-foreground text-sm min-w-[120px] text-center">
                   Empty
@@ -52,6 +65,18 @@ const TreeNodeComponent = ({ node, depth = 0 }: { node: TreeNodeType; depth?: nu
 };
 
 const MyTree = () => {
+  const navigate = useNavigate();
+
+  const handleNodeClick = (node: TreeNodeType) => {
+    navigate("/withdraw-history", {
+      state: {
+        selectedUserId: node.id,
+        selectedUserName: node.name,
+        selectedUserEmail: node.email,
+      },
+    });
+  };
+
   return (
     <DashboardLayout>
       <div className="space-y-6 animate-fade-in">
@@ -63,11 +88,12 @@ const MyTree = () => {
         <Card className="nexo-card-glow border-border/50">
           <CardHeader>
             <CardTitle className="font-display text-lg">Binary Tree View</CardTitle>
+            <p className="text-sm text-muted-foreground">Click any account to view its withdraw history and subtree snapshot.</p>
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto py-8">
               <div className="flex justify-center min-w-[600px]">
-                <TreeNodeComponent node={mockTree} />
+                <TreeNodeComponent node={mockTree} onNodeClick={handleNodeClick} />
               </div>
             </div>
           </CardContent>

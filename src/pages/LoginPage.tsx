@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Crown, Mail, Lock, ShieldCheck } from "lucide-react";
+import { Mail, Lock, ShieldCheck } from "lucide-react";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -35,14 +35,16 @@ const LoginPage = () => {
 
       <Card className="w-full max-w-md mx-4 nexo-card-glow border-border/50 relative z-10">
         <CardHeader className="text-center pb-2">
-          <div className="mx-auto w-16 h-16 rounded-2xl nexo-gradient flex items-center justify-center mb-4 nexo-gold-glow">
-            <Crown className="w-8 h-8 text-primary-foreground" />
+          <div className="mx-auto mb-3">
+            <img
+              src="/ChatGPT_Image_Mar_3__2026__02_42_58_PM-removebg-preview.png"
+              alt="Nexocart"
+              className="h-20 w-auto mx-auto"
+            />
           </div>
-          <CardTitle className="font-display text-3xl">
-            <span className="nexo-gradient-text">NexoKart</span>
-          </CardTitle>
+          <CardTitle className="font-display text-2xl text-foreground">NexoKart</CardTitle>
           <p className="text-sm text-muted-foreground mt-1">
-            {isAdminMode ? "Admin Panel Login" : "Binary MLM Platform"}
+            {isAdminMode ? "Admin Panel Login" : "The Binary System"}
           </p>
         </CardHeader>
         <CardContent className="pt-6">
