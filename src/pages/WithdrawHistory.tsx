@@ -70,15 +70,15 @@ const WithdrawHistory = () => {
 
         <Card className="nexo-card-glow border-border/50">
           <CardContent className="pt-6">
-            <Table>
+            <Table className="min-w-[760px]">
               <TableHeader>
                 <TableRow>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead>Tax</TableHead>
-                  <TableHead>Tax Type</TableHead>
-                  <TableHead>Net Amount</TableHead>
-                  <TableHead>Status</TableHead>
+                  <TableHead className="whitespace-nowrap">Date</TableHead>
+                  <TableHead className="whitespace-nowrap">Amount</TableHead>
+                  <TableHead className="whitespace-nowrap">Tax</TableHead>
+                  <TableHead className="whitespace-nowrap">Tax Type</TableHead>
+                  <TableHead className="whitespace-nowrap">Net Amount</TableHead>
+                  <TableHead className="whitespace-nowrap">Status</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -86,12 +86,16 @@ const WithdrawHistory = () => {
                   const taxInfo = getTaxLabel(w.taxType);
                   return (
                     <TableRow key={w.id}>
-                      <TableCell>{w.date}</TableCell>
-                      <TableCell>PKR {w.amount.toLocaleString()}</TableCell>
-                      <TableCell>PKR {w.tax.toLocaleString()}</TableCell>
-                      <TableCell><Badge className={taxInfo.className}>{taxInfo.label}</Badge></TableCell>
-                      <TableCell className="font-bold text-primary">PKR {w.netAmount.toLocaleString()}</TableCell>
-                      <TableCell><Badge className="bg-primary/10 text-primary border-primary/20">{w.status}</Badge></TableCell>
+                      <TableCell className="whitespace-nowrap">{w.date}</TableCell>
+                      <TableCell className="whitespace-nowrap">PKR {w.amount.toLocaleString()}</TableCell>
+                      <TableCell className="whitespace-nowrap">PKR {w.tax.toLocaleString()}</TableCell>
+                      <TableCell className="whitespace-nowrap">
+                        <Badge className={`whitespace-nowrap ${taxInfo.className}`}>{taxInfo.label}</Badge>
+                      </TableCell>
+                      <TableCell className="font-bold text-primary whitespace-nowrap">PKR {w.netAmount.toLocaleString()}</TableCell>
+                      <TableCell className="whitespace-nowrap">
+                        <Badge className="bg-primary/10 text-primary border-primary/20 whitespace-nowrap">{w.status}</Badge>
+                      </TableCell>
                     </TableRow>
                   );
                 })}

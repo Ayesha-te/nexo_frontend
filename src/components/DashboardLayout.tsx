@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
 export function DashboardLayout({ children }: { children: ReactNode }) {
-  const { logout } = useAuth();
+  const { logout, isAdmin } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [feedbackName, setFeedbackName] = useState("");
@@ -42,7 +42,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
             <img
               src="/ChatGPT_Image_Mar_3__2026__02_42_58_PM-removebg-preview.png"
               alt="Nexocart"
-              className="h-8 w-auto"
+              className="h-12 w-auto"
             />
             <div className="flex-1" />
             <Button variant="outline" size="sm" onClick={handleSignOut}>Sign Out</Button>
@@ -50,37 +50,39 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
           <main className="flex-1 p-6 overflow-auto">
             {children}
 
-            <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <div className="rounded-xl border border-border bg-card p-5">
-                <h3 className="font-display text-lg font-semibold text-foreground">Contact Us</h3>
-                <div className="mt-3 space-y-2 text-sm text-muted-foreground">
-                  <p><span className="font-semibold text-foreground">Phone:</span> 03448252109</p>
-                  <p><span className="font-semibold text-foreground">Phone:</span> 03057410110</p>
-                  <p><span className="font-semibold text-foreground">Email:</span> sardarlaeiq786@gmail.com</p>
-                  <p><span className="font-semibold text-foreground">Location:</span> Sargodha</p>
+            {!isAdmin && (
+              <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div className="rounded-xl border border-border bg-card p-5">
+                  <h3 className="font-display text-lg font-semibold text-foreground">Contact Us</h3>
+                  <div className="mt-3 space-y-2 text-sm text-muted-foreground">
+                    <p><span className="font-semibold text-foreground">Phone:</span> 03448252109</p>
+                    <p><span className="font-semibold text-foreground">Phone:</span> 03057410110</p>
+                    <p><span className="font-semibold text-foreground">Email:</span> sardarlaeiq786@gmail.com</p>
+                    <p><span className="font-semibold text-foreground">Location:</span> Sargodha</p>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border border-border bg-card p-5">
+                  <h3 className="font-display text-lg font-semibold text-foreground">Feedback & Complaints</h3>
+                  <form className="mt-3 space-y-3" onSubmit={handleFeedbackSubmit}>
+                    <div className="space-y-1">
+                      <Label>Your Name</Label>
+                      <Input value={feedbackName} onChange={(e) => setFeedbackName(e.target.value)} placeholder="Enter your name" />
+                    </div>
+                    <div className="space-y-1">
+                      <Label>Message</Label>
+                      <Textarea
+                        value={feedbackMessage}
+                        onChange={(e) => setFeedbackMessage(e.target.value)}
+                        placeholder="Write your feedback or complaint"
+                        rows={4}
+                      />
+                    </div>
+                    <Button type="submit" className="nexo-gradient text-primary-foreground">Submit</Button>
+                  </form>
                 </div>
               </div>
-
-              <div className="rounded-xl border border-border bg-card p-5">
-                <h3 className="font-display text-lg font-semibold text-foreground">Feedback & Complaints</h3>
-                <form className="mt-3 space-y-3" onSubmit={handleFeedbackSubmit}>
-                  <div className="space-y-1">
-                    <Label>Your Name</Label>
-                    <Input value={feedbackName} onChange={(e) => setFeedbackName(e.target.value)} placeholder="Enter your name" />
-                  </div>
-                  <div className="space-y-1">
-                    <Label>Message</Label>
-                    <Textarea
-                      value={feedbackMessage}
-                      onChange={(e) => setFeedbackMessage(e.target.value)}
-                      placeholder="Write your feedback or complaint"
-                      rows={4}
-                    />
-                  </div>
-                  <Button type="submit" className="nexo-gradient text-primary-foreground">Submit</Button>
-                </form>
-              </div>
-            </div>
+            )}
           </main>
         </div>
       </div>

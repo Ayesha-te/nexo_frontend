@@ -11,28 +11,17 @@ import { Ticket, Phone, CreditCard, Hash } from "lucide-react";
 const PinRequest = () => {
   const [accountNumber, setAccountNumber] = useState("");
   const [trxId, setTrxId] = useState("");
-  const [amount, setAmount] = useState("");
   const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!accountNumber || !trxId || !amount) {
+    if (!accountNumber || !trxId) {
       toast({ title: "Error", description: "Please fill all fields", variant: "destructive" });
       return;
     }
-    const requestAmount = Number(amount);
-    if (!requestAmount || requestAmount < 1000 || requestAmount % 1000 !== 0) {
-      toast({
-        title: "Invalid Amount",
-        description: "Enter amount in 1000 steps only (1000, 2000, 3000 and so on).",
-        variant: "destructive",
-      });
-      return;
-    }
-    toast({ title: "Request Submitted!", description: "Your pin token request is pending verification." });
+    toast({ title: "Request Submitted!", description: "Your pin token request (PKR 1,000) is pending verification." });
     setAccountNumber("");
     setTrxId("");
-    setAmount("");
   };
 
   return (
@@ -61,7 +50,7 @@ const PinRequest = () => {
               <CreditCard className="w-4 h-4 text-primary" />
               <span className="text-sm font-medium text-foreground">Account Title: <span className="text-primary font-bold">Sardar laeiq Ahmed</span></span>
             </div>
-            <Badge variant="secondary" className="mt-2">Joining fee PKR 1,000 — full payment required (1k, 2k, 5k)</Badge>
+            <Badge variant="secondary" className="mt-2">Fixed Pin Cost: PKR 1,000</Badge>
           </CardContent>
         </Card>
 
@@ -96,20 +85,8 @@ const PinRequest = () => {
                   <Input placeholder="Transaction ID" value={trxId} onChange={(e) => setTrxId(e.target.value)} className="pl-10" />
                 </div>
               </div>
-              <div className="space-y-2">
-                <Label>Amount (PKR)</Label>
-                <Input
-                  type="number"
-                  min={1000}
-                  step={1000}
-                  placeholder="Enter amount (e.g. 1000, 2000, 3000)"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                />
-                <p className="text-xs text-muted-foreground">Allowed format: 1000, 2000, 3000 and so on. Values like 1200 or 1500 are not allowed.</p>
-              </div>
               <Button type="submit" className="w-full nexo-gradient text-primary-foreground font-semibold">
-                Submit Request
+                Submit Request (PKR 1,000)
               </Button>
             </form>
           </CardContent>

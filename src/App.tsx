@@ -17,6 +17,7 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import ManagePinRequests from "./pages/admin/ManagePinRequests";
 import ManageUsers from "./pages/admin/ManageUsers";
 import ManageWithdrawals from "./pages/admin/ManageWithdrawals";
+import ManageComplaintsAndFeedback from "./pages/admin/ManageComplaintsAndFeedback";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -52,6 +53,7 @@ const AppRoutes = () => {
       <Route path="/admin/pin-requests" element={<ProtectedRoute adminOnly><ManagePinRequests /></ProtectedRoute>} />
       <Route path="/admin/users" element={<ProtectedRoute adminOnly><ManageUsers /></ProtectedRoute>} />
       <Route path="/admin/withdrawals" element={<ProtectedRoute adminOnly><ManageWithdrawals /></ProtectedRoute>} />
+      <Route path="/admin/complaints" element={<ProtectedRoute adminOnly><ManageComplaintsAndFeedback /></ProtectedRoute>} />
 
       <Route path="*" element={<NotFound />} />
     </Routes>

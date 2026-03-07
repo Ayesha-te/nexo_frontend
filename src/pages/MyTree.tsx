@@ -1,17 +1,17 @@
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { mockTree, TreeNode as TreeNodeType } from "@/lib/mock-data";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { GitBranch, User } from "lucide-react";
 
 const TreeNodeComponent = ({
   node,
-  depth = 0,
   onNodeClick,
+  selectedNodeId,
 }: {
   node: TreeNodeType;
-  depth?: number;
   onNodeClick: (node: TreeNodeType) => void;
+  selectedNodeId?: string;
 }) => {
   return (
     <div className="flex flex-col items-center">
@@ -24,7 +24,7 @@ const TreeNodeComponent = ({
           : node.position === "left"
           ? "bg-primary/10 border-primary/30 text-foreground"
           : "bg-secondary/10 border-secondary/30 text-foreground"
-      }`}>
+      } ${selectedNodeId === node.id ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : ""}`}>
         <User className="w-4 h-4 mx-auto mb-1 opacity-70" />
         <p className="text-sm font-semibold">{node.name}</p>
         <p className="text-[11px] opacity-80 break-all">{node.email}</p>
@@ -40,7 +40,11 @@ const TreeNodeComponent = ({
             <div className="flex flex-col items-center">
               <div className="w-px h-4 bg-border" />
               {node.children.left ? (
-                <TreeNodeComponent node={node.children.left} depth={depth + 1} onNodeClick={onNodeClick} />
+                <TreeNodeComponent
+                  node={node.children.left}
+                  onNodeClick={onNodeClick}
+                  selectedNodeId={selectedNodeId}
+                />
               ) : (
                 <div className="px-4 py-3 rounded-xl border border-dashed border-border text-muted-foreground text-sm min-w-[120px] text-center">
                   Empty
@@ -50,7 +54,11 @@ const TreeNodeComponent = ({
             <div className="flex flex-col items-center">
               <div className="w-px h-4 bg-border" />
               {node.children.right ? (
-                <TreeNodeComponent node={node.children.right} depth={depth + 1} onNodeClick={onNodeClick} />
+                <TreeNodeComponent
+                  node={node.children.right}
+                  onNodeClick={onNodeClick}
+                  selectedNodeId={selectedNodeId}
+                />
               ) : (
                 <div className="px-4 py-3 rounded-xl border border-dashed border-border text-muted-foreground text-sm min-w-[120px] text-center">
                   Empty
@@ -65,16 +73,10 @@ const TreeNodeComponent = ({
 };
 
 const MyTree = () => {
-  const navigate = useNavigate();
+  const [selectedUserNode, setSelectedUserNode] = useState<TreeNodeType | null>(null);
 
   const handleNodeClick = (node: TreeNodeType) => {
-    navigate("/withdraw-history", {
-      state: {
-        selectedUserId: node.id,
-        selectedUserName: node.name,
-        selectedUserEmail: node.email,
-      },
-    });
+    setSelectedUserNode(node);
   };
 
   return (
@@ -93,11 +95,38 @@ const MyTree = () => {
           <CardContent>
             <div className="overflow-x-auto py-8">
               <div className="flex justify-center min-w-[600px]">
-                <TreeNodeComponent node={mockTree} onNodeClick={handleNodeClick} />
+                <TreeNodeComponent
+                  node={mockTree}
+                  onNodeClick={handleNodeClick}
+                  selectedNodeId={selectedUserNode?.id}
+                />
               </div>
             </div>
           </CardContent>
         </Card>
+
+        {selectedUserNode && (
+          <Card className="border-border/50">
+            <CardHeader>
+              <CardTitle className="font-display text-lg">Selected User Tree</CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Name: <span className="font-medium text-foreground">{selectedUserNode.name}</span> | Email: {" "}
+                <span className="font-medium text-foreground">{selectedUserNode.email}</span>
+              </p>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto py-6">
+                <div className="flex justify-center min-w-[600px]">
+                  <TreeNodeComponent
+                    node={selectedUserNode}
+                    onNodeClick={handleNodeClick}
+                    selectedNodeId={selectedUserNode.id}
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </DashboardLayout>
   );

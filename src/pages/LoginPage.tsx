@@ -42,7 +42,7 @@ const LoginPage = () => {
               className="h-20 w-auto mx-auto"
             />
           </div>
-          <CardTitle className="font-display text-2xl text-foreground">NexoKart</CardTitle>
+          <CardTitle className="font-display text-2xl text-foreground">Nexocart</CardTitle>
           <p className="text-sm text-muted-foreground mt-1">
             {isAdminMode ? "Admin Panel Login" : "The Binary System"}
           </p>

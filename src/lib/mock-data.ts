@@ -1,4 +1,4 @@
-// Mock data store for NexoKart
+// Mock data store for Nexocart
 
 export interface User {
   id: string;
@@ -57,6 +57,16 @@ export interface TreeNode {
   email: string;
   position: "left" | "right" | "root";
   children: { left?: TreeNode; right?: TreeNode };
+}
+
+export interface Feedback {
+  id: string;
+  name: string;
+  email: string;
+  message: string;
+  type: "feedback" | "complaint";
+  submittedAt: string;
+  status: "new" | "reviewed" | "resolved";
 }
 
 export const mockUser: User = {
@@ -154,6 +164,14 @@ export const findTreeNodeById = (node: TreeNode, nodeId: string): TreeNode | nul
   }
   return null;
 };
+
+export const mockFeedback: Feedback[] = [
+  { id: "fb1", name: "Ahmed Khan", email: "ahmed@nexokart.com", message: "Great platform! Very easy to use and navigate.", type: "feedback", submittedAt: "2025-12-10", status: "reviewed" },
+  { id: "fb2", name: "Ali Raza", email: "ali@test.com", message: "Withdrawal process is too slow. Please speed it up.", type: "complaint", submittedAt: "2025-12-09", status: "new" },
+  { id: "fb3", name: "Sara Ahmed", email: "sara@test.com", message: "Love the new design! Makes management easier.", type: "feedback", submittedAt: "2025-12-08", status: "reviewed" },
+  { id: "fb4", name: "Usman Malik", email: "usman@test.com", message: "Having issues with pin activation. Need help.", type: "complaint", submittedAt: "2025-12-07", status: "resolved" },
+  { id: "fb5", name: "Fatima Noor", email: "fatima@test.com", message: "The dashboard looks amazing. Keep up the good work!", type: "feedback", submittedAt: "2025-12-05", status: "reviewed" },
+];
 
 export const rewardsTable = [
   { level: 1, left: 20, right: 20, reward: "Certificate" },

@@ -1,14 +1,14 @@
 
 
-# NexoKart - Binary MLM Platform
+# Nexocart - Binary Platform
 
-A green & gold themed MLM platform with user dashboard and admin panel, using mock/static data.
+A green & gold themed platform with user dashboard and admin panel, using mock/static data.
 
 ## Pages & Features
 
 ### 1. Login Page
 - Email + password login form
-- NexoKart branding with green & gold theme
+- Nexocart branding with green & gold theme
 - Mock login (any credentials work)
 
 ### 2. User Dashboard

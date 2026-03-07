@@ -24,6 +24,7 @@ import {
   Lock,
   Settings,
   LogOut,
+  MessageSquare,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -43,6 +44,7 @@ const adminMenuItems = [
   { title: "Manage Pin Requests", url: "/admin/pin-requests", icon: Ticket },
   { title: "Manage Users", url: "/admin/users", icon: UserPlus },
   { title: "Manage Withdrawals", url: "/admin/withdrawals", icon: Wallet },
+  { title: "Complaints & Feedback", url: "/admin/complaints", icon: MessageSquare },
 ];
 
 export function AppSidebar() {
@@ -66,12 +68,12 @@ export function AppSidebar() {
           <img
             src="/ChatGPT_Image_Mar_3__2026__02_42_58_PM-removebg-preview.png"
             alt="Nexocart"
-            className="h-10 w-auto flex-shrink-0"
+            className="h-16 w-auto flex-shrink-0"
           />
           {!collapsed && (
             <div>
-              <h2 className="font-display text-lg font-bold text-sidebar-foreground">NexoKart</h2>
-              <p className="text-xs text-sidebar-foreground/60">{isAdmin ? "Admin Panel" : "MLM Platform"}</p>
+              <h2 className="font-display text-lg font-bold text-sidebar-foreground">Nexocart</h2>
+              <p className="text-xs text-sidebar-foreground/60">{isAdmin ? "Admin Panel" : "Binary System"}</p>
             </div>
           )}
         </div>
