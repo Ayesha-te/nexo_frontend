@@ -1,8 +1,9 @@
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { mockTree, TreeNode as TreeNodeType } from "@/lib/mock-data";
 import { useState } from "react";
-import { GitBranch, User } from "lucide-react";
+import { GitBranch, User, ArrowLeft } from "lucide-react";
 
 const TreeNodeComponent = ({
   node,
@@ -82,10 +83,23 @@ const MyTree = () => {
   return (
     <DashboardLayout>
       <div className="space-y-6 animate-fade-in">
-        <h1 className="font-display text-2xl font-bold text-foreground flex items-center gap-2">
-          <GitBranch className="w-6 h-6 text-primary" />
-          My Tree
-        </h1>
+        <div className="flex items-center gap-3">
+          {selectedUserNode && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setSelectedUserNode(null)}
+              className="gap-2"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to Main Tree
+            </Button>
+          )}
+          <h1 className="font-display text-2xl font-bold text-foreground flex items-center gap-2">
+            <GitBranch className="w-6 h-6 text-primary" />
+            My Tree
+          </h1>
+        </div>
 
         <Card className="nexo-card-glow border-border/50">
           <CardHeader>
@@ -93,8 +107,8 @@ const MyTree = () => {
             <p className="text-sm text-muted-foreground">Click any account to view its withdraw history and subtree snapshot.</p>
           </CardHeader>
           <CardContent>
-            <div className="overflow-x-auto py-8">
-              <div className="flex justify-center min-w-[600px]">
+            <div className="overflow-x-auto overflow-y-visible py-8 max-w-full">
+              <div className="flex justify-center min-w-[600px] w-max mx-auto">
                 <TreeNodeComponent
                   node={mockTree}
                   onNodeClick={handleNodeClick}
@@ -115,8 +129,8 @@ const MyTree = () => {
               </p>
             </CardHeader>
             <CardContent>
-              <div className="overflow-x-auto py-6">
-                <div className="flex justify-center min-w-[600px]">
+              <div className="overflow-x-auto overflow-y-visible py-6 max-w-full">
+                <div className="flex justify-center min-w-[600px] w-max mx-auto">
                   <TreeNodeComponent
                     node={selectedUserNode}
                     onNodeClick={handleNodeClick}

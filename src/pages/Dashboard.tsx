@@ -64,10 +64,10 @@ const Dashboard = () => {
               </div>
               <div className="p-4 rounded-lg bg-muted/50 border border-border/50">
                 <h3 className="font-semibold text-foreground">Strong Side & Cap Rule</h3>
-                <p className="text-sm text-muted-foreground mt-1">If one side is strong only, income is not added.</p>
-                <p className="text-sm text-muted-foreground">Income adds only when left/right pair is complete.</p>
-                <p className="text-sm text-muted-foreground mt-1">At 50k pairs (1 Lakh members):</p>
-                <p className="text-sm text-muted-foreground">Earning stops and fixed salary <span className="text-secondary font-bold">PKR 50,000/month</span></p>
+                <p className="text-sm text-muted-foreground mt-2">• If only one side (left or right) is strong, no income will be generated.</p>
+                <p className="text-sm text-muted-foreground">• Income is generated only when both sides (left and right) form a complete pair.</p>
+                <p className="text-sm text-muted-foreground mt-2">• Once 50,000 pairs (100,000 members) are completed:</p>
+                <p className="text-sm text-muted-foreground">Pair income will stop, fixed salary <span className="text-secondary font-bold">PKR 50,000/month</span></p>
               </div>
             </div>
           </CardContent>
@@ -94,7 +94,7 @@ const Dashboard = () => {
           <CardHeader>
             <CardTitle className="font-display flex items-center gap-2">
               <Trophy className="w-5 h-5 text-secondary" />
-              Rewards Income Table
+              Leadership Reward Plan ✨
             </CardTitle>
           </CardHeader>
           <CardContent>
