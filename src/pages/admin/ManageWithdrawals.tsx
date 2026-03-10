@@ -10,13 +10,26 @@ import { Wallet, Check } from "lucide-react";
 
 const allWithdrawals: Withdrawal[] = [
   ...mockWithdrawals,
-  { id: "w6", userId: "u2", userName: "Ali Raza", accountNumber: "03119876543", amount: 500, tax: 25, taxType: "normal", netAmount: 475, date: "2025-12-10", status: "pending" },
-  { id: "w7", userId: "u3", userName: "Sara Ahmed", accountNumber: "03217654321", amount: 300, tax: 15, taxType: "normal", netAmount: 285, date: "2025-12-10", status: "pending" },
+  { id: "w11", userId: "u2", userName: "Ali Raza", paymentMethod: "easypaisa", accountNumber: "03119876543", amount: 500, tax: 25, taxType: "normal", netAmount: 475, date: "2025-12-10", status: "pending" },
+  { id: "w12", userId: "u3", userName: "Sara Ahmed", paymentMethod: "bank_account", accountNumber: "2010-887766-2211", amount: 300, tax: 15, taxType: "normal", netAmount: 285, date: "2025-12-10", status: "pending" },
 ];
 
 const ManageWithdrawals = () => {
   const [withdrawals, setWithdrawals] = useState<Withdrawal[]>(allWithdrawals);
   const { toast } = useToast();
+
+  const formatPaymentMethod = (method: Withdrawal["paymentMethod"]) => {
+    switch (method) {
+      case "easypaisa":
+        return "EasyPaisa";
+      case "jazzcash":
+        return "JazzCash";
+      case "bank_account":
+        return "Bank Account";
+      default:
+        return method;
+    }
+  };
 
   const processWithdrawal = (id: string) => {
     setWithdrawals(prev => prev.map(w => w.id === id ? { ...w, status: "processed" as const } : w));
@@ -38,6 +51,7 @@ const ManageWithdrawals = () => {
                 <TableHeader>
                   <TableRow>
                     <TableHead className="whitespace-nowrap">User</TableHead>
+                    <TableHead className="whitespace-nowrap">Payment Method</TableHead>
                     <TableHead className="whitespace-nowrap">Account Number</TableHead>
                     <TableHead className="whitespace-nowrap">Date</TableHead>
                     <TableHead className="whitespace-nowrap">Amount</TableHead>
@@ -51,6 +65,7 @@ const ManageWithdrawals = () => {
                 {withdrawals.map((w) => (
                   <TableRow key={w.id}>
                     <TableCell className="font-medium whitespace-nowrap">{w.userName}</TableCell>
+                    <TableCell className="whitespace-nowrap">{formatPaymentMethod(w.paymentMethod)}</TableCell>
                     <TableCell className="font-mono font-semibold text-secondary whitespace-nowrap">{w.accountNumber}</TableCell>
                     <TableCell className="whitespace-nowrap">{w.date}</TableCell>
                     <TableCell className="whitespace-nowrap">PKR {w.amount.toLocaleString()}</TableCell>

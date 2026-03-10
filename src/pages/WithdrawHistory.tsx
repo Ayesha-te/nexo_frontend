@@ -32,6 +32,19 @@ const WithdrawHistory = () => {
     }
   };
 
+  const formatPaymentMethod = (method: "easypaisa" | "jazzcash" | "bank_account") => {
+    switch (method) {
+      case "easypaisa":
+        return "EasyPaisa";
+      case "jazzcash":
+        return "JazzCash";
+      case "bank_account":
+        return "Bank Account";
+      default:
+        return method;
+    }
+  };
+
   return (
     <DashboardLayout>
       <div className="space-y-6 animate-fade-in">
@@ -74,6 +87,7 @@ const WithdrawHistory = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead className="whitespace-nowrap">Request #</TableHead>
+                  <TableHead className="whitespace-nowrap">Payment Method</TableHead>
                   <TableHead className="whitespace-nowrap">Account Number</TableHead>
                   <TableHead className="whitespace-nowrap">Date</TableHead>
                   <TableHead className="whitespace-nowrap">Amount</TableHead>
@@ -89,6 +103,7 @@ const WithdrawHistory = () => {
                   return (
                     <TableRow key={w.id}>
                       <TableCell className="whitespace-nowrap font-mono font-semibold text-primary">{w.id.toUpperCase()}</TableCell>
+                      <TableCell className="whitespace-nowrap">{formatPaymentMethod(w.paymentMethod)}</TableCell>
                       <TableCell className="whitespace-nowrap font-mono font-semibold text-secondary">{w.accountNumber}</TableCell>
                       <TableCell className="whitespace-nowrap">{w.date}</TableCell>
                       <TableCell className="whitespace-nowrap">PKR {w.amount.toLocaleString()}</TableCell>
@@ -105,7 +120,7 @@ const WithdrawHistory = () => {
                 })}
                 {rows.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
+                    <TableCell colSpan={9} className="text-center text-muted-foreground py-8">
                       No withdraw records found for this account.
                     </TableCell>
                   </TableRow>
