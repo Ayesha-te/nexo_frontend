@@ -73,6 +73,8 @@ const WithdrawHistory = () => {
             <Table className="min-w-[760px]">
               <TableHeader>
                 <TableRow>
+                  <TableHead className="whitespace-nowrap">Request #</TableHead>
+                  <TableHead className="whitespace-nowrap">Account Number</TableHead>
                   <TableHead className="whitespace-nowrap">Date</TableHead>
                   <TableHead className="whitespace-nowrap">Amount</TableHead>
                   <TableHead className="whitespace-nowrap">Tax</TableHead>
@@ -86,6 +88,8 @@ const WithdrawHistory = () => {
                   const taxInfo = getTaxLabel(w.taxType);
                   return (
                     <TableRow key={w.id}>
+                      <TableCell className="whitespace-nowrap font-mono font-semibold text-primary">{w.id.toUpperCase()}</TableCell>
+                      <TableCell className="whitespace-nowrap font-mono font-semibold text-secondary">{w.accountNumber}</TableCell>
                       <TableCell className="whitespace-nowrap">{w.date}</TableCell>
                       <TableCell className="whitespace-nowrap">PKR {w.amount.toLocaleString()}</TableCell>
                       <TableCell className="whitespace-nowrap">PKR {w.tax.toLocaleString()}</TableCell>

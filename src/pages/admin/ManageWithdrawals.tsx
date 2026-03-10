@@ -10,8 +10,8 @@ import { Wallet, Check } from "lucide-react";
 
 const allWithdrawals: Withdrawal[] = [
   ...mockWithdrawals,
-  { id: "w6", userId: "u2", userName: "Ali Raza", amount: 500, tax: 25, taxType: "normal", netAmount: 475, date: "2025-12-10", status: "pending" },
-  { id: "w7", userId: "u3", userName: "Sara Ahmed", amount: 300, tax: 15, taxType: "normal", netAmount: 285, date: "2025-12-10", status: "pending" },
+  { id: "w6", userId: "u2", userName: "Ali Raza", accountNumber: "03119876543", amount: 500, tax: 25, taxType: "normal", netAmount: 475, date: "2025-12-10", status: "pending" },
+  { id: "w7", userId: "u3", userName: "Sara Ahmed", accountNumber: "03217654321", amount: 300, tax: 15, taxType: "normal", netAmount: 285, date: "2025-12-10", status: "pending" },
 ];
 
 const ManageWithdrawals = () => {
@@ -33,27 +33,30 @@ const ManageWithdrawals = () => {
 
         <Card className="nexo-card-glow border-border/50">
           <CardContent className="pt-6">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>User</TableHead>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead>Tax</TableHead>
-                  <TableHead>Net</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Action</TableHead>
-                </TableRow>
-              </TableHeader>
+            <div className="overflow-x-auto">
+              <Table className="min-w-[900px]">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="whitespace-nowrap">User</TableHead>
+                    <TableHead className="whitespace-nowrap">Account Number</TableHead>
+                    <TableHead className="whitespace-nowrap">Date</TableHead>
+                    <TableHead className="whitespace-nowrap">Amount</TableHead>
+                    <TableHead className="whitespace-nowrap">Tax</TableHead>
+                    <TableHead className="whitespace-nowrap">Net</TableHead>
+                    <TableHead className="whitespace-nowrap">Status</TableHead>
+                    <TableHead className="whitespace-nowrap">Action</TableHead>
+                  </TableRow>
+                </TableHeader>
               <TableBody>
                 {withdrawals.map((w) => (
                   <TableRow key={w.id}>
-                    <TableCell className="font-medium">{w.userName}</TableCell>
-                    <TableCell>{w.date}</TableCell>
-                    <TableCell>PKR {w.amount.toLocaleString()}</TableCell>
-                    <TableCell>PKR {w.tax.toLocaleString()}</TableCell>
-                    <TableCell className="font-bold text-primary">PKR {w.netAmount.toLocaleString()}</TableCell>
-                    <TableCell>
+                    <TableCell className="font-medium whitespace-nowrap">{w.userName}</TableCell>
+                    <TableCell className="font-mono font-semibold text-secondary whitespace-nowrap">{w.accountNumber}</TableCell>
+                    <TableCell className="whitespace-nowrap">{w.date}</TableCell>
+                    <TableCell className="whitespace-nowrap">PKR {w.amount.toLocaleString()}</TableCell>
+                    <TableCell className="whitespace-nowrap">PKR {w.tax.toLocaleString()}</TableCell>
+                    <TableCell className="font-bold text-primary whitespace-nowrap">PKR {w.netAmount.toLocaleString()}</TableCell>
+                    <TableCell className="whitespace-nowrap">
                       <Badge className={w.status === "processed" ? "bg-primary/10 text-primary border-primary/20" : "bg-secondary/10 text-secondary border-secondary/20"}>
                         {w.status}
                       </Badge>
@@ -68,7 +71,8 @@ const ManageWithdrawals = () => {
                   </TableRow>
                 ))}
               </TableBody>
-            </Table>
+              </Table>
+            </div>
           </CardContent>
         </Card>
       </div>

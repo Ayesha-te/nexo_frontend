@@ -5,23 +5,29 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Ticket, Phone, CreditCard, Hash } from "lucide-react";
 
 const PinRequest = () => {
   const [accountNumber, setAccountNumber] = useState("");
   const [trxId, setTrxId] = useState("");
+  const [quantity, setQuantity] = useState("1");
   const { toast } = useToast();
+
+  const PIN_COST = 1000;
+  const totalAmount = parseInt(quantity) * PIN_COST;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!accountNumber || !trxId) {
+    if (!accountNumber || !trxId || !quantity) {
       toast({ title: "Error", description: "Please fill all fields", variant: "destructive" });
       return;
     }
-    toast({ title: "Request Submitted!", description: "Your pin token request (PKR 1,000) is pending verification." });
+    toast({ title: "Request Submitted!", description: `Your pin token request (${quantity} tokens x PKR 1,000 = PKR ${totalAmount.toLocaleString()}) is pending verification.` });
     setAccountNumber("");
     setTrxId("");
+    setQuantity("1");
   };
 
   return (
@@ -50,7 +56,7 @@ const PinRequest = () => {
               <CreditCard className="w-4 h-4 text-primary" />
               <span className="text-sm font-medium text-foreground">Account Title: <span className="text-primary font-bold">Sardar laeiq Ahmed</span></span>
             </div>
-            <Badge variant="secondary" className="mt-2">Fixed Pin Cost: PKR 1,000</Badge>
+            <Badge variant="secondary" className="mt-2">Pin Cost: PKR 1,000 per token</Badge>
           </CardContent>
         </Card>
 
@@ -72,6 +78,26 @@ const PinRequest = () => {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
+                <Label>Quantity (Pin Tokens)</Label>
+                <Select value={quantity} onValueChange={setQuantity}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select quantity" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">1 Token - PKR 1,000</SelectItem>
+                    <SelectItem value="2">2 Tokens - PKR 2,000</SelectItem>
+                    <SelectItem value="3">3 Tokens - PKR 3,000</SelectItem>
+                    <SelectItem value="4">4 Tokens - PKR 4,000</SelectItem>
+                    <SelectItem value="5">5 Tokens - PKR 5,000</SelectItem>
+                    <SelectItem value="6">6 Tokens - PKR 6,000</SelectItem>
+                    <SelectItem value="7">7 Tokens - PKR 7,000</SelectItem>
+                    <SelectItem value="8">8 Tokens - PKR 8,000</SelectItem>
+                    <SelectItem value="9">9 Tokens - PKR 9,000</SelectItem>
+                    <SelectItem value="10">10 Tokens - PKR 10,000</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
                 <Label>Account Number</Label>
                 <div className="relative">
                   <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -86,7 +112,7 @@ const PinRequest = () => {
                 </div>
               </div>
               <Button type="submit" className="w-full nexo-gradient text-primary-foreground font-semibold">
-                Submit Request (PKR 1,000)
+                Submit Request ({quantity} × PKR 1,000 = PKR {totalAmount.toLocaleString()})
               </Button>
             </form>
           </CardContent>

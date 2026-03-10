@@ -119,7 +119,7 @@ const Dashboard = () => {
               </TableBody>
             </Table>
             <div className="mt-4 p-3 rounded-lg bg-secondary/10 border border-secondary/20 text-center">
-              <p className="text-sm font-semibold text-secondary">Total Rewards: PKR 3,950,000</p>
+              <p className="text-sm font-semibold text-secondary">💰 Total Rewards: PKR 3,900,000</p>
               <p className="text-xs text-muted-foreground mt-1">Total Team: 1 Lakh</p>
             </div>
           </CardContent>

@@ -5,6 +5,19 @@ import { mockTree, TreeNode as TreeNodeType } from "@/lib/mock-data";
 import { useState } from "react";
 import { GitBranch, User, ArrowLeft } from "lucide-react";
 
+const countTeamMembers = (node: TreeNodeType | undefined): number => {
+  if (!node) return 0;
+  return 1 + countTeamMembers(node.children.left) + countTeamMembers(node.children.right);
+};
+
+const getLeftCount = (node: TreeNodeType): number => {
+  return countTeamMembers(node.children.left);
+};
+
+const getRightCount = (node: TreeNodeType): number => {
+  return countTeamMembers(node.children.right);
+};
+
 const TreeNodeComponent = ({
   node,
   onNodeClick,
@@ -19,17 +32,22 @@ const TreeNodeComponent = ({
       <button
         type="button"
         onClick={() => onNodeClick(node)}
-        className={`px-4 py-3 rounded-xl border text-center min-w-[160px] transition-all duration-200 hover:scale-105 ${
-        node.position === "root"
-          ? "nexo-gradient text-primary-foreground nexo-gold-glow"
-          : node.position === "left"
-          ? "bg-primary/10 border-primary/30 text-foreground"
-          : "bg-secondary/10 border-secondary/30 text-foreground"
-      } ${selectedNodeId === node.id ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : ""}`}>
+        className={`px-4 py-3 rounded-xl border text-center min-w-[170px] transition-all duration-200 hover:scale-105 ${
+          node.position === "root"
+            ? "nexo-gradient text-primary-foreground nexo-gold-glow"
+            : node.position === "left"
+            ? "bg-primary/10 border-primary/30 text-foreground"
+            : "bg-secondary/10 border-secondary/30 text-foreground"
+        } ${selectedNodeId === node.id ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : ""}`}
+      >
         <User className="w-4 h-4 mx-auto mb-1 opacity-70" />
         <p className="text-sm font-semibold">{node.name}</p>
         <p className="text-[11px] opacity-80 break-all">{node.email}</p>
-        <p className="text-xs opacity-60 capitalize">{node.position}</p>
+        <p className="text-xs opacity-60 capitalize mb-2">{node.position}</p>
+        <div className="flex justify-center gap-2 text-xs">
+          <span className="bg-primary/20 px-2 py-1 rounded">L: {getLeftCount(node)}</span>
+          <span className="bg-secondary/20 px-2 py-1 rounded">R: {getRightCount(node)}</span>
+        </div>
       </button>
 
       {(node.children.left || node.children.right) && (
