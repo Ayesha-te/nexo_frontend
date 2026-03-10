@@ -43,7 +43,7 @@ export interface Withdrawal {
   id: string;
   userId: string;
   userName: string;
-  paymentMethod: "easypaisa" | "jazzcash" | "bank_account";
+  paymentMethod: "easypaisa" | "jazzcash";
   accountNumber: string;
   amount: number;
   tax: number;
@@ -106,15 +106,15 @@ export const mockPinRequests: PinRequest[] = [
 
 export const mockWithdrawals: Withdrawal[] = [
   { id: "w1", userId: "u1", userName: "Ahmed Khan", paymentMethod: "easypaisa", accountNumber: "03001234567", amount: 800, tax: 40, taxType: "normal", netAmount: 760, date: "2025-12-10", status: "processed" },
-  { id: "w2", userId: "u1", userName: "Ahmed Khan", paymentMethod: "jazzcash", accountNumber: "03001234567", amount: 400, tax: 20, taxType: "normal", netAmount: 380, date: "2025-12-09", status: "processed" },
-  { id: "w3", userId: "u1", userName: "Ahmed Khan", paymentMethod: "bank_account", accountNumber: "1450-223344-8899", amount: 4000, tax: 400, taxType: "cap", netAmount: 3600, date: "2025-12-08", status: "processed" },
-  { id: "w4", userId: "u1", userName: "Ahmed Khan", paymentMethod: "bank_account", accountNumber: "1450-223344-8899", amount: 5000, tax: 500, taxType: "reward", netAmount: 4500, date: "2025-12-07", status: "processed" },
+  { id: "w2", userId: "u1", userName: "Ahmed Khan", paymentMethod: "easypaisa", accountNumber: "03001234567", amount: 400, tax: 20, taxType: "normal", netAmount: 380, date: "2025-12-09", status: "processed" },
+  { id: "w3", userId: "u1", userName: "Ahmed Khan", paymentMethod: "easypaisa", accountNumber: "03001234567", amount: 4000, tax: 400, taxType: "cap", netAmount: 3600, date: "2025-12-08", status: "processed" },
+  { id: "w4", userId: "u1", userName: "Ahmed Khan", paymentMethod: "easypaisa", accountNumber: "03001234567", amount: 5000, tax: 500, taxType: "reward", netAmount: 4500, date: "2025-12-07", status: "processed" },
   { id: "w5", userId: "u1", userName: "Ahmed Khan", paymentMethod: "easypaisa", accountNumber: "03001234567", amount: 600, tax: 30, taxType: "normal", netAmount: 570, date: "2025-12-06", status: "processed" },
   { id: "w6", userId: "u2", userName: "Ali Raza", paymentMethod: "easypaisa", accountNumber: "03119876543", amount: 1000, tax: 50, taxType: "normal", netAmount: 950, date: "2025-12-10", status: "processed" },
-  { id: "w7", userId: "u2", userName: "Ali Raza", paymentMethod: "jazzcash", accountNumber: "03119876543", amount: 500, tax: 25, taxType: "normal", netAmount: 475, date: "2025-12-09", status: "processed" },
+  { id: "w7", userId: "u2", userName: "Ali Raza", paymentMethod: "easypaisa", accountNumber: "03119876543", amount: 500, tax: 25, taxType: "normal", netAmount: 475, date: "2025-12-09", status: "processed" },
   { id: "w8", userId: "u3", userName: "Sara Ahmed", paymentMethod: "jazzcash", accountNumber: "03217654321", amount: 1200, tax: 60, taxType: "normal", netAmount: 1140, date: "2025-12-09", status: "processed" },
-  { id: "w9", userId: "u4", userName: "Usman Malik", paymentMethod: "bank_account", accountNumber: "1830-990011-7722", amount: 800, tax: 40, taxType: "normal", netAmount: 760, date: "2025-12-08", status: "processed" },
-  { id: "w10", userId: "u5", userName: "Fatima Noor", paymentMethod: "easypaisa", accountNumber: "03331234567", amount: 1400, tax: 70, taxType: "normal", netAmount: 1330, date: "2025-12-07", status: "processed" },
+  { id: "w9", userId: "u4", userName: "Usman Malik", paymentMethod: "easypaisa", accountNumber: "03451112233", amount: 800, tax: 40, taxType: "normal", netAmount: 760, date: "2025-12-08", status: "processed" },
+  { id: "w10", userId: "u5", userName: "Fatima Noor", paymentMethod: "jazzcash", accountNumber: "03331234567", amount: 1400, tax: 70, taxType: "normal", netAmount: 1330, date: "2025-12-07", status: "processed" },
 ];
 
 export const mockAllUsers: User[] = [

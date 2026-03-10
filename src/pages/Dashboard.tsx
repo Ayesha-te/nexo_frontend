@@ -58,8 +58,8 @@ const Dashboard = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="p-4 rounded-lg bg-muted/50 border border-border/50">
                 <h3 className="font-semibold text-foreground">Referral Income (Pair Based)</h3>
-                <p className="text-sm text-muted-foreground mt-1">First pair: <span className="text-primary font-bold">PKR 400</span></p>
-                <p className="text-sm text-muted-foreground">Remaining pairs: <span className="text-primary font-bold">PKR 200</span></p>
+                <p className="text-sm text-muted-foreground mt-1">First 100 pairs: <span className="text-primary font-bold">PKR 200</span> per pair</p>
+                <p className="text-sm text-muted-foreground">After 100 pairs: <span className="text-primary font-bold">PKR 100</span> per pair</p>
                 <p className="text-xs text-muted-foreground mt-2">Non-working / per-day income is not available.</p>
               </div>
               <div className="p-4 rounded-lg bg-muted/50 border border-border/50">

@@ -1,27 +1,15 @@
 import { DashboardLayout } from "@/components/DashboardLayout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { findTreeNodeById, mockTree, mockWithdrawals, TreeNode } from "@/lib/mock-data";
-import { useLocation } from "react-router-dom";
+import { mockWithdrawals } from "@/lib/mock-data";
+import { useAuth } from "@/contexts/AuthContext";
 import { Wallet } from "lucide-react";
 
 const WithdrawHistory = () => {
-  const location = useLocation();
-  const selectedUserId = location.state?.selectedUserId as string | undefined;
-  const selectedUserName = location.state?.selectedUserName as string | undefined;
-  const selectedUserEmail = location.state?.selectedUserEmail as string | undefined;
-  const selectedNode = selectedUserId ? findTreeNodeById(mockTree, selectedUserId) : null;
-  const rows = selectedUserId ? mockWithdrawals.filter((w) => w.userId === selectedUserId) : mockWithdrawals;
-
-  const MiniTreeNode = ({ node }: { node: TreeNode }) => (
-    <div className="ml-3 mt-2 border-l border-border pl-3">
-      <p className="text-sm font-medium text-foreground">{node.name}</p>
-      <p className="text-xs text-muted-foreground">{node.email}</p>
-      {node.children.left && <MiniTreeNode node={node.children.left} />}
-      {node.children.right && <MiniTreeNode node={node.children.right} />}
-    </div>
-  );
+  const { user } = useAuth();
+  const currentUserId = user?.id;
+  const rows = currentUserId ? mockWithdrawals.filter((w) => w.userId === currentUserId) : [];
 
   const getTaxLabel = (type: string) => {
     switch (type) {
@@ -32,14 +20,12 @@ const WithdrawHistory = () => {
     }
   };
 
-  const formatPaymentMethod = (method: "easypaisa" | "jazzcash" | "bank_account") => {
+  const formatPaymentMethod = (method: "easypaisa" | "jazzcash") => {
     switch (method) {
       case "easypaisa":
         return "EasyPaisa";
       case "jazzcash":
         return "JazzCash";
-      case "bank_account":
-        return "Bank Account";
       default:
         return method;
     }
@@ -63,24 +49,6 @@ const WithdrawHistory = () => {
           </CardContent>
         </Card>
 
-        {selectedUserId && (
-          <Card className="border-primary/20 bg-primary/5">
-            <CardHeader>
-              <CardTitle className="text-lg font-display">Selected Account Details</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2 text-sm">
-              <p><span className="font-semibold">Name:</span> {selectedUserName}</p>
-              <p><span className="font-semibold">Email:</span> {selectedUserEmail}</p>
-              {selectedNode && (
-                <div className="pt-2">
-                  <p className="font-semibold text-foreground">Selected Account Tree Snapshot</p>
-                  <MiniTreeNode node={selectedNode} />
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        )}
-
         <Card className="nexo-card-glow border-border/50">
           <CardContent className="pt-6">
             <Table className="min-w-[760px]">
@@ -88,7 +56,6 @@ const WithdrawHistory = () => {
                 <TableRow>
                   <TableHead className="whitespace-nowrap">Request #</TableHead>
                   <TableHead className="whitespace-nowrap">Payment Method</TableHead>
-                  <TableHead className="whitespace-nowrap">Account Number</TableHead>
                   <TableHead className="whitespace-nowrap">Date</TableHead>
                   <TableHead className="whitespace-nowrap">Amount</TableHead>
                   <TableHead className="whitespace-nowrap">Tax</TableHead>
@@ -104,7 +71,6 @@ const WithdrawHistory = () => {
                     <TableRow key={w.id}>
                       <TableCell className="whitespace-nowrap font-mono font-semibold text-primary">{w.id.toUpperCase()}</TableCell>
                       <TableCell className="whitespace-nowrap">{formatPaymentMethod(w.paymentMethod)}</TableCell>
-                      <TableCell className="whitespace-nowrap font-mono font-semibold text-secondary">{w.accountNumber}</TableCell>
                       <TableCell className="whitespace-nowrap">{w.date}</TableCell>
                       <TableCell className="whitespace-nowrap">PKR {w.amount.toLocaleString()}</TableCell>
                       <TableCell className="whitespace-nowrap">PKR {w.tax.toLocaleString()}</TableCell>
@@ -120,7 +86,7 @@ const WithdrawHistory = () => {
                 })}
                 {rows.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={9} className="text-center text-muted-foreground py-8">
+                    <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
                       No withdraw records found for this account.
                     </TableCell>
                   </TableRow>
