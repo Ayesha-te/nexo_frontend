@@ -40,7 +40,7 @@ const WithdrawHistory = () => {
       <div className="space-y-6 animate-fade-in">
         <h1 className="font-display text-2xl font-bold text-foreground flex items-center gap-2">
           <Wallet className="w-6 h-6 text-primary" />
-          Whitdraw History
+          Withdraw History
         </h1>
 
         <Card className="border-secondary/30 bg-secondary/5">
@@ -58,14 +58,14 @@ const WithdrawHistory = () => {
             <Table className="min-w-[760px]">
               <TableHeader>
                 <TableRow>
-                  <TableHead className="whitespace-nowrap">Request #</TableHead>
-                  <TableHead className="whitespace-nowrap">Payment Method</TableHead>
-                  <TableHead className="whitespace-nowrap">Date</TableHead>
-                  <TableHead className="whitespace-nowrap">Amount</TableHead>
-                  <TableHead className="whitespace-nowrap">Tax</TableHead>
-                  <TableHead className="whitespace-nowrap">Tax Type</TableHead>
-                  <TableHead className="whitespace-nowrap">Net Amount</TableHead>
-                  <TableHead className="whitespace-nowrap">Status</TableHead>
+                  <TableHead className="withespace-nowrap">Request #</TableHead>
+                  <TableHead className="withespace-nowrap">Payment Method</TableHead>
+                  <TableHead className="withespace-nowrap">Date</TableHead>
+                  <TableHead className="withespace-nowrap">Amount</TableHead>
+                  <TableHead className="withespace-nowrap">Tax</TableHead>
+                  <TableHead className="withespace-nowrap">Tax Type</TableHead>
+                  <TableHead className="withespace-nowrap">Net Amount</TableHead>
+                  <TableHead className="withespace-nowrap">Status</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -73,17 +73,17 @@ const WithdrawHistory = () => {
                   const taxInfo = getTaxLabel(w.taxType);
                   return (
                     <TableRow key={w.id}>
-                      <TableCell className="whitespace-nowrap font-mono font-semibold text-primary">{w.id.toUpperCase()}</TableCell>
-                      <TableCell className="whitespace-nowrap">{formatPaymentMethod(w.paymentMethod)}</TableCell>
-                      <TableCell className="whitespace-nowrap">{w.date}</TableCell>
-                      <TableCell className="whitespace-nowrap">PKR {w.amount.toLocaleString()}</TableCell>
-                      <TableCell className="whitespace-nowrap">PKR {w.tax.toLocaleString()}</TableCell>
-                      <TableCell className="whitespace-nowrap">
-                        <Badge className={`whitespace-nowrap ${taxInfo.className}`}>{taxInfo.label}</Badge>
+                      <TableCell className="withespace-nowrap font-mono font-semibold text-primary">{w.id.toUpperCase()}</TableCell>
+                      <TableCell className="withespace-nowrap">{formatPaymentMethod(w.paymentMethod)}</TableCell>
+                      <TableCell className="withespace-nowrap">{w.date}</TableCell>
+                      <TableCell className="withespace-nowrap">PKR {w.amount.toLocaleString()}</TableCell>
+                      <TableCell className="withespace-nowrap">PKR {w.tax.toLocaleString()}</TableCell>
+                      <TableCell className="withespace-nowrap">
+                        <Badge className={`withespace-nowrap ${taxInfo.className}`}>{taxInfo.label}</Badge>
                       </TableCell>
-                      <TableCell className="font-bold text-primary whitespace-nowrap">PKR {w.netAmount.toLocaleString()}</TableCell>
-                      <TableCell className="whitespace-nowrap">
-                        <Badge className="bg-primary/10 text-primary border-primary/20 whitespace-nowrap">{w.status}</Badge>
+                      <TableCell className="font-bold text-primary withespace-nowrap">PKR {w.netAmount.toLocaleString()}</TableCell>
+                      <TableCell className="withespace-nowrap">
+                        <Badge className="bg-primary/10 text-primary border-primary/20 withespace-nowrap">{w.status}</Badge>
                       </TableCell>
                     </TableRow>
                   );
