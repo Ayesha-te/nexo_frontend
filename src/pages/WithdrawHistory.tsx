@@ -14,7 +14,7 @@ const WithdrawHistory = () => {
   useEffect(() => {
     refreshUser().catch(() => undefined);
     api("/api/withdrawals/me/").then(setRows).catch(() => setRows([]));
-  }, [refreshUser]);
+  }, []);
 
   const getTaxLabel = (type: string) => {
     switch (type) {
@@ -79,7 +79,7 @@ const WithdrawHistory = () => {
                   const taxInfo = getTaxLabel(w.taxType);
                   return (
                     <TableRow key={w.id}>
-                      <TableCell className="withespace-nowrap font-mono font-semibold text-primary">{w.id.toUpperCase()}</TableCell>
+                      <TableCell className="withespace-nowrap font-mono font-semibold text-primary">{String(w.id).toUpperCase()}</TableCell>
                       <TableCell className="withespace-nowrap">{formatPaymentMethod(w.paymentMethod)}</TableCell>
                       <TableCell className="withespace-nowrap">{w.date}</TableCell>
                       <TableCell className="withespace-nowrap">PKR {w.amount.toLocaleString()}</TableCell>
