@@ -21,12 +21,15 @@ const ProfileSettings = () => {
     if (!file) return;
     const url = URL.createObjectURL(file);
     setProfilePicPreview(url);
+    updateProfile({ profilePic: file }).catch(() => {
+      toast({ title: "Error", description: "Failed to upload profile picture.", variant: "destructive" });
+    });
     toast({ title: "Profile Picture Updated", description: "Preview updated. Click Save Changes to keep profile details." });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    updateProfile({ firstName, lastName });
+    await updateProfile({ firstName, lastName });
     toast({ title: "Profile Updated!", description: "Your profile has been updated successfully." });
   };
 

@@ -1,24 +1,26 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { mockWithdrawals, mockAllUsers, Withdrawal } from "@/lib/mock-data";
 import { useToast } from "@/hooks/use-toast";
 import { Wallet, Check } from "lucide-react";
-
-const allWithdrawals: Withdrawal[] = [
-  ...mockWithdrawals,
-  { id: "w11", userId: "u2", userName: "Ali Raza", paymentMethod: "easypaisa", accountNumber: "03119876543", amount: 500, tax: 25, taxType: "normal", netAmount: 475, date: "2025-12-10", status: "pending" },
-  { id: "w12", userId: "u3", userName: "Sara Ahmed", paymentMethod: "jazzcash", accountNumber: "03217654321", amount: 300, tax: 15, taxType: "normal", netAmount: 285, date: "2025-12-10", status: "pending" },
-];
+import { api } from "@/lib/api";
 
 const ManageWithdrawals = () => {
-  const [withdrawals, setWithdrawals] = useState<Withdrawal[]>(allWithdrawals);
+  const [withdrawals, setWithdrawals] = useState<any[]>([]);
   const { toast } = useToast();
 
-  const formatPaymentMethod = (method: Withdrawal["paymentMethod"]) => {
+  const load = async () => {
+    setWithdrawals(await api("/api/withdrawals/admin/"));
+  };
+
+  useEffect(() => {
+    load().catch(() => setWithdrawals([]));
+  }, []);
+
+  const formatPaymentMethod = (method: string) => {
     switch (method) {
       case "easypaisa":
         return "EasyPaisa";
@@ -29,15 +31,15 @@ const ManageWithdrawals = () => {
     }
   };
 
-  const processWithdrawal = (id: string) => {
-    setWithdrawals(prev => prev.map(w => w.id === id ? { ...w, status: "processed" as const } : w));
-    toast({ title: "Withdrawal Processed", description: "Payment has been marked as processed." });
+  const processWithdrawal = async (_id: string) => {
+    toast({ title: "Automatic System", description: "Withdrawals are processed daily by automation." });
+    await load();
   };
 
   const pendingWithdrawals = withdrawals.filter(w => w.status === "pending");
   const processedWithdrawals = withdrawals.filter(w => w.status === "processed");
 
-  const WithdrawalTable = ({ data }: { data: Withdrawal[] }) => (
+  const WithdrawalTable = ({ data }: { data: any[] }) => (
     <div className="overflow-x-auto">
       <Table className="min-w-[900px]">
         <TableHeader>

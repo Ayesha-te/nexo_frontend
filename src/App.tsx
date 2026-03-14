@@ -13,32 +13,26 @@ import MyTree from "./pages/MyTree";
 import WithdrawHistory from "./pages/WithdrawHistory";
 import ChangePassword from "./pages/ChangePassword";
 import ProfileSettings from "./pages/ProfileSettings";
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import ManagePinRequests from "./pages/admin/ManagePinRequests";
-import ManageUsers from "./pages/admin/ManageUsers";
-import ManageWithdrawals from "./pages/admin/ManageWithdrawals";
-import ManageComplaintsAndFeedback from "./pages/admin/ManageComplaintsAndFeedback";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-const ProtectedRoute = ({ children, adminOnly = false }: { children: React.ReactNode; adminOnly?: boolean }) => {
-  const { isLoggedIn, isAdmin } = useAuth();
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const { isLoggedIn, loading } = useAuth();
+  if (loading) return null;
   if (!isLoggedIn) return <Navigate to="/login" replace />;
-  if (adminOnly && !isAdmin) return <Navigate to="/dashboard" replace />;
-  if (!adminOnly && isAdmin) return <Navigate to="/admin/dashboard" replace />;
   return <>{children}</>;
 };
 
 const AppRoutes = () => {
-  const { isLoggedIn, isAdmin } = useAuth();
+  const { isLoggedIn, loading } = useAuth();
+  if (loading) return null;
 
   return (
     <Routes>
-      <Route path="/login" element={isLoggedIn ? <Navigate to={isAdmin ? "/admin/dashboard" : "/dashboard"} replace /> : <LoginPage />} />
-      <Route path="/" element={<Navigate to={isLoggedIn ? (isAdmin ? "/admin/dashboard" : "/dashboard") : "/login"} replace />} />
+      <Route path="/login" element={isLoggedIn ? <Navigate to="/dashboard" replace /> : <LoginPage />} />
+      <Route path="/" element={<Navigate to={isLoggedIn ? "/dashboard" : "/login"} replace />} />
 
-      {/* User Routes */}
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       <Route path="/pin-request" element={<ProtectedRoute><PinRequest /></ProtectedRoute>} />
       <Route path="/my-pins" element={<ProtectedRoute><MyPins /></ProtectedRoute>} />
@@ -47,13 +41,6 @@ const AppRoutes = () => {
       <Route path="/withdraw-history" element={<ProtectedRoute><WithdrawHistory /></ProtectedRoute>} />
       <Route path="/change-password" element={<ProtectedRoute><ChangePassword /></ProtectedRoute>} />
       <Route path="/profile" element={<ProtectedRoute><ProfileSettings /></ProtectedRoute>} />
-
-      {/* Admin Routes */}
-      <Route path="/admin/dashboard" element={<ProtectedRoute adminOnly><AdminDashboard /></ProtectedRoute>} />
-      <Route path="/admin/pin-requests" element={<ProtectedRoute adminOnly><ManagePinRequests /></ProtectedRoute>} />
-      <Route path="/admin/users" element={<ProtectedRoute adminOnly><ManageUsers /></ProtectedRoute>} />
-      <Route path="/admin/withdrawals" element={<ProtectedRoute adminOnly><ManageWithdrawals /></ProtectedRoute>} />
-      <Route path="/admin/complaints" element={<ProtectedRoute adminOnly><ManageComplaintsAndFeedback /></ProtectedRoute>} />
 
       <Route path="*" element={<NotFound />} />
     </Routes>

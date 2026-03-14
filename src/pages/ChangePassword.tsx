@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Lock, Eye, EyeOff } from "lucide-react";
+import { api } from "@/lib/api";
 
 const ChangePassword = () => {
   const [currentPassword, setCurrentPassword] = useState("");
@@ -14,7 +15,7 @@ const ChangePassword = () => {
   const [showPasswords, setShowPasswords] = useState(false);
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!currentPassword || !newPassword || !confirmPassword) {
       toast({ title: "Error", description: "Please fill all fields", variant: "destructive" });
@@ -28,10 +29,18 @@ const ChangePassword = () => {
       toast({ title: "Error", description: "Password must be at least 6 characters", variant: "destructive" });
       return;
     }
-    toast({ title: "Success", description: "Password changed successfully!" });
-    setCurrentPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
+    try {
+      await api("/api/accounts/change-password/", {
+        method: "POST",
+        body: JSON.stringify({ currentPassword, newPassword }),
+      });
+      toast({ title: "Success", description: "Password changed successfully!" });
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message || "Failed to change password", variant: "destructive" });
+    }
   };
 
   return (

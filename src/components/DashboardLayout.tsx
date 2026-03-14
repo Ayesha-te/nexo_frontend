@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { api } from "@/lib/api";
 
 export function DashboardLayout({ children }: { children: ReactNode }) {
   const { logout, isAdmin } = useAuth();
@@ -21,15 +22,23 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
     navigate("/login");
   };
 
-  const handleFeedbackSubmit = (e: React.FormEvent) => {
+  const handleFeedbackSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!feedbackName || !feedbackMessage) {
       toast({ title: "Error", description: "Please fill your name and message", variant: "destructive" });
       return;
     }
-    toast({ title: "Submitted", description: "Your feedback/complaint has been submitted." });
-    setFeedbackName("");
-    setFeedbackMessage("");
+    try {
+      await api("/api/complaints/me/", {
+        method: "POST",
+        body: JSON.stringify({ message: feedbackMessage, type: "feedback" }),
+      });
+      toast({ title: "Submitted", description: "Your feedback/complaint has been submitted." });
+      setFeedbackName("");
+      setFeedbackMessage("");
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message || "Submission failed", variant: "destructive" });
+    }
   };
 
   return (

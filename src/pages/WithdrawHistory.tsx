@@ -2,14 +2,18 @@ import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { mockWithdrawals } from "@/lib/mock-data";
 import { useAuth } from "@/contexts/AuthContext";
+import { useEffect, useState } from "react";
 import { Wallet } from "lucide-react";
+import { api } from "@/lib/api";
 
 const WithdrawHistory = () => {
   const { user } = useAuth();
-  const currentUserId = user?.id;
-  const rows = currentUserId ? mockWithdrawals.filter((w) => w.userId === currentUserId) : [];
+  const [rows, setRows] = useState<any[]>([]);
+
+  useEffect(() => {
+    api("/api/withdrawals/me/").then(setRows).catch(() => setRows([]));
+  }, []);
 
   const getTaxLabel = (type: string) => {
     switch (type) {

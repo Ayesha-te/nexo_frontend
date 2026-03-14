@@ -1,12 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { mockFeedback, Feedback } from "@/lib/mock-data";
 import { useToast } from "@/hooks/use-toast";
 import { MessageSquare, Check, Eye } from "lucide-react";
+import { api } from "@/lib/api";
 import {
   Dialog,
   DialogContent,
@@ -15,13 +15,22 @@ import {
 } from "@/components/ui/dialog";
 
 const ManageComplaintsAndFeedback = () => {
-  const [feedbackList, setFeedbackList] = useState<Feedback[]>([...mockFeedback]);
-  const [selectedFeedback, setSelectedFeedback] = useState<Feedback | null>(null);
+  const [feedbackList, setFeedbackList] = useState<any[]>([]);
+  const [selectedFeedback, setSelectedFeedback] = useState<any | null>(null);
   const [showDialog, setShowDialog] = useState(false);
   const { toast } = useToast();
 
-  const handleStatusChange = (id: string, newStatus: "new" | "reviewed" | "resolved") => {
-    setFeedbackList(prev => prev.map(f => f.id === id ? { ...f, status: newStatus } : f));
+  const load = async () => {
+    setFeedbackList(await api("/api/complaints/admin/"));
+  };
+
+  useEffect(() => {
+    load().catch(() => setFeedbackList([]));
+  }, []);
+
+  const handleStatusChange = async (id: string, newStatus: "new" | "reviewed" | "resolved") => {
+    await api(`/api/complaints/admin/${id}/`, { method: "PATCH", body: JSON.stringify({ status: newStatus }) });
+    await load();
     toast({ title: "Status Updated!", description: `Feedback status has been changed to ${newStatus}.` });
   };
 

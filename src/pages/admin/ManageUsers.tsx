@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -7,31 +7,44 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { mockAllUsers, User } from "@/lib/mock-data";
 import { useToast } from "@/hooks/use-toast";
 import { Users, Edit, Power } from "lucide-react";
+import { api } from "@/lib/api";
 
 const ManageUsers = () => {
-  const [users, setUsers] = useState<User[]>([...mockAllUsers]);
-  const [editUser, setEditUser] = useState<User | null>(null);
+  const [users, setUsers] = useState<any[]>([]);
+  const [editUser, setEditUser] = useState<any | null>(null);
   const [editEmail, setEditEmail] = useState("");
   const [editPhone, setEditPhone] = useState("");
   const { toast } = useToast();
 
-  const toggleActive = (id: string) => {
-    setUsers(prev => prev.map(u => u.id === id ? { ...u, isActive: !u.isActive } : u));
+  const load = async () => {
+    setUsers(await api("/api/accounts/admin/users/"));
+  };
+
+  useEffect(() => {
+    load().catch(() => setUsers([]));
+  }, []);
+
+  const toggleActive = async (id: string, nextState: boolean) => {
+    await api(`/api/accounts/admin/users/${id}/`, { method: "PATCH", body: JSON.stringify({ is_active: nextState }) });
+    await load();
     toast({ title: "User Updated", description: "User status has been changed." });
   };
 
-  const openEdit = (user: User) => {
+  const openEdit = (user: any) => {
     setEditUser(user);
     setEditEmail(user.email);
     setEditPhone(user.phone);
   };
 
-  const saveEdit = () => {
+  const saveEdit = async () => {
     if (editUser) {
-      setUsers(prev => prev.map(u => u.id === editUser.id ? { ...u, email: editEmail, phone: editPhone } : u));
+      await api(`/api/accounts/admin/users/${editUser.id}/`, {
+        method: "PATCH",
+        body: JSON.stringify({ email: editEmail, phone: editPhone }),
+      });
+      await load();
       toast({ title: "User Updated", description: `${editUser.firstName}'s info has been updated.` });
       setEditUser(null);
     }
@@ -95,7 +108,7 @@ const ManageUsers = () => {
                             </div>
                           </DialogContent>
                         </Dialog>
-                        <Button size="sm" variant="outline" onClick={() => toggleActive(user.id)} className={user.isActive ? "text-destructive" : "text-primary"}>
+                        <Button size="sm" variant="outline" onClick={() => toggleActive(user.id, !user.isActive)} className={user.isActive ? "text-destructive" : "text-primary"}>
                           <Power className="w-3 h-3 mr-1" /> {user.isActive ? "Deactivate" : "Activate"}
                         </Button>
                       </div>

@@ -1,9 +1,17 @@
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { mockTree, TreeNode as TreeNodeType } from "@/lib/mock-data";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GitBranch, User, ArrowLeft } from "lucide-react";
+import { api } from "@/lib/api";
+
+type TreeNodeType = {
+  id: string;
+  name: string;
+  email: string;
+  position: "left" | "right" | "root";
+  children: { left?: TreeNodeType | null; right?: TreeNodeType | null };
+};
 
 const countTeamMembers = (node: TreeNodeType | undefined): number => {
   if (!node) return 0;
@@ -93,6 +101,11 @@ const TreeNodeComponent = ({
 
 const MyTree = () => {
   const [selectedUserNode, setSelectedUserNode] = useState<TreeNodeType | null>(null);
+  const [tree, setTree] = useState<TreeNodeType | null>(null);
+
+  useEffect(() => {
+    api("/api/accounts/tree/").then(setTree).catch(() => setTree(null));
+  }, []);
 
   const handleNodeClick = (node: TreeNodeType) => {
     setSelectedUserNode(node);
@@ -127,11 +140,7 @@ const MyTree = () => {
           <CardContent>
             <div className="overflow-x-auto overflow-y-visible py-8 max-w-full">
               <div className="flex justify-center min-w-[600px] w-max mx-auto">
-                <TreeNodeComponent
-                  node={mockTree}
-                  onNodeClick={handleNodeClick}
-                  selectedNodeId={selectedUserNode?.id}
-                />
+                {tree && <TreeNodeComponent node={tree} onNodeClick={handleNodeClick} selectedNodeId={selectedUserNode?.id} />}
               </div>
             </div>
           </CardContent>

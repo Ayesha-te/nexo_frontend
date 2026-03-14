@@ -5,23 +5,27 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Mail, Lock, ShieldCheck } from "lucide-react";
+import { Mail, Lock } from "lucide-react";
 
 const LoginPage = () => {
-  const [email, setEmail] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
-  const [isAdminMode, setIsAdminMode] = useState(false);
-  const { login, adminLogin } = useAuth();
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isAdminMode) {
-      adminLogin(email, password);
-      navigate("/admin/dashboard");
-    } else {
-      login(email, password);
+    setSubmitting(true);
+    setError("");
+    try {
+      await login(identifier, password);
       navigate("/dashboard");
+    } catch (err: any) {
+      setError(err.message || "Login failed");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -43,22 +47,20 @@ const LoginPage = () => {
             />
           </div>
           <CardTitle className="font-display text-2xl text-foreground">Nexocart</CardTitle>
-          <p className="text-sm text-muted-foreground mt-1">
-            {isAdminMode ? "Admin Panel Login" : "The Binary System"}
-          </p>
+          <p className="text-sm text-muted-foreground mt-1">The Binary System</p>
         </CardHeader>
         <CardContent className="pt-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-foreground/80">Email</Label>
+              <Label htmlFor="identifier" className="text-foreground/80">Email</Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
-                  id="email"
+                  id="identifier"
                   type="email"
                   placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={identifier}
+                  onChange={(e) => setIdentifier(e.target.value)}
                   className="pl-10"
                 />
               </div>
@@ -77,20 +79,11 @@ const LoginPage = () => {
                 />
               </div>
             </div>
-            <Button type="submit" className="w-full nexo-gradient text-primary-foreground font-semibold h-11 hover:opacity-90 transition-opacity">
-              {isAdminMode ? "Admin Login" : "Login"}
+            {error && <p className="text-sm text-destructive">{error}</p>}
+            <Button type="submit" disabled={submitting} className="w-full nexo-gradient text-primary-foreground font-semibold h-11 hover:opacity-90 transition-opacity">
+              {submitting ? "Please wait..." : "Login"}
             </Button>
           </form>
-
-          <div className="mt-6 text-center">
-            <button
-              onClick={() => setIsAdminMode(!isAdminMode)}
-              className="text-sm text-muted-foreground hover:text-primary flex items-center gap-2 mx-auto transition-colors"
-            >
-              <ShieldCheck className="w-4 h-4" />
-              {isAdminMode ? "Switch to User Login" : "Login as Admin"}
-            </button>
-          </div>
         </CardContent>
       </Card>
     </div>
