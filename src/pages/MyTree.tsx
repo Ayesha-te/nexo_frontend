@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { GitBranch, User, ArrowLeft } from "lucide-react";
 import { api } from "@/lib/api";
+import { useAuth } from "@/contexts/AuthContext";
 
 type TreeNodeType = {
   id: string;
@@ -30,19 +31,25 @@ const TreeNodeComponent = ({
   node,
   onNodeClick,
   selectedNodeId,
+  currentUserId,
 }: {
   node: TreeNodeType;
   onNodeClick: (node: TreeNodeType) => void;
   selectedNodeId?: string;
+  currentUserId?: string;
 }) => {
+  const isCurrentUser = currentUserId === node.id;
+
   return (
     <div className="flex flex-col items-center">
       <button
         type="button"
         onClick={() => onNodeClick(node)}
         className={`px-4 py-3 rounded-xl border text-center min-w-[170px] transition-all duration-200 hover:scale-105 ${
-          node.position === "root"
+          isCurrentUser
             ? "nexo-gradient text-primary-foreground nexo-gold-glow"
+            : node.position === "root"
+            ? "bg-card border-border text-foreground"
             : node.position === "left"
             ? "bg-primary/10 border-primary/30 text-foreground"
             : "bg-secondary/10 border-secondary/30 text-foreground"
@@ -71,6 +78,7 @@ const TreeNodeComponent = ({
                   node={node.children.left}
                   onNodeClick={onNodeClick}
                   selectedNodeId={selectedNodeId}
+                  currentUserId={currentUserId}
                 />
               ) : (
                 <div className="px-4 py-3 rounded-xl border border-dashed border-border text-muted-foreground text-sm min-w-[120px] text-center">
@@ -85,6 +93,7 @@ const TreeNodeComponent = ({
                   node={node.children.right}
                   onNodeClick={onNodeClick}
                   selectedNodeId={selectedNodeId}
+                  currentUserId={currentUserId}
                 />
               ) : (
                 <div className="px-4 py-3 rounded-xl border border-dashed border-border text-muted-foreground text-sm min-w-[120px] text-center">
@@ -100,6 +109,7 @@ const TreeNodeComponent = ({
 };
 
 const MyTree = () => {
+  const { user } = useAuth();
   const [selectedUserNode, setSelectedUserNode] = useState<TreeNodeType | null>(null);
   const [tree, setTree] = useState<TreeNodeType | null>(null);
 
@@ -140,7 +150,14 @@ const MyTree = () => {
           <CardContent>
             <div className="overflow-x-auto overflow-y-visible py-8 max-w-full">
               <div className="flex justify-center min-w-[600px] w-max mx-auto">
-                {tree && <TreeNodeComponent node={tree} onNodeClick={handleNodeClick} selectedNodeId={selectedUserNode?.id} />}
+                {tree && (
+                  <TreeNodeComponent
+                    node={tree}
+                    onNodeClick={handleNodeClick}
+                    selectedNodeId={selectedUserNode?.id}
+                    currentUserId={user?.id}
+                  />
+                )}
               </div>
             </div>
           </CardContent>
@@ -162,6 +179,7 @@ const MyTree = () => {
                     node={selectedUserNode}
                     onNodeClick={handleNodeClick}
                     selectedNodeId={selectedUserNode.id}
+                    currentUserId={user?.id}
                   />
                 </div>
               </div>

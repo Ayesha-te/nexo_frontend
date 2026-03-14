@@ -8,19 +8,24 @@ import { Wallet } from "lucide-react";
 import { api } from "@/lib/api";
 
 const WithdrawHistory = () => {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const [rows, setRows] = useState<any[]>([]);
 
   useEffect(() => {
+    refreshUser().catch(() => undefined);
     api("/api/withdrawals/me/").then(setRows).catch(() => setRows([]));
-  }, []);
+  }, [refreshUser]);
 
   const getTaxLabel = (type: string) => {
     switch (type) {
-      case "normal": return { label: "5% Tax", className: "bg-primary/10 text-primary border-primary/20" };
-      case "cap": return { label: "10% Cap Tax", className: "bg-secondary/10 text-secondary border-secondary/20" };
-      case "reward": return { label: "10% Reward Tax", className: "bg-destructive/10 text-destructive border-destructive/20" };
-      default: return { label: type, className: "" };
+      case "normal":
+        return { label: "5% Tax", className: "bg-primary/10 text-primary border-primary/20" };
+      case "cap":
+        return { label: "10% Cap Tax", className: "bg-secondary/10 text-secondary border-secondary/20" };
+      case "reward":
+        return { label: "10% Reward Tax", className: "bg-destructive/10 text-destructive border-destructive/20" };
+      default:
+        return { label: type, className: "" };
     }
   };
 
@@ -45,10 +50,11 @@ const WithdrawHistory = () => {
 
         <Card className="border-secondary/30 bg-secondary/5">
           <CardContent className="pt-6 space-y-2 text-sm">
-            <p className="text-foreground">• Daily auto-withdrawal — no request needed</p>
-            <p className="text-foreground">• Normal tax: <span className="font-bold text-primary">5%</span></p>
-            <p className="text-foreground">• Cap limit & Rewards tax: <span className="font-bold text-secondary">10%</span></p>
-            <p className="text-foreground">• Cap limit: <span className="font-bold text-primary">PKR 4,000</span></p>
+            <p className="text-foreground">Pending withdrawals appear automatically when your account has income.</p>
+            <p className="text-foreground">Admin approval moves the record from pending to paid.</p>
+            <p className="text-foreground">Normal tax: <span className="font-bold text-primary">5%</span></p>
+            <p className="text-foreground">Cap limit & Rewards tax: <span className="font-bold text-secondary">10%</span></p>
+            <p className="text-foreground">Cap limit: <span className="font-bold text-primary">PKR 4,000</span></p>
             <p className="text-muted-foreground text-xs mt-2">Please enter the correct account number at activation time. In case of incorrect number entry, the system will not be responsible for loss.</p>
           </CardContent>
         </Card>
@@ -83,7 +89,9 @@ const WithdrawHistory = () => {
                       </TableCell>
                       <TableCell className="font-bold text-primary withespace-nowrap">PKR {w.netAmount.toLocaleString()}</TableCell>
                       <TableCell className="withespace-nowrap">
-                        <Badge className="bg-primary/10 text-primary border-primary/20 withespace-nowrap">{w.status}</Badge>
+                        <Badge className={`withespace-nowrap ${w.status === "processed" ? "bg-primary/10 text-primary border-primary/20" : "bg-secondary/10 text-secondary border-secondary/20"}`}>
+                          {w.status === "processed" ? "paid" : "pending"}
+                        </Badge>
                       </TableCell>
                     </TableRow>
                   );

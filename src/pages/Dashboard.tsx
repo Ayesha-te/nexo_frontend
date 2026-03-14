@@ -23,14 +23,15 @@ type EarnedReward = {
 };
 
 const Dashboard = () => {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const [rewardPlan, setRewardPlan] = useState<RewardPlanItem[]>([]);
   const [earnedRewards, setEarnedRewards] = useState<EarnedReward[]>([]);
 
   useEffect(() => {
+    refreshUser().catch(() => undefined);
     api("/api/rewards/plan/").then(setRewardPlan).catch(() => setRewardPlan([]));
     api("/api/rewards/me/").then(setEarnedRewards).catch(() => setEarnedRewards([]));
-  }, []);
+  }, [refreshUser]);
 
   const stats = [
     { title: "Current Income", value: `PKR ${Number(user?.currentIncome || 0).toLocaleString()}`, icon: DollarSign, gradient: "from-primary to-nexo-green-light" },
