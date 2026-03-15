@@ -138,9 +138,9 @@ const AddUser = () => {
                 <Label>Referral Email</Label>
                 <div className="relative">
                   <Users className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                  <Input type="email" value={formData.referralEmail} onChange={(e) => handleChange("referralEmail", e.target.value)} className="pl-10" />
+                  <Input type="email" value={formData.referralEmail} readOnly className="pl-10 opacity-80" />
                 </div>
-                <p className="text-xs text-muted-foreground">The approved pin belongs to your account, so this should be your own email.</p>
+                <p className="text-xs text-muted-foreground">This is locked to your logged-in account email and is sent automatically.</p>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
