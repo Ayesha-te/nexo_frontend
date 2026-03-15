@@ -83,7 +83,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const mapped = mapUser(raw);
     setUser(mapped);
     setIsLoggedIn(true);
-    setIsAdmin(Boolean(raw.is_staff));
+    setIsAdmin(false);
   };
 
   const login = async (email: string, password: string) => {

@@ -24,7 +24,6 @@ import {
   Lock,
   Settings,
   LogOut,
-  MessageSquare,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -39,22 +38,14 @@ const userMenuItems = [
   { title: "Profile Setting", url: "/profile", icon: Settings },
 ];
 
-const adminMenuItems = [
-  { title: "Admin Dashboard", url: "/admin/dashboard", icon: LayoutDashboard },
-  { title: "Manage Pin Requests", url: "/admin/pin-requests", icon: Ticket },
-  { title: "Manage Users", url: "/admin/users", icon: UserPlus },
-  { title: "Manage Withdrawals", url: "/admin/withdrawals", icon: Wallet },
-  { title: "Complaints & Feedback", url: "/admin/complaints", icon: MessageSquare },
-];
-
 export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
-  const { isAdmin, logout, user } = useAuth();
+  const { logout, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const items = isAdmin ? adminMenuItems : userMenuItems;
+  const items = userMenuItems;
 
   const handleLogout = () => {
     logout();
@@ -73,7 +64,7 @@ export function AppSidebar() {
           {!collapsed && (
             <div>
               <h2 className="font-display text-lg font-bold text-sidebar-foreground">Nexocart</h2>
-              <p className="text-xs text-sidebar-foreground/60">{isAdmin ? "Admin Panel" : "Binary System"}</p>
+              <p className="text-xs text-sidebar-foreground/60">Binary System</p>
             </div>
           )}
         </div>
@@ -82,7 +73,7 @@ export function AppSidebar() {
       <SidebarContent className="px-2 py-4">
         <SidebarGroup>
           <SidebarGroupLabel className="text-sidebar-foreground/40 uppercase text-[10px] tracking-wider font-semibold mb-2">
-            {!collapsed && (isAdmin ? "Administration" : "Navigation")}
+            {!collapsed && "Navigation"}
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -107,7 +98,7 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="p-4 border-t border-sidebar-border">
-        {!collapsed && !isAdmin && user && (
+        {!collapsed && user && (
           <div className="mb-3 px-2">
             <p className="text-sm font-medium text-sidebar-foreground">{user.firstName} {user.lastName}</p>
             <p className="text-xs text-sidebar-foreground/50">{user.email}</p>
