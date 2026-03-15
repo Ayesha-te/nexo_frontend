@@ -44,6 +44,8 @@ const Dashboard = () => {
 
   const earnedLevels = new Set(earnedRewards.map((reward) => reward.level));
   const nextReward = rewardPlan.find((reward) => !earnedLevels.has(reward.level));
+  const getRewardLabel = (reward: string, amount: number) =>
+    amount > 0 ? `PKR ${amount.toLocaleString()}` : reward;
 
   return (
     <DashboardLayout>
@@ -143,8 +145,7 @@ const Dashboard = () => {
                     <TableCell>{row.left.toLocaleString()}</TableCell>
                     <TableCell>{row.right.toLocaleString()}</TableCell>
                     <TableCell className="font-semibold text-secondary">
-                      {row.reward}
-                      {row.amount > 0 ? ` (PKR ${row.amount.toLocaleString()})` : ""}
+                      {getRewardLabel(row.reward, row.amount)}
                       {earnedLevels.has(row.level) ? " - unlocked" : ""}
                     </TableCell>
                   </TableRow>
@@ -156,10 +157,10 @@ const Dashboard = () => {
               <div className="mt-4 space-y-2">
                 {earnedRewards.map((reward) => (
                   <div key={reward.id} className="rounded-lg border border-secondary/20 bg-secondary/10 p-3 text-sm">
-                    <p className="font-semibold text-secondary">Level {reward.level}: {reward.reward}</p>
+                    <p className="font-semibold text-secondary">Level {reward.level}: {getRewardLabel(reward.reward, reward.amount)}</p>
                     <p className="text-muted-foreground">
                       Unlocked on {reward.rewardedAt}
-                      {reward.amount > 0 ? ` | Credited PKR ${reward.amount.toLocaleString()}` : ""}
+                      {reward.amount > 0 ? " | Credited" : ""}
                     </p>
                   </div>
                 ))}
