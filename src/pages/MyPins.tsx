@@ -29,7 +29,7 @@ const MyPins = () => {
   const handleCopy = async (token: string, id: number) => {
     await navigator.clipboard.writeText(token);
     setCopiedId(id);
-    toast({ title: "Copied", description: "Pin token copied to clipboard" });
+    toast({ title: "Copied", description: "Pin token copied to clipboard. It stays available until you successfully activate a user." });
     setTimeout(() => setCopiedId(null), 2000);
   };
 
@@ -46,7 +46,7 @@ const MyPins = () => {
             <Key className="h-6 w-6 text-primary" />
             My Pins
           </h1>
-          <p className="mt-1 text-sm text-muted-foreground">Approved pin requests generate backend pin codes here. Use any available code on the Add New User page.</p>
+          <p className="mt-1 text-sm text-muted-foreground">Approved pin requests generate backend pin codes here. Copying a pin does not use it. It becomes used only after a successful Add New User activation.</p>
         </div>
 
         <Card className="nexo-card-glow border-border/50">
@@ -74,7 +74,7 @@ const MyPins = () => {
                     {pin.status === "available" && (
                       <Button size="sm" variant="outline" onClick={() => handleCopy(pin.token, pin.id)} className="gap-1">
                         {copiedId === pin.id ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
-                        {copiedId === pin.id ? "Copied" : "Copy"}
+                        {copiedId === pin.id ? "Copied Only" : "Copy"}
                       </Button>
                     )}
                   </div>

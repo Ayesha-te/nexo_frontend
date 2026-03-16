@@ -70,7 +70,7 @@ const AddUser = () => {
         <Card className="nexo-card-glow border-border/50">
           <CardHeader>
             <CardTitle className="text-lg font-display">Account Activation</CardTitle>
-            <p className="text-sm text-muted-foreground">Use one approved pin code from My Pins. The new user will log in with `email / email`.</p>
+            <p className="text-sm text-muted-foreground">Use one approved pin code from My Pins. The pin is consumed only after this activation succeeds. The new user will log in with `email / email`.</p>
           </CardHeader>
           <CardContent>
             <div className="mb-4 rounded-lg border border-secondary/20 bg-secondary/5 p-3 text-sm">
@@ -138,9 +138,9 @@ const AddUser = () => {
                 <Label>Referral Email</Label>
                 <div className="relative">
                   <Users className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                  <Input type="email" value={formData.referralEmail} readOnly className="pl-10 opacity-80" />
+                  <Input type="email" value={formData.referralEmail} onChange={(e) => handleChange("referralEmail", e.target.value)} className="pl-10" />
                 </div>
-                <p className="text-xs text-muted-foreground">This is locked to your logged-in account email and is sent automatically.</p>
+                <p className="text-xs text-muted-foreground">The approved pin belongs to your account, so this should be your own email.</p>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -176,7 +176,7 @@ const AddUser = () => {
               <p>1. Buy a pin from Pin Code Request.</p>
               <p>2. Wait for admin approval and backend pin generation.</p>
               <p>3. Copy one code from My Pins into the pin token field.</p>
-              <p>4. Submit the new user details and activate the account.</p>
+              <p>4. Submit the new user details and activate the account. Only a successful activation marks the pin as used.</p>
               <p>5. The new user signs in with email as both username and password.</p>
             </div>
           </CardContent>
