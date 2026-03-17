@@ -86,10 +86,11 @@ const Dashboard = () => {
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="rounded-lg border border-border/50 bg-muted/50 p-4">
                 <h3 className="font-semibold text-foreground">Tree Pair Income</h3>
-                <p className="mt-1 text-sm text-muted-foreground">1st completed left/right pair: <span className="font-bold text-primary">PKR 400</span></p>
-                <p className="text-sm text-muted-foreground">Pairs 2 to 99: <span className="font-bold text-primary">PKR 200</span> each</p>
-                <p className="text-sm text-muted-foreground">Pair 100 onward: <span className="font-bold text-primary">PKR 100</span> each</p>
-                <p className="mt-2 text-xs text-muted-foreground">Income is generated only when both left and right sides complete a pair.</p>
+                <p className="mt-1 text-sm text-muted-foreground">Income is generated after every 2 users added under your referral email.</p>
+                <p className="text-sm text-muted-foreground">Branch selection does not affect this income. Users can be on left, right, or the same side.</p>
+                <p className="mt-1 text-sm text-muted-foreground">1st completed 2-user set: <span className="font-bold text-primary">PKR 400</span></p>
+                <p className="text-sm text-muted-foreground">Sets 2 to 99: <span className="font-bold text-primary">PKR 200</span> each</p>
+                <p className="text-sm text-muted-foreground">Set 100 onward: <span className="font-bold text-primary">PKR 100</span> each</p>
               </div>
               <div className="rounded-lg border border-border/50 bg-muted/50 p-4">
                 <h3 className="font-semibold text-foreground">Progress</h3>
