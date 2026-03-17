@@ -3,11 +3,9 @@ import { api, clearAuth } from "@/lib/api";
 
 interface AuthContextType {
   isLoggedIn: boolean;
-  isAdmin: boolean;
   user: FrontendUser | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<boolean>;
-  adminLogin: (username: string, password: string) => Promise<boolean>;
   logout: () => void;
   refreshUser: () => Promise<void>;
   updateProfile: (data: { firstName?: string; lastName?: string; profilePic?: File | null }) => Promise<void>;
@@ -45,7 +43,6 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [user, setUser] = useState<FrontendUser | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -76,14 +73,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (!raw.is_active) {
       clearAuth();
       setIsLoggedIn(false);
-      setIsAdmin(false);
       setUser(null);
       throw new Error("Account is deactivated. Please contact admin.");
     }
     const mapped = mapUser(raw);
     setUser(mapped);
     setIsLoggedIn(true);
-    setIsAdmin(false);
   };
 
   const login = async (email: string, password: string) => {
@@ -94,25 +89,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem("accessToken", data.access);
     localStorage.setItem("refreshToken", data.refresh);
     await refreshUser();
-    setIsAdmin(false);
-    return true;
-  };
-
-  const adminLogin = async (username: string, password: string) => {
-    const data = await api("/api/auth/token/", {
-      method: "POST",
-      body: JSON.stringify({ username, password }),
-    });
-    localStorage.setItem("accessToken", data.access);
-    localStorage.setItem("refreshToken", data.refresh);
-    await refreshUser();
     return true;
   };
 
   const logout = () => {
     clearAuth();
     setIsLoggedIn(false);
-    setIsAdmin(false);
     setUser(null);
   };
 
@@ -137,7 +119,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, isAdmin, user, loading, login, adminLogin, logout, refreshUser, updateProfile }}>
+    <AuthContext.Provider value={{ isLoggedIn, user, loading, login, logout, refreshUser, updateProfile }}>
       {children}
     </AuthContext.Provider>
   );

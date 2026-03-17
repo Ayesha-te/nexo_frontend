@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -23,13 +23,9 @@ const emptyForm = {
 };
 
 const AddUser = () => {
-  const { user, refreshUser } = useAuth();
+  const { refreshUser } = useAuth();
   const [formData, setFormData] = useState(emptyForm);
   const { toast } = useToast();
-
-  useEffect(() => {
-    setFormData((prev) => ({ ...prev, referralEmail: user?.email || "" }));
-  }, [user?.email]);
 
   const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -53,7 +49,7 @@ const AddUser = () => {
         title: "Account Activated",
         description: `${result.login_email} can now log in with email as both login and password.`,
       });
-      setFormData((prev) => ({ ...emptyForm, referralEmail: prev.referralEmail }));
+      setFormData(emptyForm);
     } catch (err: any) {
       toast({ title: "Error", description: err.message || "Activation failed", variant: "destructive" });
     }
