@@ -29,6 +29,8 @@ export interface FrontendUser {
   totalWithdraw: number;
   availablePins?: number;
   pairCount?: number;
+  autoPairIncomePairs?: number;
+  systemPairIncomeTotal?: number;
   isApproved?: boolean;
   joinedAt?: string;
 }
@@ -64,6 +66,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     totalWithdraw: raw.total_withdrawn || 0,
     availablePins: raw.available_pins || 0,
     pairCount: raw.pair_count || 0,
+    autoPairIncomePairs: raw.auto_pair_income_pairs || 0,
+    systemPairIncomeTotal: raw.system_pair_income_total || 0,
     isApproved: Boolean(raw.is_approved),
     joinedAt: raw.created_at || "",
   });

@@ -85,19 +85,20 @@ const Dashboard = () => {
           <CardContent className="space-y-3">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="rounded-lg border border-border/50 bg-muted/50 p-4">
-                <h3 className="font-semibold text-foreground">Tree Pair Income</h3>
-                <p className="mt-1 text-sm text-muted-foreground">Income is generated after every 2 users added under your referral email.</p>
-                <p className="text-sm text-muted-foreground">Branch selection does not affect this income. Users can be on left, right, or the same side.</p>
-                <p className="mt-1 text-sm text-muted-foreground">1st completed 2-user set: <span className="font-bold text-primary">PKR 400</span></p>
+                <h3 className="font-semibold text-foreground">User Set Income</h3>
+                <p className="mt-1 text-sm text-muted-foreground">Income is based on completed binary sets from your total left and right teams.</p>
+                <p className="text-sm text-muted-foreground">A new set is counted whenever one user exists on the left side and one user exists on the right side.</p>
+                <p className="text-sm text-muted-foreground">Direct and indirect users both help complete these matched binary sets.</p>
+                <p className="text-sm text-muted-foreground">1st completed set: <span className="font-bold text-primary">PKR 400</span></p>
                 <p className="text-sm text-muted-foreground">Sets 2 to 99: <span className="font-bold text-primary">PKR 200</span> each</p>
                 <p className="text-sm text-muted-foreground">Set 100 onward: <span className="font-bold text-primary">PKR 100</span> each</p>
               </div>
               <div className="rounded-lg border border-border/50 bg-muted/50 p-4">
                 <h3 className="font-semibold text-foreground">Progress</h3>
-                <p className="mt-2 text-sm text-muted-foreground">Completed pairs: <span className="font-bold text-foreground">{user?.pairCount || 0}</span></p>
-                <p className="text-sm text-muted-foreground">Left side members: <span className="font-bold text-foreground">{user?.leftTeam || 0}</span></p>
-                <p className="text-sm text-muted-foreground">Right side members: <span className="font-bold text-foreground">{user?.rightTeam || 0}</span></p>
-                <p className="mt-2 text-sm text-muted-foreground">After 50,000 pairs, pair income stops and salary flow takes over.</p>
+                <p className="mt-2 text-sm text-muted-foreground">Binary left team: <span className="font-bold text-foreground">{user?.leftTeam || 0}</span></p>
+                <p className="text-sm text-muted-foreground">Binary right team: <span className="font-bold text-foreground">{user?.rightTeam || 0}</span></p>
+                <p className="text-sm text-muted-foreground">Completed matched sets: <span className="font-bold text-foreground">{user?.pairCount || 0}</span></p>
+                <p className="mt-2 text-sm text-muted-foreground">Current system-tracked set earnings: <span className="font-bold text-primary">PKR {Number(user?.systemPairIncomeTotal || 0).toLocaleString()}</span></p>
               </div>
             </div>
           </CardContent>
