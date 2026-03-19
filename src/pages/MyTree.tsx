@@ -27,6 +27,14 @@ const getRightCount = (node: TreeNodeType): number => {
   return countTeamMembers(node.children.right);
 };
 
+const findNodeById = (node: TreeNodeType | null | undefined, nodeId: string): TreeNodeType | null => {
+  if (!node) return null;
+  if (node.id === nodeId) return node;
+  const leftResult = findNodeById(node.children.left, nodeId);
+  if (leftResult) return leftResult;
+  return findNodeById(node.children.right, nodeId);
+};
+
 const TreeNodeComponent = ({
   node,
   onNodeClick,
@@ -114,8 +122,23 @@ const MyTree = () => {
   const [tree, setTree] = useState<TreeNodeType | null>(null);
 
   useEffect(() => {
-    api("/api/accounts/tree/").then(setTree).catch(() => setTree(null));
-  }, []);
+    api("/api/accounts/tree/")
+      .then((fullTree) => {
+        // Find the current user's node in the tree
+        if (user?.id && fullTree) {
+          const userNode = findNodeById(fullTree, user.id);
+          if (userNode) {
+            // Set the user's node as root with position "root" for display
+            setTree({ ...userNode, position: "root" });
+          } else {
+            setTree(fullTree);
+          }
+        } else {
+          setTree(fullTree);
+        }
+      })
+      .catch(() => setTree(null));
+  }, [user?.id]);
 
   const handleNodeClick = (node: TreeNodeType) => {
     setSelectedUserNode(node);
