@@ -60,7 +60,6 @@ const WithdrawHistory = () => {
               </TableHeader>
               <TableBody>
                 {rows.map((w) => {
-                  const taxInfo = getTaxLabel(w.taxType);
                   return (
                     <TableRow key={w.id}>
                       <TableCell className="withespace-nowrap font-mono font-semibold text-primary">{String(w.id).toUpperCase()}</TableCell>
