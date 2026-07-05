@@ -22,6 +22,7 @@ type PinRequestRow = {
 
 type PinConfig = {
   purchaseEnabled: boolean;
+  availableAgainTime: string;
   disabledMessage: string;
   pinPrice: number;
   minQuantity: number;
@@ -46,6 +47,7 @@ type PaymentMethodDetail = {
 
 const defaultConfig: PinConfig = {
   purchaseEnabled: true,
+  availableAgainTime: "",
   disabledMessage: "PIN/Token Purchase is temporarily unavailable. Please try again later.",
   pinPrice: 1000,
   minQuantity: 1,
@@ -202,8 +204,11 @@ const PinRequest = () => {
 
         {!config.purchaseEnabled ? (
           <Card className="border-destructive/30 bg-destructive/5">
-            <CardContent className="pt-6 text-sm font-medium text-destructive">
-              {config.disabledMessage}
+            <CardContent className="space-y-2 pt-6 text-sm font-medium text-destructive">
+              <p>{config.disabledMessage}</p>
+              {config.availableAgainTime ? (
+                <p className="text-foreground">Available again at: <span className="font-bold text-primary">{config.availableAgainTime}</span></p>
+              ) : null}
             </CardContent>
           </Card>
         ) : (
