@@ -6,6 +6,8 @@ import { GitBranch, User, ArrowLeft } from "lucide-react";
 import { api } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
 
+const MAX_VISIBLE_TREE_LEVEL = 5;
+
 type TreeNodeType = {
   id: string;
   name: string;
@@ -40,19 +42,24 @@ const TreeNodeComponent = ({
   onNodeClick,
   selectedNodeId,
   currentUserId,
+  level = 1,
 }: {
   node: TreeNodeType;
-  onNodeClick: (node: TreeNodeType) => void;
+  onNodeClick: (node: TreeNodeType, level: number) => void;
   selectedNodeId?: string;
   currentUserId?: string;
+  level?: number;
 }) => {
   const isCurrentUser = currentUserId === node.id;
+  const hasChildren = Boolean(node.children.left || node.children.right);
+  const isLevelLimit = level >= MAX_VISIBLE_TREE_LEVEL;
+  const canOpenNextLevels = isLevelLimit && hasChildren;
 
   return (
     <div className="flex flex-col items-center">
       <button
         type="button"
-        onClick={() => onNodeClick(node)}
+        onClick={() => onNodeClick(node, level)}
         className={`px-4 py-3 rounded-xl border text-center min-w-[170px] transition-all duration-200 hover:scale-105 ${
           isCurrentUser
             ? "nexo-gradient text-primary-foreground nexo-gold-glow"
@@ -71,9 +78,14 @@ const TreeNodeComponent = ({
           <span className="bg-primary/20 px-2 py-1 rounded">L: {getLeftCount(node)}</span>
           <span className="bg-secondary/20 px-2 py-1 rounded">R: {getRightCount(node)}</span>
         </div>
+        {canOpenNextLevels && (
+          <p className="mt-2 rounded bg-background/70 px-2 py-1 text-[10px] font-semibold text-primary">
+            Open next levels
+          </p>
+        )}
       </button>
 
-      {(node.children.left || node.children.right) && (
+      {hasChildren && !isLevelLimit && (
         <>
           <div className="w-px h-6 bg-border" />
           <div className="flex gap-8 relative">
@@ -87,6 +99,7 @@ const TreeNodeComponent = ({
                   onNodeClick={onNodeClick}
                   selectedNodeId={selectedNodeId}
                   currentUserId={currentUserId}
+                  level={level + 1}
                 />
               ) : (
                 <div className="px-4 py-3 rounded-xl border border-dashed border-border text-muted-foreground text-sm min-w-[120px] text-center">
@@ -102,6 +115,7 @@ const TreeNodeComponent = ({
                   onNodeClick={onNodeClick}
                   selectedNodeId={selectedNodeId}
                   currentUserId={currentUserId}
+                  level={level + 1}
                 />
               ) : (
                 <div className="px-4 py-3 rounded-xl border border-dashed border-border text-muted-foreground text-sm min-w-[120px] text-center">
@@ -120,6 +134,7 @@ const MyTree = () => {
   const { user } = useAuth();
   const [selectedUserNode, setSelectedUserNode] = useState<TreeNodeType | null>(null);
   const [tree, setTree] = useState<TreeNodeType | null>(null);
+  const [treeRootStack, setTreeRootStack] = useState<TreeNodeType[]>([]);
 
   useEffect(() => {
     api("/api/accounts/tree/")
@@ -129,34 +144,53 @@ const MyTree = () => {
           const userNode = findNodeById(fullTree, user.id);
           if (userNode) {
             // Set the user's node as root with position "root" for display
-            setTree({ ...userNode, position: "root" });
+            const userRoot = { ...userNode, position: "root" as const };
+            setTree(userRoot);
+            setTreeRootStack([userRoot]);
           } else {
             setTree(fullTree);
+            setTreeRootStack([fullTree]);
           }
         } else {
           setTree(fullTree);
+          if (fullTree) setTreeRootStack([fullTree]);
         }
       })
-      .catch(() => setTree(null));
+      .catch(() => {
+        setTree(null);
+        setTreeRootStack([]);
+      });
   }, [user?.id]);
 
-  const handleNodeClick = (node: TreeNodeType) => {
+  const activeRoot = treeRootStack[treeRootStack.length - 1] ?? tree;
+  const canGoBack = treeRootStack.length > 1;
+
+  const handleNodeClick = (node: TreeNodeType, level: number) => {
     setSelectedUserNode(node);
+    if (level >= MAX_VISIBLE_TREE_LEVEL && (node.children.left || node.children.right)) {
+      setTreeRootStack((prev) => [...prev, { ...node, position: "root" as const }]);
+      setSelectedUserNode(null);
+    }
+  };
+
+  const handleBack = () => {
+    setTreeRootStack((prev) => (prev.length > 1 ? prev.slice(0, -1) : prev));
+    setSelectedUserNode(null);
   };
 
   return (
     <DashboardLayout>
       <div className="space-y-6 animate-fade-in">
         <div className="flex items-center gap-3">
-          {selectedUserNode && (
+          {canGoBack && (
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setSelectedUserNode(null)}
+              onClick={handleBack}
               className="gap-2"
             >
               <ArrowLeft className="w-4 h-4" />
-              Back to Main Tree
+              Back to Previous Tree
             </Button>
           )}
           <h1 className="font-display text-2xl font-bold text-foreground flex items-center gap-2">
@@ -168,14 +202,14 @@ const MyTree = () => {
         <Card className="nexo-card-glow border-border/50">
           <CardHeader>
             <CardTitle className="font-display text-lg">Binary Tree View</CardTitle>
-            <p className="text-sm text-muted-foreground">Click any account to view its withdraw history and subtree snapshot.</p>
+            <p className="text-sm text-muted-foreground">Showing 5 levels at a time. Click a 5th-level account to open its next tree levels.</p>
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto overflow-y-visible py-8 max-w-full">
               <div className="flex justify-center min-w-[600px] w-max mx-auto">
-                {tree && (
+                {activeRoot && (
                   <TreeNodeComponent
-                    node={tree}
+                    node={activeRoot}
                     onNodeClick={handleNodeClick}
                     selectedNodeId={selectedUserNode?.id}
                     currentUserId={user?.id}
@@ -189,24 +223,12 @@ const MyTree = () => {
         {selectedUserNode && (
           <Card className="border-border/50">
             <CardHeader>
-              <CardTitle className="font-display text-lg">Selected User Tree</CardTitle>
+              <CardTitle className="font-display text-lg">Selected Account</CardTitle>
               <p className="text-sm text-muted-foreground">
                 Name: <span className="font-medium text-foreground">{selectedUserNode.name}</span> | Email: {" "}
                 <span className="font-medium text-foreground">{selectedUserNode.email}</span>
               </p>
             </CardHeader>
-            <CardContent>
-              <div className="overflow-x-auto overflow-y-visible py-6 max-w-full">
-                <div className="flex justify-center min-w-[600px] w-max mx-auto">
-                  <TreeNodeComponent
-                    node={selectedUserNode}
-                    onNodeClick={handleNodeClick}
-                    selectedNodeId={selectedUserNode.id}
-                    currentUserId={user?.id}
-                  />
-                </div>
-              </div>
-            </CardContent>
           </Card>
         )}
       </div>
