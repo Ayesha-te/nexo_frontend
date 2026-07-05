@@ -6,7 +6,7 @@ import { GitBranch, User, ArrowLeft } from "lucide-react";
 import { api } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
 
-const MAX_VISIBLE_TREE_LEVEL = 5;
+const MAX_VISIBLE_TREE_LEVEL = 4;
 
 type TreeNodeType = {
   id: string;
@@ -60,7 +60,7 @@ const TreeNodeComponent = ({
       <button
         type="button"
         onClick={() => onNodeClick(node, level)}
-        className={`px-4 py-3 rounded-xl border text-center min-w-[170px] transition-all duration-200 hover:scale-105 ${
+        className={`relative min-h-[132px] w-[180px] rounded-lg border px-3 py-3 text-center shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${
           isCurrentUser
             ? "nexo-gradient text-primary-foreground nexo-gold-glow"
             : node.position === "root"
@@ -70,16 +70,25 @@ const TreeNodeComponent = ({
             : "bg-secondary/10 border-secondary/30 text-foreground"
         } ${selectedNodeId === node.id ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : ""}`}
       >
-        <User className="w-4 h-4 mx-auto mb-1 opacity-70" />
-        <p className="text-sm font-semibold">{node.name}</p>
-        <p className="text-[11px] opacity-80 break-all">{node.email}</p>
-        <p className="text-xs opacity-60 capitalize mb-2">{node.position}</p>
-        <div className="flex justify-center gap-2 text-xs">
-          <span className="bg-primary/20 px-2 py-1 rounded">L: {getLeftCount(node)}</span>
-          <span className="bg-secondary/20 px-2 py-1 rounded">R: {getRightCount(node)}</span>
+        <div className="mb-2 flex items-center justify-between gap-2">
+          <span className="rounded bg-background/70 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide opacity-80">
+            Level {level}
+          </span>
+          <span className="rounded bg-background/70 px-2 py-0.5 text-[10px] font-semibold capitalize opacity-80">
+            {node.position}
+          </span>
+        </div>
+        <div className="mx-auto mb-2 flex h-8 w-8 items-center justify-center rounded-full bg-background/80">
+          <User className="h-4 w-4 opacity-70" />
+        </div>
+        <p className="truncate text-sm font-semibold" title={node.name}>{node.name}</p>
+        <p className="mt-1 truncate text-[11px] opacity-75" title={node.email}>{node.email}</p>
+        <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
+          <span className="rounded border border-primary/20 bg-primary/15 px-2 py-1">L {getLeftCount(node)}</span>
+          <span className="rounded border border-secondary/20 bg-secondary/15 px-2 py-1">R {getRightCount(node)}</span>
         </div>
         {canOpenNextLevels && (
-          <p className="mt-2 rounded bg-background/70 px-2 py-1 text-[10px] font-semibold text-primary">
+          <p className="mt-2 rounded border border-primary/20 bg-background/80 px-2 py-1 text-[10px] font-semibold text-primary">
             Open next levels
           </p>
         )}
@@ -87,12 +96,12 @@ const TreeNodeComponent = ({
 
       {hasChildren && !isLevelLimit && (
         <>
-          <div className="w-px h-6 bg-border" />
-          <div className="flex gap-8 relative">
+          <div className="h-7 w-px bg-border" />
+          <div className="relative flex gap-10">
             {/* connector line */}
-            <div className="absolute top-0 left-1/4 right-1/4 h-px bg-border" />
+            <div className="absolute left-1/4 right-1/4 top-0 h-px bg-border" />
             <div className="flex flex-col items-center">
-              <div className="w-px h-4 bg-border" />
+              <div className="h-4 w-px bg-border" />
               {node.children.left ? (
                 <TreeNodeComponent
                   node={node.children.left}
@@ -102,13 +111,13 @@ const TreeNodeComponent = ({
                   level={level + 1}
                 />
               ) : (
-                <div className="px-4 py-3 rounded-xl border border-dashed border-border text-muted-foreground text-sm min-w-[120px] text-center">
+                <div className="min-h-[86px] w-[150px] rounded-lg border border-dashed border-border px-4 py-5 text-center text-sm text-muted-foreground">
                   Empty
                 </div>
               )}
             </div>
             <div className="flex flex-col items-center">
-              <div className="w-px h-4 bg-border" />
+              <div className="h-4 w-px bg-border" />
               {node.children.right ? (
                 <TreeNodeComponent
                   node={node.children.right}
@@ -118,7 +127,7 @@ const TreeNodeComponent = ({
                   level={level + 1}
                 />
               ) : (
-                <div className="px-4 py-3 rounded-xl border border-dashed border-border text-muted-foreground text-sm min-w-[120px] text-center">
+                <div className="min-h-[86px] w-[150px] rounded-lg border border-dashed border-border px-4 py-5 text-center text-sm text-muted-foreground">
                   Empty
                 </div>
               )}
@@ -202,11 +211,11 @@ const MyTree = () => {
         <Card className="nexo-card-glow border-border/50">
           <CardHeader>
             <CardTitle className="font-display text-lg">Binary Tree View</CardTitle>
-            <p className="text-sm text-muted-foreground">Showing 5 levels at a time. Click a 5th-level account to open its next tree levels.</p>
+            <p className="text-sm text-muted-foreground">Showing 4 levels at a time. Click a 4th-level account to open its next tree levels.</p>
           </CardHeader>
           <CardContent>
-            <div className="overflow-x-auto overflow-y-visible py-8 max-w-full">
-              <div className="flex justify-center min-w-[600px] w-max mx-auto">
+            <div className="max-w-full overflow-x-auto overflow-y-visible rounded-lg border border-border/40 bg-muted/20 py-8">
+              <div className="mx-auto flex w-max min-w-[720px] justify-center px-6">
                 {activeRoot && (
                   <TreeNodeComponent
                     node={activeRoot}
