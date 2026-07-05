@@ -33,6 +33,15 @@ type PinConfig = {
     instructions: string;
     qrCodeUrl: string | null;
   };
+  paymentMethods?: PaymentMethodDetail[];
+};
+
+type PaymentMethodDetail = {
+  accountTitle: string;
+  accountNumber: string;
+  paymentMethod: string;
+  instructions: string;
+  qrCodeUrl: string | null;
 };
 
 const defaultConfig: PinConfig = {
@@ -67,6 +76,7 @@ const PinRequest = () => {
     const common = [1, 10, 25, 50, 100, 250, 500, 1000];
     return common.filter((value) => value >= config.minQuantity && value <= config.maxQuantity);
   }, [config.minQuantity, config.maxQuantity]);
+  const paymentMethods = config.paymentMethods?.length ? config.paymentMethods : [config.paymentDetails];
 
   const load = async () => {
     const [settings, rows] = await Promise.all([
@@ -137,31 +147,39 @@ const PinRequest = () => {
             <CardTitle className="text-lg font-display text-secondary">Payment Information</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <div className="grid gap-3 sm:grid-cols-2">
-              <div className="flex items-center gap-3">
-                <CreditCard className="h-4 w-4 text-primary" />
-                <span className="text-sm font-medium text-foreground">Method: <span className="font-bold text-primary">{config.paymentDetails.paymentMethod || "-"}</span></span>
-              </div>
-              <div className="flex items-center gap-3">
-                <CreditCard className="h-4 w-4 text-primary" />
-                <span className="text-sm font-medium text-foreground">Account: <span className="font-bold text-primary">{config.paymentDetails.accountNumber || "-"}</span></span>
-              </div>
-              <div className="flex items-center gap-3 sm:col-span-2">
-                <Info className="h-4 w-4 text-primary" />
-                <span className="text-sm font-medium text-foreground">Title: <span className="font-bold text-primary">{config.paymentDetails.accountTitle || "-"}</span></span>
-              </div>
+            <div className="grid gap-3">
+              {paymentMethods.map((method, index) => (
+                <div key={`${method.paymentMethod}-${index}`} className="rounded-md border border-border/50 bg-background/70 p-4">
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <CreditCard className="h-4 w-4 flex-shrink-0 text-primary" />
+                      <span className="min-w-0 break-words text-sm font-medium text-foreground">Method: <span className="font-bold text-primary">{method.paymentMethod || "-"}</span></span>
+                    </div>
+                    <div className="flex items-center gap-3 min-w-0">
+                      <CreditCard className="h-4 w-4 flex-shrink-0 text-primary" />
+                      <span className="min-w-0 break-words text-sm font-medium text-foreground">Account: <span className="font-bold text-primary">{method.accountNumber || "-"}</span></span>
+                    </div>
+                    <div className="flex items-center gap-3 min-w-0 sm:col-span-2">
+                      <Info className="h-4 w-4 flex-shrink-0 text-primary" />
+                      <span className="min-w-0 break-words text-sm font-medium text-foreground">Title: <span className="font-bold text-primary">{method.accountTitle || "-"}</span></span>
+                    </div>
+                  </div>
+
+                  {method.instructions ? (
+                    <div className="mt-3 rounded-md border border-border/50 bg-muted/30 p-3 text-sm text-foreground whitespace-pre-line">
+                      {method.instructions}
+                    </div>
+                  ) : null}
+
+                  {method.qrCodeUrl ? (
+                    <div className="mt-3 flex items-center gap-4">
+                      <QrCode className="h-4 w-4 text-primary" />
+                      <img src={method.qrCodeUrl} alt={`${method.paymentMethod} QR Code`} className="h-28 w-28 rounded-md border object-contain" />
+                    </div>
+                  ) : null}
+                </div>
+              ))}
             </div>
-            {config.paymentDetails.instructions ? (
-              <div className="rounded-md border border-border/50 bg-background/70 p-3 text-sm text-foreground whitespace-pre-line">
-                {config.paymentDetails.instructions}
-              </div>
-            ) : null}
-            {config.paymentDetails.qrCodeUrl ? (
-              <div className="flex items-center gap-4">
-                <QrCode className="h-4 w-4 text-primary" />
-                <img src={config.paymentDetails.qrCodeUrl} alt="Payment QR Code" className="h-32 w-32 rounded-md border object-contain" />
-              </div>
-            ) : null}
             <Badge variant="secondary">PIN Cost: PKR {config.pinPrice.toLocaleString()} per token</Badge>
           </CardContent>
         </Card>
