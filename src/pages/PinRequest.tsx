@@ -43,6 +43,7 @@ type PaymentMethodDetail = {
   paymentMethod: string;
   instructions: string;
   qrCodeUrl: string | null;
+  active?: boolean;
 };
 
 const defaultConfig: PinConfig = {
@@ -73,6 +74,7 @@ const normalizePaymentMethods = (config: PinConfig): PaymentMethodDetail[] => {
       accountNumber: saved?.accountNumber || "",
       instructions: saved?.instructions || "",
       qrCodeUrl: saved?.qrCodeUrl || null,
+      active: Boolean(saved?.active),
     };
   });
 };
@@ -95,6 +97,8 @@ const PinRequest = () => {
     return common.filter((value) => value >= config.minQuantity && value <= config.maxQuantity);
   }, [config.minQuantity, config.maxQuantity]);
   const paymentMethods = normalizePaymentMethods(config);
+  const activePaymentMethods = paymentMethods.filter((method) => method.active);
+  const purchaseAvailable = config.purchaseEnabled && activePaymentMethods.length > 0;
 
   const load = async () => {
     const [settings, rows] = await Promise.all([
@@ -111,7 +115,7 @@ const PinRequest = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!config.purchaseEnabled) {
+    if (!purchaseAvailable) {
       toast({ title: "Unavailable", description: config.disabledMessage, variant: "destructive" });
       return;
     }
@@ -165,8 +169,9 @@ const PinRequest = () => {
             <CardTitle className="text-lg font-display text-secondary">Payment Information</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
+            {activePaymentMethods.length > 0 ? (
             <div className="grid gap-3">
-              {paymentMethods.map((method, index) => (
+              {activePaymentMethods.map((method, index) => (
                 <div key={`${method.paymentMethod}-${index}`} className="rounded-md border border-border/50 bg-background/70 p-4">
                   <div className="grid gap-3 sm:grid-cols-2">
                     <div className="flex items-center gap-3 min-w-0">
@@ -198,16 +203,24 @@ const PinRequest = () => {
                 </div>
               ))}
             </div>
+            ) : (
+              <div className="rounded-md border border-destructive/30 bg-destructive/5 p-4 text-sm font-medium text-destructive">
+                <p>Payment methods are turned off by admin right now.</p>
+                {config.availableAgainTime ? (
+                  <p className="mt-2 text-foreground">You can buy PINs again on: <span className="font-bold text-primary">{config.availableAgainTime}</span></p>
+                ) : null}
+              </div>
+            )}
             <Badge variant="secondary">PIN Cost: PKR {config.pinPrice.toLocaleString()} per token</Badge>
           </CardContent>
         </Card>
 
-        {!config.purchaseEnabled ? (
+        {!purchaseAvailable ? (
           <Card className="border-destructive/30 bg-destructive/5">
             <CardContent className="space-y-2 pt-6 text-sm font-medium text-destructive">
-              <p>{config.disabledMessage}</p>
+              <p>Payment methods are turned off by admin right now.</p>
               {config.availableAgainTime ? (
-                <p className="text-foreground">Available again at: <span className="font-bold text-primary">{config.availableAgainTime}</span></p>
+                <p className="text-foreground">You can buy PINs again on: <span className="font-bold text-primary">{config.availableAgainTime}</span></p>
               ) : null}
             </CardContent>
           </Card>
