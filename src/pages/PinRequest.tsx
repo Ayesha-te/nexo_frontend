@@ -59,6 +59,22 @@ const defaultConfig: PinConfig = {
   },
 };
 
+const SUPPORTED_PAYMENT_METHODS = ["JazzCash", "Easypaisa", "Bank Account"];
+
+const normalizePaymentMethods = (config: PinConfig): PaymentMethodDetail[] => {
+  const source = config.paymentMethods?.length ? config.paymentMethods : [config.paymentDetails];
+  return SUPPORTED_PAYMENT_METHODS.map((paymentMethod) => {
+    const saved = source.find((method) => method.paymentMethod === paymentMethod);
+    return {
+      paymentMethod,
+      accountTitle: saved?.accountTitle || "",
+      accountNumber: saved?.accountNumber || "",
+      instructions: saved?.instructions || "",
+      qrCodeUrl: saved?.qrCodeUrl || null,
+    };
+  });
+};
+
 const PinRequest = () => {
   const [trxId, setTrxId] = useState("");
   const [quantity, setQuantity] = useState("1");
@@ -76,7 +92,7 @@ const PinRequest = () => {
     const common = [1, 10, 25, 50, 100, 250, 500, 1000];
     return common.filter((value) => value >= config.minQuantity && value <= config.maxQuantity);
   }, [config.minQuantity, config.maxQuantity]);
-  const paymentMethods = config.paymentMethods?.length ? config.paymentMethods : [config.paymentDetails];
+  const paymentMethods = normalizePaymentMethods(config);
 
   const load = async () => {
     const [settings, rows] = await Promise.all([
