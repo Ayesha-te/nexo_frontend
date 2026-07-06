@@ -49,7 +49,7 @@ const Dashboard = () => {
   const stats = [
     { title: "Current Income", value: formatEarning(Number(user?.currentIncome || 0)), icon: DollarSign, gradient: "from-primary to-nexo-green-light", bar: "bg-primary" },
     { title: "Reward Income", value: formatEarning(Number(user?.rewardIncome || 0)), icon: Gift, gradient: "from-secondary to-nexo-gold-light", bar: "bg-secondary" },
-    { title: "Total Withdraw", value: formatPkr(Number(user?.totalWithdraw || 0)), icon: Wallet, gradient: "from-primary to-secondary", bar: "bg-sky-400" },
+    { title: "Total Withdraw", value: formatEarning(Number(user?.totalWithdraw || 0)), icon: Wallet, gradient: "from-primary to-secondary", bar: "bg-sky-400" },
     { title: "Available Pins", value: String(user?.availablePins || 0), icon: Key, gradient: "from-nexo-green-light to-primary", bar: "bg-emerald-400" },
     { title: "Left Team", value: String(user?.leftTeam || 0), icon: Users, gradient: "from-primary to-nexo-green-light", bar: "bg-teal-400" },
     { title: "Right Team", value: String(user?.rightTeam || 0), icon: ArrowLeftRight, gradient: "from-secondary to-nexo-gold-light", bar: "bg-cyan-400" },
@@ -92,7 +92,7 @@ const Dashboard = () => {
                   ))}
                 </div>
                 {displayCurrency === "USD" && usdRatePkr > 0 ? (
-                  <p className="mt-2 text-xs text-muted-foreground">Showing earnings at 1 USD = PKR {usdRatePkr.toLocaleString()}.</p>
+                  <p className="mt-2 text-xs text-muted-foreground">Showing financial amounts at 1 USD = PKR {usdRatePkr.toLocaleString()}.</p>
                 ) : null}
               </div>
               <div className="grid grid-cols-3 gap-2 rounded-xl border border-white/60 bg-white/50 p-2 backdrop-blur-md sm:min-w-[360px]">
