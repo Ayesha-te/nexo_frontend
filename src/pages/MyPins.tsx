@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Key, Copy, Check } from "lucide-react";
 import { api } from "@/lib/api";
+import { glassCardClass, PageShell } from "@/components/PageShell";
 
 type PinRow = {
   id: number;
@@ -40,16 +41,12 @@ const MyPins = () => {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6 animate-fade-in">
-        <div>
-          <h1 className="flex items-center gap-2 font-display text-2xl font-bold text-foreground">
-            <Key className="h-6 w-6 text-primary" />
-            My Pins
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">Approved pin requests generate backend pin codes here. Copying a pin does not use it. It becomes used only after a successful Add New User activation.</p>
-        </div>
-
-        <Card className="nexo-card-glow border-border/50">
+      <PageShell
+        icon={Key}
+        title="My Pins"
+        description="Approved pin requests generate backend pin codes here. Copying a pin does not use it."
+      >
+        <Card className={glassCardClass}>
           <CardHeader>
             <CardTitle className="text-lg font-display">Approved Pin Codes</CardTitle>
           </CardHeader>
@@ -58,10 +55,10 @@ const MyPins = () => {
               <p className="text-sm text-muted-foreground">No pin codes yet. Submit a request and wait for admin approval.</p>
             )}
             {pins.map((pin) => (
-              <div key={pin.id} className="rounded-lg border border-border/50 p-5">
+              <div key={pin.id} className="rounded-xl border border-white/60 bg-background/70 p-4 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-background/85 sm:p-5">
                 <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
-                  <div className="space-y-1">
-                    <p className="font-mono text-lg font-bold text-foreground">{pin.token}</p>
+                  <div className="min-w-0 space-y-1">
+                    <p className="break-all font-mono text-base font-bold text-foreground sm:text-lg">{pin.token}</p>
                     <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
                       <span>Purchased: {pin.purchasedAt}</span>
                       <span>Amount: PKR {pin.amount.toLocaleString()}</span>
@@ -69,7 +66,7 @@ const MyPins = () => {
                     </div>
                     {pin.usedBy ? <p className="text-xs text-muted-foreground">Used by: {pin.usedBy}</p> : null}
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-shrink-0 items-center gap-2">
                     <Badge className={getStatusColor(pin.status)}>{pin.status.toUpperCase()}</Badge>
                     {pin.status === "available" && (
                       <Button size="sm" variant="outline" onClick={() => handleCopy(pin.token, pin.id)} className="gap-1">
@@ -83,7 +80,7 @@ const MyPins = () => {
             ))}
           </CardContent>
         </Card>
-      </div>
+      </PageShell>
     </DashboardLayout>
   );
 };

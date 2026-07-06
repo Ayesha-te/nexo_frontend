@@ -9,7 +9,8 @@ export interface User {
   profilePic: string;
   referralEmail: string;
   position: "left" | "right";
-  paymentMethod: "easypaisa" | "jazzcash";
+  paymentMethod: "easypaisa" | "jazzcash" | "bank_account";
+  bankName?: string;
   isActive: boolean;
   leftTeam: number;
   rightTeam: number;
@@ -43,7 +44,8 @@ export interface Withdrawal {
   id: string;
   userId: string;
   userName: string;
-  paymentMethod: "easypaisa" | "jazzcash";
+  paymentMethod: "easypaisa" | "jazzcash" | "bank_account";
+  bankName?: string;
   accountNumber: string;
   amount: number;
   tax: number;

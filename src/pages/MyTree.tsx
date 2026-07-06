@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { GitBranch, User, ArrowLeft } from "lucide-react";
 import { api } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
+import { glassCardClass, PageShell } from "@/components/PageShell";
 
 const MAX_VISIBLE_TREE_LEVEL = 4;
 
@@ -189,58 +190,61 @@ const MyTree = () => {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6 animate-fade-in">
-        <div className="flex items-center gap-3">
+      <PageShell
+        icon={GitBranch}
+        title="My Tree"
+        description="Showing 4 levels at a time. Click a 4th-level account to open its next tree levels."
+        maxWidth="max-w-7xl"
+      >
+        <div className="min-w-0 space-y-6">
           {canGoBack && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleBack}
-              className="gap-2"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to Previous Tree
-            </Button>
-          )}
-          <h1 className="font-display text-2xl font-bold text-foreground flex items-center gap-2">
-            <GitBranch className="w-6 h-6 text-primary" />
-            My Tree
-          </h1>
-        </div>
-
-        <Card className="nexo-card-glow border-border/50">
-          <CardHeader>
-            <CardTitle className="font-display text-lg">Binary Tree View</CardTitle>
-            <p className="text-sm text-muted-foreground">Showing 4 levels at a time. Click a 4th-level account to open its next tree levels.</p>
-          </CardHeader>
-          <CardContent>
-            <div className="max-w-full overflow-x-auto overflow-y-visible rounded-lg border border-border/40 bg-muted/20 py-8">
-              <div className="mx-auto flex w-max min-w-[720px] justify-center px-6">
-                {activeRoot && (
-                  <TreeNodeComponent
-                    node={activeRoot}
-                    onNodeClick={handleNodeClick}
-                    selectedNodeId={selectedUserNode?.id}
-                    currentUserId={user?.id}
-                  />
-                )}
-              </div>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleBack}
+                className="gap-2"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back to Previous Tree
+              </Button>
             </div>
-          </CardContent>
-        </Card>
+          )}
 
-        {selectedUserNode && (
-          <Card className="border-border/50">
+          <Card className={`${glassCardClass} min-w-0`}>
             <CardHeader>
-              <CardTitle className="font-display text-lg">Selected Account</CardTitle>
-              <p className="text-sm text-muted-foreground">
-                Name: <span className="font-medium text-foreground">{selectedUserNode.name}</span> | Email: {" "}
-                <span className="font-medium text-foreground">{selectedUserNode.email}</span>
-              </p>
+              <CardTitle className="font-display text-lg">Binary Tree View</CardTitle>
+              <p className="text-sm text-muted-foreground">Showing 4 levels at a time. Click a 4th-level account to open its next tree levels.</p>
             </CardHeader>
+            <CardContent className="min-w-0 px-3 sm:px-6">
+              <div className="w-full overflow-x-auto overflow-y-visible rounded-lg border border-border/40 bg-muted/20 py-6 [scrollbar-width:thin] sm:py-8">
+                <div className="flex w-max min-w-[680px] justify-center px-4 sm:mx-auto sm:min-w-[720px] sm:px-6">
+                  {activeRoot && (
+                    <TreeNodeComponent
+                      node={activeRoot}
+                      onNodeClick={handleNodeClick}
+                      selectedNodeId={selectedUserNode?.id}
+                      currentUserId={user?.id}
+                    />
+                  )}
+                </div>
+              </div>
+            </CardContent>
           </Card>
-        )}
-      </div>
+
+          {selectedUserNode && (
+            <Card className={glassCardClass}>
+              <CardHeader>
+                <CardTitle className="font-display text-lg">Selected Account</CardTitle>
+                <p className="text-sm text-muted-foreground">
+                  Name: <span className="font-medium text-foreground">{selectedUserNode.name}</span> | Email: {" "}
+                  <span className="font-medium text-foreground">{selectedUserNode.email}</span>
+                </p>
+              </CardHeader>
+            </Card>
+          )}
+        </div>
+      </PageShell>
     </DashboardLayout>
   );
 };

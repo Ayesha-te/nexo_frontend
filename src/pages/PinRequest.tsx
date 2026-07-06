@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { CreditCard, Hash, Image, Info, QrCode, Ticket } from "lucide-react";
 import { api } from "@/lib/api";
+import { glassCardClass, PageShell } from "@/components/PageShell";
 
 type PinRequestRow = {
   id: string;
@@ -30,6 +31,7 @@ type PinConfig = {
   paymentDetails: {
     accountTitle: string;
     accountNumber: string;
+    bankName?: string;
     paymentMethod: string;
     instructions: string;
     qrCodeUrl: string | null;
@@ -40,6 +42,7 @@ type PinConfig = {
 type PaymentMethodDetail = {
   accountTitle: string;
   accountNumber: string;
+  bankName?: string;
   paymentMethod: string;
   instructions: string;
   qrCodeUrl: string | null;
@@ -72,6 +75,7 @@ const normalizePaymentMethods = (config: PinConfig): PaymentMethodDetail[] => {
       paymentMethod,
       accountTitle: saved?.accountTitle || "",
       accountNumber: saved?.accountNumber || "",
+      bankName: saved?.bankName || "",
       instructions: saved?.instructions || "",
       qrCodeUrl: saved?.qrCodeUrl || null,
       active: Boolean(saved?.active),
@@ -158,13 +162,13 @@ const PinRequest = () => {
 
   return (
     <DashboardLayout>
-      <div className="mx-auto max-w-3xl space-y-6 animate-fade-in">
-        <h1 className="flex items-center gap-2 font-display text-2xl font-bold text-foreground">
-          <Ticket className="h-6 w-6 text-primary" />
-          Pin Code Request
-        </h1>
-
-        <Card className="border-secondary/30 bg-secondary/5">
+      <PageShell
+        icon={Ticket}
+        title="Pin Code Request"
+        description="Review active payment details and submit a pin purchase request."
+        maxWidth="max-w-4xl"
+      >
+        <Card className={glassCardClass}>
           <CardHeader className="pb-3">
             <CardTitle className="text-lg font-display text-secondary">Payment Information</CardTitle>
           </CardHeader>
@@ -172,7 +176,7 @@ const PinRequest = () => {
             {activePaymentMethods.length > 0 ? (
             <div className="grid gap-3">
               {activePaymentMethods.map((method, index) => (
-                <div key={`${method.paymentMethod}-${index}`} className="rounded-md border border-border/50 bg-background/70 p-4">
+                <div key={`${method.paymentMethod}-${index}`} className="rounded-xl border border-white/60 bg-background/75 p-4 shadow-sm">
                   <div className="grid gap-3 sm:grid-cols-2">
                     <div className="flex items-center gap-3 min-w-0">
                       <CreditCard className="h-4 w-4 flex-shrink-0 text-primary" />
@@ -186,10 +190,16 @@ const PinRequest = () => {
                       <Info className="h-4 w-4 flex-shrink-0 text-primary" />
                       <span className="min-w-0 break-words text-sm font-medium text-foreground">Title: <span className="font-bold text-primary">{method.accountTitle || "-"}</span></span>
                     </div>
+                    {method.paymentMethod === "Bank Account" && (
+                      <div className="flex items-center gap-3 min-w-0 sm:col-span-2">
+                        <Info className="h-4 w-4 flex-shrink-0 text-primary" />
+                        <span className="min-w-0 break-words text-sm font-medium text-foreground">Bank Name: <span className="font-bold text-primary">{method.bankName || "-"}</span></span>
+                      </div>
+                    )}
                   </div>
 
                   {method.instructions ? (
-                    <div className="mt-3 rounded-md border border-border/50 bg-muted/30 p-3 text-sm text-foreground whitespace-pre-line">
+                    <div className="mt-3 rounded-xl border border-border/50 bg-muted/30 p-3 text-sm text-foreground whitespace-pre-line">
                       {method.instructions}
                     </div>
                   ) : null}
@@ -204,7 +214,7 @@ const PinRequest = () => {
               ))}
             </div>
             ) : (
-              <div className="rounded-md border border-destructive/30 bg-destructive/5 p-4 text-sm font-medium text-destructive">
+              <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-4 text-sm font-medium text-destructive">
                 <p>Payment methods are turned off by admin right now.</p>
                 {config.availableAgainTime ? (
                   <p className="mt-2 text-foreground">You can buy PINs again on: <span className="font-bold text-primary">{config.availableAgainTime}</span></p>
@@ -216,7 +226,7 @@ const PinRequest = () => {
         </Card>
 
         {!purchaseAvailable ? (
-          <Card className="border-destructive/30 bg-destructive/5">
+          <Card className="rounded-2xl border-destructive/30 bg-destructive/5 shadow-[0_18px_50px_-40px_hsl(var(--destructive)/0.55)]">
             <CardContent className="space-y-2 pt-6 text-sm font-medium text-destructive">
               <p>Payment methods are turned off by admin right now.</p>
               {config.availableAgainTime ? (
@@ -225,11 +235,11 @@ const PinRequest = () => {
             </CardContent>
           </Card>
         ) : (
-          <Card className="nexo-card-glow border-border/50">
+          <Card className={glassCardClass}>
             <CardHeader>
               <CardTitle className="text-lg font-display">Submit Request</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
                   <Label>PIN Quantity</Label>
@@ -249,7 +259,7 @@ const PinRequest = () => {
                   <p className="text-xs text-muted-foreground">Minimum {config.minQuantity}, maximum {config.maxQuantity} PINs per request.</p>
                 </div>
 
-                <div className="rounded-md border border-border/50 bg-muted/40 p-3 text-sm font-semibold text-foreground">
+                <div className="rounded-xl border border-primary/20 bg-primary/10 p-4 text-sm font-semibold text-foreground">
                   Total Amount: PKR {totalAmount.toLocaleString()}
                 </div>
 
@@ -283,7 +293,7 @@ const PinRequest = () => {
           </Card>
         )}
 
-        <Card className="nexo-card-glow border-border/50">
+        <Card className={glassCardClass}>
           <CardHeader>
             <CardTitle className="text-lg font-display">My Submitted Requests</CardTitle>
           </CardHeader>
@@ -292,14 +302,14 @@ const PinRequest = () => {
               <p className="text-sm text-muted-foreground">No pin requests yet.</p>
             )}
             {requests.map((request) => (
-              <div key={request.id} className="rounded-lg border border-border/50 bg-muted/40 p-4">
+              <div key={request.id} className="rounded-xl border border-white/60 bg-background/70 p-4">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="space-y-1 text-sm">
+                  <div className="min-w-0 space-y-1 text-sm">
                     <p className="font-semibold text-foreground">TRX: {request.trxId}</p>
                     <p className="text-muted-foreground">Quantity: {request.quantity} | Amount: PKR {request.amount.toLocaleString()}</p>
                     <p className="text-muted-foreground">Requested: {request.requestedAt}{request.processedAt ? ` | Processed: ${request.processedAt}` : ""}</p>
                     {request.generatedPins.length > 0 && (
-                      <p className="font-mono text-xs text-primary">Generated pins: {request.generatedPins.join(", ")}</p>
+                      <p className="break-all font-mono text-xs text-primary">Generated pins: {request.generatedPins.join(", ")}</p>
                     )}
                   </div>
                   <Badge className={getStatusBadge(request.status)}>{request.status.toUpperCase()}</Badge>
@@ -308,7 +318,7 @@ const PinRequest = () => {
             ))}
           </CardContent>
         </Card>
-      </div>
+      </PageShell>
     </DashboardLayout>
   );
 };

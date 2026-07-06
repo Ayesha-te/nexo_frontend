@@ -1,14 +1,23 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/AppSidebar";
+import { AppSidebar, userMenuItems } from "@/components/AppSidebar";
 import { ReactNode, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { api } from "@/lib/api";
+import { cn } from "@/lib/utils";
+
+const getMobileNavLabel = (title: string) =>
+  title
+    .replace("Pin Code Request", "Buy Pins")
+    .replace("Withdraw History", "Withdraw")
+    .replace("Add New User", "Add User")
+    .replace("Change Password ðŸ”‘", "Password")
+    .replace("Profile Setting", "Profile");
 
 export function DashboardLayout({ children }: { children: ReactNode }) {
   const { logout } = useAuth();
@@ -45,9 +54,9 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
         <AppSidebar />
-        <div className="flex-1 flex flex-col min-h-screen">
-          <header className="h-14 flex items-center border-b border-border bg-card px-4 sticky top-0 z-30">
-            <SidebarTrigger className="mr-4 relative z-50 md:h-7 md:w-7 h-9 w-9" />
+        <div className="flex min-h-screen min-w-0 flex-1 flex-col">
+          <header className="h-14 flex items-center border-b border-border bg-card/90 px-4 sticky top-0 z-30 backdrop-blur-xl">
+            <SidebarTrigger className="mr-4 relative z-50 hidden md:flex md:h-7 md:w-7" />
             <img
               src="/ChatGPT_Image_Mar_3__2026__02_42_58_PM-removebg-preview.png"
               alt="Nexocart"
@@ -56,11 +65,11 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
             <div className="flex-1" />
             <Button variant="outline" size="sm" onClick={handleSignOut}>Sign Out</Button>
           </header>
-          <main className="flex-1 p-6 overflow-auto">
+          <main className="min-w-0 flex-1 overflow-x-hidden overflow-y-auto p-4 pb-40 md:p-6 md:pb-6">
             {children}
 
-            <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <div className="rounded-xl border border-border bg-card p-5">
+            <div className="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-2">
+              <div className="rounded-2xl border border-white/60 bg-white/60 p-5 shadow-[0_18px_45px_-38px_hsl(var(--nexo-dark)/0.55)] backdrop-blur-xl">
                 <h3 className="font-display text-lg font-semibold text-foreground">Contact Us</h3>
                 <div className="mt-3 space-y-2 text-sm text-muted-foreground">
                   <p><span className="font-semibold text-foreground">Phone:</span> 03448252109</p>
@@ -70,7 +79,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
                 </div>
               </div>
 
-              <div className="rounded-xl border border-border bg-card p-5">
+              <div className="rounded-2xl border border-white/60 bg-white/60 p-5 shadow-[0_18px_45px_-38px_hsl(var(--nexo-dark)/0.55)] backdrop-blur-xl">
                 <h3 className="font-display text-lg font-semibold text-foreground">Feedback & Complaints</h3>
                 <form className="mt-3 space-y-3" onSubmit={handleFeedbackSubmit}>
                   <div className="space-y-1">
@@ -91,6 +100,26 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
               </div>
             </div>
           </main>
+          <nav className="fixed inset-x-3 bottom-3 z-50 rounded-2xl border border-white/60 bg-white/85 px-2 py-2 shadow-[0_18px_45px_-24px_hsl(var(--nexo-dark)/0.65)] backdrop-blur-xl md:hidden">
+            <div className="grid grid-cols-4 gap-1">
+              {userMenuItems.map((item) => (
+                <NavLink
+                  key={item.url}
+                  to={item.url}
+                  end
+                  className={({ isActive }) =>
+                    cn(
+                      "flex min-w-0 flex-col items-center justify-center gap-1 rounded-xl px-1.5 py-2 text-[10px] font-semibold text-muted-foreground transition-all duration-200",
+                      isActive && "bg-primary text-primary-foreground shadow-lg shadow-primary/20",
+                    )
+                  }
+                >
+                  <item.icon className="h-5 w-5" />
+                  <span className="w-full truncate text-center">{getMobileNavLabel(item.title)}</span>
+                </NavLink>
+              ))}
+            </div>
+          </nav>
         </div>
       </div>
     </SidebarProvider>

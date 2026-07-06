@@ -20,7 +20,8 @@ export interface FrontendUser {
   profilePic: string;
   referralEmail: string;
   position: "left" | "right";
-  paymentMethod: "easypaisa" | "jazzcash";
+  paymentMethod: "easypaisa" | "jazzcash" | "bank_account";
+  bankName: string;
   isActive: boolean;
   leftTeam: number;
   rightTeam: number;
@@ -58,6 +59,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     referralEmail: raw.referral_email || "",
     position: raw.placement_side || "left",
     paymentMethod: raw.payment_method || "easypaisa",
+    bankName: raw.bank_name || "",
     isActive: Boolean(raw.is_active),
     leftTeam: raw.left_team_count || 0,
     rightTeam: raw.right_team_count || 0,

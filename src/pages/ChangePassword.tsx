@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { DashboardLayout } from "@/components/DashboardLayout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Lock, Eye, EyeOff } from "lucide-react";
 import { api } from "@/lib/api";
+import { glassCardClass, PageShell } from "@/components/PageShell";
 
 const ChangePassword = () => {
   const [currentPassword, setCurrentPassword] = useState("");
@@ -45,14 +46,14 @@ const ChangePassword = () => {
 
   return (
     <DashboardLayout>
-      <div className="max-w-md mx-auto space-y-6 animate-fade-in">
-        <h1 className="font-display text-2xl font-bold text-foreground flex items-center gap-2">
-          <Lock className="w-6 h-6 text-primary" />
-          Change Password
-        </h1>
-
-        <Card className="nexo-card-glow border-border/50">
-          <CardContent className="pt-6">
+      <PageShell
+        icon={Lock}
+        title="Change Password"
+        description="Update your account password securely."
+        maxWidth="max-w-xl"
+      >
+        <Card className={glassCardClass}>
+          <CardContent className="p-4 sm:p-6">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label>Current Password</Label>
@@ -78,7 +79,7 @@ const ChangePassword = () => {
             </form>
           </CardContent>
         </Card>
-      </div>
+      </PageShell>
     </DashboardLayout>
   );
 };

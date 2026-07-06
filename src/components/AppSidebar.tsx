@@ -27,7 +27,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const userMenuItems = [
+export const userMenuItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Pin Code Request", url: "/pin-request", icon: Ticket },
   { title: "My Pins", url: "/my-pins", icon: Key },

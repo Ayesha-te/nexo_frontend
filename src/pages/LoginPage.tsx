@@ -31,26 +31,22 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 rounded-full bg-primary/5 blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 rounded-full bg-secondary/5 blur-3xl" />
-      </div>
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[radial-gradient(circle_at_top_left,hsl(var(--primary)/0.20),transparent_30%),radial-gradient(circle_at_85%_15%,hsl(var(--secondary)/0.22),transparent_28%),linear-gradient(180deg,hsl(var(--background)),hsl(var(--muted)/0.60))] px-4 py-8">
+      <div className="pointer-events-none absolute inset-0 opacity-45 [background-image:radial-gradient(circle,hsl(var(--primary)/0.35)_1px,transparent_1px),radial-gradient(circle,hsl(var(--secondary)/0.25)_1px,transparent_1px)] [background-position:0_0,22px_28px] [background-size:46px_46px,64px_64px]" />
 
-      <Card className="w-full max-w-md mx-4 nexo-card-glow border-border/50 relative z-10">
+      <Card className="relative z-10 w-full max-w-md overflow-hidden rounded-2xl border-white/60 bg-white/65 shadow-[0_22px_70px_-38px_hsl(var(--nexo-dark)/0.65)] backdrop-blur-xl">
         <CardHeader className="text-center pb-2">
-          <div className="mx-auto mb-3">
+          <div className="mx-auto mb-3 rounded-full border border-white/70 bg-background/70 px-5 py-2 shadow-sm">
             <img
               src="/ChatGPT_Image_Mar_3__2026__02_42_58_PM-removebg-preview.png"
               alt="Nexocart"
-              className="h-20 w-auto mx-auto"
+              className="mx-auto h-16 w-auto"
             />
           </div>
-          <CardTitle className="font-display text-2xl text-foreground">Nexocart</CardTitle>
+          <CardTitle className="font-display text-3xl font-extrabold text-foreground">Nexocart</CardTitle>
           <p className="text-sm text-muted-foreground mt-1">The Binary System</p>
         </CardHeader>
-        <CardContent className="pt-6">
+        <CardContent className="p-5 pt-6 sm:p-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="identifier" className="text-foreground/80">Email</Label>
@@ -88,8 +84,8 @@ const LoginPage = () => {
                 </button>
               </div>
             </div>
-            {error && <p className="text-sm text-destructive">{error}</p>}
-            <Button type="submit" disabled={submitting} className="w-full nexo-gradient text-primary-foreground font-semibold h-11 hover:opacity-90 transition-opacity">
+            {error && <p className="rounded-lg border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive">{error}</p>}
+            <Button type="submit" disabled={submitting} className="h-11 w-full font-semibold text-primary-foreground nexo-gradient hover:opacity-90 transition-opacity">
               {submitting ? "Please wait..." : "Login"}
             </Button>
           </form>

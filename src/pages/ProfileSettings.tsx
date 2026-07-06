@@ -1,12 +1,13 @@
 import { useRef, useState } from "react";
 import { DashboardLayout } from "@/components/DashboardLayout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { Settings, Camera, User, Mail, Phone } from "lucide-react";
+import { glassCardClass, PageShell } from "@/components/PageShell";
 
 const ProfileSettings = () => {
   const { user, updateProfile } = useAuth();
@@ -35,14 +36,14 @@ const ProfileSettings = () => {
 
   return (
     <DashboardLayout>
-      <div className="max-w-lg mx-auto space-y-6 animate-fade-in">
-        <h1 className="font-display text-2xl font-bold text-foreground flex items-center gap-2">
-          <Settings className="w-6 h-6 text-primary" />
-          Profile Settings
-        </h1>
-
-        <Card className="nexo-card-glow border-border/50">
-          <CardContent className="pt-6">
+      <PageShell
+        icon={Settings}
+        title="Profile Settings"
+        description="Manage your profile picture and name."
+        maxWidth="max-w-2xl"
+      >
+        <Card className={glassCardClass}>
+          <CardContent className="p-4 sm:p-6">
             {/* Profile Picture */}
             <div className="flex flex-col items-center mb-6">
               <div className="relative">
@@ -50,17 +51,17 @@ const ProfileSettings = () => {
                   <img
                     src={profilePicPreview}
                     alt="Profile"
-                    className="w-24 h-24 rounded-full object-cover border border-border"
+                    className="h-28 w-28 rounded-full border-4 border-white/70 object-cover shadow-xl"
                   />
                 ) : (
-                  <div className="w-24 h-24 rounded-full nexo-gradient flex items-center justify-center text-primary-foreground text-3xl font-display font-bold">
+                  <div className="flex h-28 w-28 items-center justify-center rounded-full border-4 border-white/70 nexo-gradient text-3xl font-bold text-primary-foreground shadow-xl font-display">
                     {user?.firstName?.[0]}{user?.lastName?.[0]}
                   </div>
                 )}
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center shadow-lg"
+                  className="absolute bottom-1 right-1 flex h-9 w-9 items-center justify-center rounded-full bg-secondary text-secondary-foreground shadow-lg transition-transform hover:scale-105"
                 >
                   <Camera className="w-4 h-4" />
                 </button>
@@ -76,7 +77,7 @@ const ProfileSettings = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label>First Name</Label>
                   <div className="relative">
@@ -113,7 +114,7 @@ const ProfileSettings = () => {
             </form>
           </CardContent>
         </Card>
-      </div>
+      </PageShell>
     </DashboardLayout>
   );
 };
