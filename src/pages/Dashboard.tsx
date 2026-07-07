@@ -187,7 +187,7 @@ const Dashboard = () => {
                 </h1>
                 <div className="mt-2 inline-flex max-w-full items-center gap-1.5 rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
                   <Sparkles className="h-3.5 w-3.5 shrink-0" />
-                  <span className="truncate">{achievementLevel}★ Nexo Leader</span>
+                  <span className="truncate">{achievementLevel}{"\u2605"} Nexo Leader</span>
                 </div>
               </div>
             </div>
@@ -339,7 +339,7 @@ const Dashboard = () => {
                   <TableHeader>
                     <TableRow>
                       <TableHead className="w-16 px-3">Level</TableHead>
-                      <TableHead className="px-3">Team Target</TableHead>
+                      <TableHead className="px-3">Left / Right</TableHead>
                       <TableHead className="px-3">Reward</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -373,22 +373,35 @@ const Dashboard = () => {
               )}
             </CardContent>
           </Card>
+
+          <Card className="overflow-hidden rounded-[24px] border-white bg-white shadow-[0_18px_48px_-38px_rgba(15,23,42,0.75)]">
+            <CardContent className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
+              <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#10c98b] text-white shadow-[0_14px_30px_-18px_rgba(16,201,139,0.9)]">
+                  <svg viewBox="0 0 32 32" aria-hidden="true" className="h-7 w-7">
+                    <path
+                      fill="currentColor"
+                      d="M16.04 4.8c-6.08 0-11.02 4.86-11.02 10.84 0 1.9.51 3.76 1.48 5.39L4.8 27.2l6.36-1.66a11.16 11.16 0 0 0 4.88 1.13c6.07 0 11.01-4.86 11.01-10.84S22.11 4.8 16.04 4.8Zm0 19.96c-1.55 0-3.06-.39-4.4-1.14l-.31-.18-3.77.98 1.01-3.6-.2-.33a8.84 8.84 0 0 1-1.43-4.85c0-4.92 4.08-8.93 9.1-8.93s9.1 4.01 9.1 8.93-4.08 9.12-9.1 9.12Zm5-6.68c-.27-.13-1.62-.79-1.87-.88-.25-.09-.43-.13-.61.13-.18.26-.7.87-.85 1.05-.16.17-.31.2-.58.07-.27-.13-1.14-.41-2.17-1.31-.8-.7-1.34-1.57-1.5-1.83-.16-.26-.02-.4.12-.53.12-.12.27-.31.41-.46.14-.16.18-.26.27-.43.09-.17.05-.33-.02-.46-.07-.13-.61-1.45-.83-1.98-.22-.51-.44-.44-.61-.45h-.52c-.18 0-.46.07-.7.33-.24.26-.92.89-.92 2.17s.94 2.52 1.07 2.69c.13.17 1.85 2.78 4.49 3.9.63.27 1.12.43 1.5.55.63.2 1.2.17 1.65.1.5-.08 1.62-.65 1.85-1.28.23-.63.23-1.16.16-1.28-.07-.12-.25-.19-.52-.32Z"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="font-display text-lg font-extrabold text-slate-900">Contact Us</h3>
+                  <p className="text-sm text-slate-500">Need help? Message us on WhatsApp.</p>
+                  <p className="mt-1 text-sm font-bold text-slate-900">+92 344 8252109</p>
+                </div>
+              </div>
+              <a
+                href="https://wa.me/923448252109"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex h-11 items-center justify-center rounded-2xl bg-[#10c98b] px-5 text-sm font-bold text-white shadow-[0_14px_30px_-18px_rgba(16,201,139,0.9)] transition-all hover:-translate-y-0.5 hover:bg-[#0fbd82]"
+              >
+                Open WhatsApp
+              </a>
+            </CardContent>
+          </Card>
         </div>
-        <a
-          href="https://wa.me/923448252109"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Contact on WhatsApp"
-          className="fixed bottom-24 right-5 z-40 flex h-16 w-16 items-center justify-center rounded-full bg-[#10c98b] text-white shadow-[0_18px_38px_-18px_rgba(16,201,139,0.9)] transition-all duration-300 hover:-translate-y-1 hover:bg-[#0fbd82] hover:shadow-[0_22px_46px_-18px_rgba(16,201,139,1)] md:bottom-8 md:right-8"
-        >
-          <span className="absolute right-0 top-0 h-4 w-4 rounded-full bg-red-500 ring-4 ring-white" />
-          <svg viewBox="0 0 32 32" aria-hidden="true" className="h-9 w-9">
-            <path
-              fill="currentColor"
-              d="M16.04 4.8c-6.08 0-11.02 4.86-11.02 10.84 0 1.9.51 3.76 1.48 5.39L4.8 27.2l6.36-1.66a11.16 11.16 0 0 0 4.88 1.13c6.07 0 11.01-4.86 11.01-10.84S22.11 4.8 16.04 4.8Zm0 19.96c-1.55 0-3.06-.39-4.4-1.14l-.31-.18-3.77.98 1.01-3.6-.2-.33a8.84 8.84 0 0 1-1.43-4.85c0-4.92 4.08-8.93 9.1-8.93s9.1 4.01 9.1 8.93-4.08 9.12-9.1 9.12Zm5-6.68c-.27-.13-1.62-.79-1.87-.88-.25-.09-.43-.13-.61.13-.18.26-.7.87-.85 1.05-.16.17-.31.2-.58.07-.27-.13-1.14-.41-2.17-1.31-.8-.7-1.34-1.57-1.5-1.83-.16-.26-.02-.4.12-.53.12-.12.27-.31.41-.46.14-.16.18-.26.27-.43.09-.17.05-.33-.02-.46-.07-.13-.61-1.45-.83-1.98-.22-.51-.44-.44-.61-.45h-.52c-.18 0-.46.07-.7.33-.24.26-.92.89-.92 2.17s.94 2.52 1.07 2.69c.13.17 1.85 2.78 4.49 3.9.63.27 1.12.43 1.5.55.63.2 1.2.17 1.65.1.5-.08 1.62-.65 1.85-1.28.23-.63.23-1.16.16-1.28-.07-.12-.25-.19-.52-.32Z"
-            />
-          </svg>
-        </a>
       </div>
     </DashboardLayout>
   );
