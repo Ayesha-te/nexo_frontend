@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -190,32 +191,32 @@ const Dashboard = () => {
 
   return (
     <DashboardLayout>
-      <div className="relative -m-4 min-h-full overflow-hidden bg-[radial-gradient(circle_at_top_left,rgba(20,184,166,0.22),transparent_30%),radial-gradient(circle_at_88%_10%,rgba(56,189,248,0.20),transparent_28%),linear-gradient(145deg,#d7f5f0_0%,#cfe9f7_48%,#e7f4fb_100%)] px-3 py-4 sm:px-6 md:-m-6 lg:px-8">
+      <div className="relative -m-4 min-h-full overflow-hidden bg-[radial-gradient(circle_at_top_left,rgba(20,184,166,0.22),transparent_30%),radial-gradient(circle_at_88%_10%,rgba(56,189,248,0.20),transparent_28%),linear-gradient(145deg,#d7f5f0_0%,#cfe9f7_48%,#e7f4fb_100%)] px-2.5 py-2.5 sm:px-6 sm:py-4 md:-m-6 lg:px-8">
         <div className="pointer-events-none absolute inset-0 opacity-35 [background-image:radial-gradient(circle,rgba(16,185,129,0.40)_1px,transparent_1px)] [background-size:42px_42px]" />
-        <div className="relative mx-auto max-w-7xl space-y-4 sm:space-y-5">
-          <section className="rounded-[24px] border border-white/80 bg-white p-4 shadow-[0_20px_60px_-38px_rgba(15,23,42,0.65)] sm:p-5">
-            <div className="flex items-center gap-3 sm:gap-4">
-              <div className={cn("flex h-20 w-20 shrink-0 items-center justify-center rounded-full border-4 p-1 shadow-lg sm:h-24 sm:w-24", getRingClass(achievementLevel))}>
+        <div className="relative mx-auto max-w-7xl space-y-3 sm:space-y-5">
+          <section className="rounded-[22px] border border-white/80 bg-white p-3 shadow-[0_20px_60px_-38px_rgba(15,23,42,0.65)] sm:rounded-[24px] sm:p-5">
+            <div className="flex items-center gap-2.5 sm:gap-4">
+              <div className={cn("flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-4 p-1 shadow-lg sm:h-24 sm:w-24", getRingClass(achievementLevel))}>
                 <div className="flex h-full w-full overflow-hidden rounded-full bg-slate-100">
                   {user?.profilePic ? (
                     <img src={user.profilePic} alt={fullName} className="h-full w-full object-cover" />
                   ) : (
-                    <span className="m-auto font-display text-3xl font-extrabold text-slate-700">{avatarLetter}</span>
+                    <span className="m-auto font-display text-2xl font-extrabold text-slate-700 sm:text-3xl">{avatarLetter}</span>
                   )}
                 </div>
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Welcome Back</p>
-                <h1 className="mt-1 truncate font-display text-2xl font-extrabold text-slate-900 sm:text-3xl" title={fullName}>
+                <p className="text-[11px] font-bold uppercase tracking-wide text-slate-500 sm:text-xs">Welcome Back</p>
+                <h1 className="truncate font-display text-2xl font-extrabold text-slate-900 sm:mt-1 sm:text-3xl" title={fullName}>
                   {fullName}
                 </h1>
-                <div className="mt-2 inline-flex max-w-full items-center rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
+                <div className="mt-1.5 inline-flex max-w-full items-center rounded-full border border-emerald-100 bg-emerald-50 px-2.5 py-0.5 text-xs font-bold text-emerald-700 sm:mt-2 sm:px-3 sm:py-1">
                   <span className="truncate">{achievementLevel}{"\u2605"} Nexo Leader</span>
                 </div>
               </div>
             </div>
 
-            <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 sm:mt-4 sm:gap-3">
               <div className="inline-flex rounded-2xl border border-slate-100 bg-slate-50 p-1">
                 {(["PKR", "USD"] as const).map((currency) => (
                   <Button
@@ -223,7 +224,7 @@ const Dashboard = () => {
                     type="button"
                     size="sm"
                     variant={displayCurrency === currency ? "default" : "ghost"}
-                    className="h-9 rounded-xl px-5"
+                    className="h-8 rounded-xl px-4 sm:h-9 sm:px-5"
                     onClick={() => setDisplayCurrency(currency)}
                     disabled={currency === "USD" && usdRatePkr <= 0}
                   >
@@ -233,37 +234,40 @@ const Dashboard = () => {
               </div>
               <div className="text-right text-xs font-medium text-slate-500">
                 <p>Total Withdraw</p>
-                <p className="font-display text-base font-extrabold text-slate-900">{formatMoney(Number(user?.totalWithdraw || 0))}</p>
+                <p className="font-display text-sm font-extrabold text-slate-900 sm:text-base">{formatMoney(Number(user?.totalWithdraw || 0))}</p>
               </div>
             </div>
             {displayCurrency === "USD" && usdRatePkr > 0 ? (
               <p className="mt-2 text-xs text-slate-500">Showing financial amounts at 1 USD = PKR {usdRatePkr.toLocaleString()}.</p>
             ) : null}
+            <Button asChild variant="outline" className="mt-3 h-9 rounded-2xl px-4 text-sm font-bold">
+              <Link to="/leader-board">Leader Board</Link>
+            </Button>
           </section>
 
-          <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
+          <div className="grid grid-cols-2 gap-2.5 sm:gap-3 lg:grid-cols-3">
             {stats.map((stat, index) => {
               const progress = clampPercent(stat.rawValue, stat.target);
               const Icon = stat.icon;
               return (
                 <Card
                   key={stat.title}
-                  className="overflow-hidden rounded-[22px] border-white bg-white shadow-[0_18px_42px_-35px_rgba(15,23,42,0.75)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_22px_52px_-36px_rgba(15,23,42,0.85)]"
+                  className="overflow-hidden rounded-[20px] border-white bg-white shadow-[0_18px_42px_-35px_rgba(15,23,42,0.75)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_22px_52px_-36px_rgba(15,23,42,0.85)] sm:rounded-[22px]"
                   style={{ animationDelay: `${index * 45}ms` }}
                 >
-                  <CardContent className="p-3.5 sm:p-5">
+                  <CardContent className="p-3 sm:p-5">
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0">
                         <p className="text-[10px] font-extrabold uppercase tracking-wide text-slate-500 sm:text-xs">{stat.title}</p>
-                        <p className="mt-2 truncate font-display text-xl font-extrabold text-slate-900 sm:text-2xl" title={stat.value}>
+                        <p className="mt-1.5 truncate font-display text-xl font-extrabold text-slate-900 sm:mt-2 sm:text-2xl" title={stat.value}>
                           {stat.value}
                         </p>
                       </div>
-                      <div className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl sm:h-11 sm:w-11", stat.tint)}>
-                        <Icon className="h-5 w-5 sm:h-5 sm:w-5" />
+                      <div className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl sm:h-11 sm:w-11", stat.tint)}>
+                        <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
                       </div>
                     </div>
-                    <div className="mt-4 h-2 overflow-hidden rounded-full bg-slate-100">
+                    <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-slate-100 sm:mt-4 sm:h-2">
                       <div className={cn("h-full rounded-full transition-all duration-500", stat.bar)} style={{ width: `${progress}%` }} />
                     </div>
                   </CardContent>

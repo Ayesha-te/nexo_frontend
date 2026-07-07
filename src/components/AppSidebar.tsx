@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/sidebar";
 import {
   LayoutDashboard,
+  Trophy,
   Ticket,
   Key,
   UserPlus,
@@ -29,6 +30,7 @@ import { Button } from "@/components/ui/button";
 
 export const userMenuItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+  { title: "Leader Board", url: "/leader-board", icon: Trophy },
   { title: "Pin Code Request", url: "/pin-request", icon: Ticket },
   { title: "My Pins", url: "/my-pins", icon: Key },
   { title: "Add New User", url: "/add-user", icon: UserPlus },
