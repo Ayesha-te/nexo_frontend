@@ -1,14 +1,9 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar, userMenuItems } from "@/components/AppSidebar";
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
-import { api } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { LogOut, MoreHorizontal } from "lucide-react";
@@ -25,32 +20,10 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
   const { logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const { toast } = useToast();
-  const [feedbackName, setFeedbackName] = useState("");
-  const [feedbackMessage, setFeedbackMessage] = useState("");
 
   const handleSignOut = () => {
     logout();
     navigate("/login");
-  };
-
-  const handleFeedbackSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!feedbackName || !feedbackMessage) {
-      toast({ title: "Error", description: "Please fill your name and message", variant: "destructive" });
-      return;
-    }
-    try {
-      await api("/api/complaints/me/", {
-        method: "POST",
-        body: JSON.stringify({ message: feedbackMessage, type: "feedback" }),
-      });
-      toast({ title: "Submitted", description: "Your feedback/complaint has been submitted." });
-      setFeedbackName("");
-      setFeedbackMessage("");
-    } catch (err: any) {
-      toast({ title: "Error", description: err.message || "Submission failed", variant: "destructive" });
-    }
   };
 
   const primaryMobileItems = userMenuItems.filter((item) =>
@@ -78,28 +51,6 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
           </header>
           <main className="min-w-0 flex-1 overflow-x-hidden overflow-y-auto p-4 pb-40 md:p-6 md:pb-6">
             {children}
-
-            <div className="mt-8 grid grid-cols-1 gap-4">
-              <div className="rounded-2xl border border-white/60 bg-white/60 p-5 shadow-[0_18px_45px_-38px_hsl(var(--nexo-dark)/0.55)] backdrop-blur-xl">
-                <h3 className="font-display text-lg font-semibold text-foreground">Feedback & Complaints</h3>
-                <form className="mt-3 space-y-3" onSubmit={handleFeedbackSubmit}>
-                  <div className="space-y-1">
-                    <Label>Your Name</Label>
-                    <Input value={feedbackName} onChange={(e) => setFeedbackName(e.target.value)} placeholder="Enter your name" />
-                  </div>
-                  <div className="space-y-1">
-                    <Label>Message</Label>
-                    <Textarea
-                      value={feedbackMessage}
-                      onChange={(e) => setFeedbackMessage(e.target.value)}
-                      placeholder="Write your feedback or complaint"
-                      rows={4}
-                    />
-                  </div>
-                  <Button type="submit" className="nexo-gradient text-primary-foreground">Submit</Button>
-                </form>
-              </div>
-            </div>
           </main>
           <nav className="fixed inset-x-3 bottom-3 z-50 rounded-[26px] border border-white/80 bg-white/90 px-2 py-2 shadow-[0_18px_45px_-24px_hsl(var(--nexo-dark)/0.65)] backdrop-blur-xl md:hidden">
             <div className="grid grid-cols-5 gap-1">

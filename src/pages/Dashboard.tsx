@@ -4,6 +4,9 @@ import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import {
   BadgeDollarSign,
   CircleDollarSign,
@@ -17,6 +20,7 @@ import {
 } from "lucide-react";
 import { api } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 
 type RewardPlanItem = {
   level: number;
@@ -54,6 +58,9 @@ const Dashboard = () => {
   const [earnedRewards, setEarnedRewards] = useState<EarnedReward[]>([]);
   const [usdRatePkr, setUsdRatePkr] = useState(0);
   const [displayCurrency, setDisplayCurrency] = useState<"PKR" | "USD">("PKR");
+  const [feedbackName, setFeedbackName] = useState("");
+  const [feedbackMessage, setFeedbackMessage] = useState("");
+  const { toast } = useToast();
 
   useEffect(() => {
     refreshUser().catch(() => undefined);
@@ -88,6 +95,25 @@ const Dashboard = () => {
   };
 
   const getRewardLabel = (reward: string, amount: number) => (amount > 0 ? formatMoney(amount) : reward);
+
+  const handleFeedbackSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!feedbackName || !feedbackMessage) {
+      toast({ title: "Error", description: "Please fill your name and message", variant: "destructive" });
+      return;
+    }
+    try {
+      await api("/api/complaints/me/", {
+        method: "POST",
+        body: JSON.stringify({ message: feedbackMessage, type: "feedback" }),
+      });
+      toast({ title: "Submitted", description: "Your feedback/complaint has been submitted." });
+      setFeedbackName("");
+      setFeedbackMessage("");
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message || "Submission failed", variant: "destructive" });
+    }
+  };
 
   const stats = [
     {
@@ -399,6 +425,28 @@ const Dashboard = () => {
               >
                 Open WhatsApp
               </a>
+            </CardContent>
+          </Card>
+
+          <Card className="overflow-hidden rounded-[24px] border-white bg-white shadow-[0_18px_48px_-38px_rgba(15,23,42,0.75)]">
+            <CardContent className="p-4 sm:p-5">
+              <h3 className="font-display text-lg font-extrabold text-slate-900">Feedback & Complaints</h3>
+              <form className="mt-3 space-y-3" onSubmit={handleFeedbackSubmit}>
+                <div className="space-y-1">
+                  <Label>Your Name</Label>
+                  <Input value={feedbackName} onChange={(e) => setFeedbackName(e.target.value)} placeholder="Enter your name" />
+                </div>
+                <div className="space-y-1">
+                  <Label>Message</Label>
+                  <Textarea
+                    value={feedbackMessage}
+                    onChange={(e) => setFeedbackMessage(e.target.value)}
+                    placeholder="Write your feedback or complaint"
+                    rows={4}
+                  />
+                </div>
+                <Button type="submit" className="nexo-gradient text-primary-foreground">Submit</Button>
+              </form>
             </CardContent>
           </Card>
         </div>
