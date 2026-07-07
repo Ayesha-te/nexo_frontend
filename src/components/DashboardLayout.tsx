@@ -79,17 +79,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
           <main className="min-w-0 flex-1 overflow-x-hidden overflow-y-auto p-4 pb-40 md:p-6 md:pb-6">
             {children}
 
-            <div className="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-2">
-              <div className="rounded-2xl border border-white/60 bg-white/60 p-5 shadow-[0_18px_45px_-38px_hsl(var(--nexo-dark)/0.55)] backdrop-blur-xl">
-                <h3 className="font-display text-lg font-semibold text-foreground">Contact Us</h3>
-                <div className="mt-3 space-y-2 text-sm text-muted-foreground">
-                  <p><span className="font-semibold text-foreground">Phone:</span> 03448252109</p>
-                  <p><span className="font-semibold text-foreground">Phone:</span> 03057410110</p>
-                  <p><span className="font-semibold text-foreground">Email:</span> sardarlaeiq786@gmail.com</p>
-                  <p><span className="font-semibold text-foreground">Location:</span> Sargodha</p>
-                </div>
-              </div>
-
+            <div className="mt-8 grid grid-cols-1 gap-4">
               <div className="rounded-2xl border border-white/60 bg-white/60 p-5 shadow-[0_18px_45px_-38px_hsl(var(--nexo-dark)/0.55)] backdrop-blur-xl">
                 <h3 className="font-display text-lg font-semibold text-foreground">Feedback & Complaints</h3>
                 <form className="mt-3 space-y-3" onSubmit={handleFeedbackSubmit}>
