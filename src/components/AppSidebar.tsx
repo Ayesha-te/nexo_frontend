@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { NavLink } from "@/components/NavLink";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -43,8 +43,6 @@ export function AppSidebar() {
   const collapsed = state === "collapsed";
   const { logout, user } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
-
   const items = userMenuItems;
 
   const handleLogout = () => {
