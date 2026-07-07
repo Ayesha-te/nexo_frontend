@@ -8,15 +8,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  BadgeDollarSign,
-  CircleDollarSign,
   Gift,
   KeyRound,
   Network,
   ShieldCheck,
-  Sparkles,
   Trophy,
   UsersRound,
+  Wallet,
 } from "lucide-react";
 import { api } from "@/lib/api";
 import { cn } from "@/lib/utils";
@@ -121,7 +119,7 @@ const Dashboard = () => {
       value: formatMoney(Number(user?.currentIncome || 0)),
       rawValue: Number(user?.currentIncome || 0),
       target: financialTarget,
-      icon: CircleDollarSign,
+      icon: Wallet,
       bar: "bg-emerald-500",
       tint: "text-emerald-600 bg-emerald-50",
     },
@@ -139,7 +137,7 @@ const Dashboard = () => {
       value: formatMoney(totalIncome),
       rawValue: totalIncome,
       target: financialTarget,
-      icon: BadgeDollarSign,
+      icon: Wallet,
       bar: "bg-violet-500",
       tint: "text-violet-600 bg-violet-50",
     },
@@ -211,8 +209,7 @@ const Dashboard = () => {
                 <h1 className="mt-1 truncate font-display text-2xl font-extrabold text-slate-900 sm:text-3xl" title={fullName}>
                   {fullName}
                 </h1>
-                <div className="mt-2 inline-flex max-w-full items-center gap-1.5 rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
-                  <Sparkles className="h-3.5 w-3.5 shrink-0" />
+                <div className="mt-2 inline-flex max-w-full items-center rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
                   <span className="truncate">{achievementLevel}{"\u2605"} Nexo Leader</span>
                 </div>
               </div>
