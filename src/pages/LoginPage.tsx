@@ -37,13 +37,11 @@ const LoginPage = () => {
       <div className="relative z-10 w-full max-w-md space-y-4">
         <Card className="overflow-hidden rounded-2xl border-white/60 bg-white/70 shadow-[0_22px_70px_-38px_hsl(var(--nexo-dark)/0.65)] backdrop-blur-xl">
           <CardHeader className="text-center pb-2">
-            <div className="mx-auto mb-2 inline-flex items-center justify-center rounded-full border border-white/70 bg-background/70 px-6 py-2 shadow-sm">
-              <img
-                src="/ChatGPT_Image_Mar_3__2026__02_42_58_PM-removebg-preview.png"
-                alt="Nexocart"
-                className="mx-auto h-24 w-auto"
-              />
-            </div>
+            <img
+              src="/ChatGPT_Image_Mar_3__2026__02_42_58_PM-removebg-preview.png"
+              alt="Nexocart"
+              className="mx-auto mb-2 h-40 w-auto"
+            />
             <CardTitle className="font-display text-base font-medium tracking-wide text-muted-foreground">The Binary System</CardTitle>
           </CardHeader>
           <CardContent className="p-5 pt-6 sm:p-6">

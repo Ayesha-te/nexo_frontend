@@ -61,7 +61,7 @@ const TreeNodeComponent = ({
       <button
         type="button"
         onClick={() => onNodeClick(node, level)}
-        className={`relative min-h-[132px] w-[180px] rounded-lg border px-3 py-3 text-center shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${
+        className={`relative min-h-[92px] w-[82px] rounded-lg border px-1.5 py-2 text-center shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md sm:min-h-[132px] sm:w-[180px] sm:px-3 sm:py-3 ${
           isCurrentUser
             ? "nexo-gradient text-primary-foreground nexo-gold-glow"
             : node.position === "root"
@@ -71,38 +71,38 @@ const TreeNodeComponent = ({
             : "bg-secondary/10 border-secondary/30 text-foreground"
         } ${selectedNodeId === node.id ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : ""}`}
       >
-        <div className="mb-2 flex items-center justify-between gap-2">
-          <span className="rounded bg-background/70 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide opacity-80">
-            Level {level}
+        <div className="mb-1 flex items-center justify-center gap-1 sm:mb-2 sm:justify-between sm:gap-2">
+          <span className="rounded bg-background/70 px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-wide opacity-80 sm:px-2 sm:text-[10px]">
+            L{level}
           </span>
-          <span className="rounded bg-background/70 px-2 py-0.5 text-[10px] font-semibold capitalize opacity-80">
+          <span className="hidden rounded bg-background/70 px-2 py-0.5 text-[10px] font-semibold capitalize opacity-80 sm:inline">
             {node.position}
           </span>
         </div>
-        <div className="mx-auto mb-2 flex h-8 w-8 items-center justify-center rounded-full bg-background/80">
-          <User className="h-4 w-4 opacity-70" />
+        <div className="mx-auto mb-1 flex h-6 w-6 items-center justify-center rounded-full bg-background/80 sm:mb-2 sm:h-8 sm:w-8">
+          <User className="h-3.5 w-3.5 opacity-70 sm:h-4 sm:w-4" />
         </div>
-        <p className="truncate text-sm font-semibold" title={node.name}>{node.name}</p>
-        <p className="mt-1 truncate text-[11px] opacity-75" title={node.email}>{node.email}</p>
-        <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
-          <span className="rounded border border-primary/20 bg-primary/15 px-2 py-1">L {getLeftCount(node)}</span>
-          <span className="rounded border border-secondary/20 bg-secondary/15 px-2 py-1">R {getRightCount(node)}</span>
+        <p className="truncate text-[10px] font-semibold sm:text-sm" title={node.name}>{node.name}</p>
+        <p className="mt-1 hidden truncate text-[11px] opacity-75 sm:block" title={node.email}>{node.email}</p>
+        <div className="mt-2 grid grid-cols-2 gap-1 text-[9px] sm:mt-3 sm:gap-2 sm:text-xs">
+          <span className="rounded border border-primary/20 bg-primary/15 px-1 py-0.5 sm:px-2 sm:py-1">L {getLeftCount(node)}</span>
+          <span className="rounded border border-secondary/20 bg-secondary/15 px-1 py-0.5 sm:px-2 sm:py-1">R {getRightCount(node)}</span>
         </div>
         {canOpenNextLevels && (
-          <p className="mt-2 rounded border border-primary/20 bg-background/80 px-2 py-1 text-[10px] font-semibold text-primary">
-            Open next levels
+          <p className="mt-1 rounded border border-primary/20 bg-background/80 px-1 py-0.5 text-[8px] font-semibold text-primary sm:mt-2 sm:px-2 sm:py-1 sm:text-[10px]">
+            Open
           </p>
         )}
       </button>
 
       {hasChildren && !isLevelLimit && (
         <>
-          <div className="h-7 w-px bg-border" />
-          <div className="relative flex gap-10">
+          <div className="h-4 w-px bg-border sm:h-7" />
+          <div className="relative flex gap-2 sm:gap-10">
             {/* connector line */}
             <div className="absolute left-1/4 right-1/4 top-0 h-px bg-border" />
             <div className="flex flex-col items-center">
-              <div className="h-4 w-px bg-border" />
+              <div className="h-3 w-px bg-border sm:h-4" />
               {node.children.left ? (
                 <TreeNodeComponent
                   node={node.children.left}
@@ -112,13 +112,13 @@ const TreeNodeComponent = ({
                   level={level + 1}
                 />
               ) : (
-                <div className="min-h-[86px] w-[150px] rounded-lg border border-dashed border-border px-4 py-5 text-center text-sm text-muted-foreground">
+                <div className="min-h-[70px] w-[76px] rounded-lg border border-dashed border-border px-2 py-4 text-center text-xs text-muted-foreground sm:min-h-[86px] sm:w-[150px] sm:px-4 sm:py-5 sm:text-sm">
                   Empty
                 </div>
               )}
             </div>
             <div className="flex flex-col items-center">
-              <div className="h-4 w-px bg-border" />
+              <div className="h-3 w-px bg-border sm:h-4" />
               {node.children.right ? (
                 <TreeNodeComponent
                   node={node.children.right}
@@ -128,7 +128,7 @@ const TreeNodeComponent = ({
                   level={level + 1}
                 />
               ) : (
-                <div className="min-h-[86px] w-[150px] rounded-lg border border-dashed border-border px-4 py-5 text-center text-sm text-muted-foreground">
+                <div className="min-h-[70px] w-[76px] rounded-lg border border-dashed border-border px-2 py-4 text-center text-xs text-muted-foreground sm:min-h-[86px] sm:w-[150px] sm:px-4 sm:py-5 sm:text-sm">
                   Empty
                 </div>
               )}
@@ -229,13 +229,13 @@ const MyTree = () => {
           )}
 
           <Card id="binary-tree-view" className={`${glassCardClass} min-w-0`}>
-            <CardHeader>
-              <CardTitle className="font-display text-lg">Binary Tree View</CardTitle>
-              <p className="text-sm text-muted-foreground">Showing 4 levels at a time. Click a 4th-level account to open its next tree levels.</p>
+            <CardHeader className="px-3 py-3 sm:px-6 sm:py-6">
+              <CardTitle className="font-display text-base sm:text-lg">Binary Tree View</CardTitle>
+              <p className="text-xs text-muted-foreground sm:text-sm">Showing 4 levels at a time. Click a 4th-level account to open its next tree levels.</p>
             </CardHeader>
-            <CardContent className="min-w-0 px-3 sm:px-6">
-              <div className="w-full overflow-x-auto overflow-y-visible rounded-lg border border-border/40 bg-muted/20 py-6 [scrollbar-width:thin] sm:py-8">
-                <div className="flex w-max min-w-[680px] justify-center px-4 sm:mx-auto sm:min-w-[720px] sm:px-6">
+            <CardContent className="min-w-0 px-1.5 pb-3 sm:px-6 sm:pb-6">
+              <div className="w-full overflow-x-auto overflow-y-visible rounded-lg border border-border/40 bg-muted/20 py-4 [scrollbar-width:thin] sm:py-8">
+                <div className="flex w-max min-w-[390px] justify-center px-3 sm:mx-auto sm:min-w-[720px] sm:px-6">
                   {activeRoot && (
                     <TreeNodeComponent
                       node={activeRoot}
