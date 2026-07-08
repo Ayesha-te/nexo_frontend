@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -6,35 +6,20 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { Settings, Camera, User, Mail, Phone } from "lucide-react";
+import { Settings, User, Mail, Phone } from "lucide-react";
 import { glassCardClass, PageShell } from "@/components/PageShell";
 
 const ProfileSettings = () => {
   const { user, updateProfile } = useAuth();
   const [firstName, setFirstName] = useState(user?.firstName || "");
   const [lastName, setLastName] = useState(user?.lastName || "");
-  const [profilePicPreview, setProfilePicPreview] = useState<string>(user?.profilePic || "");
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [profileImageFailed, setProfileImageFailed] = useState(false);
   const { toast } = useToast();
+  const avatarLetter = (firstName || user?.firstName || user?.email || "U").trim().charAt(0).toUpperCase();
 
   useEffect(() => {
-    if (user?.profilePic) {
-      setProfilePicPreview(user.profilePic);
-    }
+    setProfileImageFailed(false);
   }, [user?.profilePic]);
-
-  const handleProfilePicChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const url = URL.createObjectURL(file);
-    setProfilePicPreview(url);
-    try {
-      await updateProfile({ profilePic: file });
-      toast({ title: "Profile Picture Updated", description: "Your profile picture has been saved." });
-    } catch {
-      toast({ title: "Error", description: "Failed to upload profile picture.", variant: "destructive" });
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,7 +32,7 @@ const ProfileSettings = () => {
       <PageShell
         icon={Settings}
         title="Profile Settings"
-        description="Manage your profile picture and name."
+        description="Manage your profile name."
         maxWidth="max-w-2xl"
       >
         <Card className={glassCardClass}>
@@ -55,33 +40,20 @@ const ProfileSettings = () => {
             {/* Profile Picture */}
             <div className="flex flex-col items-center mb-6">
               <div className="relative">
-                {profilePicPreview ? (
+                {user?.profilePic && !profileImageFailed ? (
                   <img
-                    src={profilePicPreview}
+                    src={user.profilePic}
                     alt="Profile"
+                    onError={() => setProfileImageFailed(true)}
                     className="h-36 w-36 rounded-full border-4 border-white/70 object-cover shadow-xl"
                   />
                 ) : (
                   <div className="flex h-36 w-36 items-center justify-center rounded-full border-4 border-white/70 nexo-gradient text-4xl font-semibold text-primary-foreground shadow-xl font-display">
-                    {user?.firstName?.[0]}{user?.lastName?.[0]}
+                    {avatarLetter}
                   </div>
                 )}
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="absolute bottom-1 right-1 flex h-9 w-9 items-center justify-center rounded-full bg-secondary text-secondary-foreground shadow-lg transition-transform hover:scale-105"
-                >
-                  <Camera className="w-4 h-4" />
-                </button>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleProfilePicChange}
-                />
               </div>
-              <p className="text-xs text-muted-foreground mt-2">Editable: profile picture and name</p>
+              <p className="text-xs text-muted-foreground mt-2">Editable: profile name</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">

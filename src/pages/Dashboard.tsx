@@ -70,6 +70,7 @@ const Dashboard = () => {
   const [feedbackName, setFeedbackName] = useState("");
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const [shopLinkLoading, setShopLinkLoading] = useState(false);
+  const [profileImageFailed, setProfileImageFailed] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -92,6 +93,10 @@ const Dashboard = () => {
         setWeeklyIncome(0);
       });
   }, [refreshUser]);
+
+  useEffect(() => {
+    setProfileImageFailed(false);
+  }, [user?.profilePic]);
 
   const earnedLevels = useMemo(() => new Set(earnedRewards.map((reward) => reward.level)), [earnedRewards]);
   const achievementLevel = earnedRewards.reduce((max, reward) => Math.max(max, reward.level), 0);
@@ -241,8 +246,13 @@ const Dashboard = () => {
             <div className="grid grid-cols-[5.5rem_minmax(0,1fr)] items-center gap-3 sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:gap-4">
               <div className={cn("flex h-20 w-20 shrink-0 items-center justify-center rounded-full border-4 p-1 shadow-lg sm:h-24 sm:w-24", getRingClass(achievementLevel))}>
                 <div className="flex h-full w-full overflow-hidden rounded-full bg-slate-100">
-                  {user?.profilePic ? (
-                    <img src={user.profilePic} alt={fullName} className="h-full w-full object-cover" />
+                  {user?.profilePic && !profileImageFailed ? (
+                    <img
+                      src={user.profilePic}
+                      alt={fullName}
+                      onError={() => setProfileImageFailed(true)}
+                      className="h-full w-full object-cover"
+                    />
                   ) : (
                     <span className="m-auto font-display text-3xl font-bold text-slate-700 sm:text-3xl">{avatarLetter}</span>
                   )}
@@ -315,33 +325,6 @@ const Dashboard = () => {
               );
             })}
           </div>
-
-          <Card className="overflow-hidden rounded-[24px] border-2 border-emerald-300 bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 text-white shadow-[0_24px_60px_-34px_rgba(13,148,136,0.95)]">
-            <CardContent className="grid gap-4 p-4 sm:grid-cols-[1fr_auto] sm:items-center sm:p-5">
-              <div className="flex items-start gap-3">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/18 ring-1 ring-white/30">
-                  <Sparkles className="h-6 w-6" />
-                </div>
-                <div>
-                  <p className="text-xs font-extrabold uppercase tracking-wide text-white/80">Exclusive Nexocart Member Deal</p>
-                  <h2 className="mt-1 font-display text-2xl font-extrabold leading-tight sm:text-3xl">Buy perfumes with 10% extra off</h2>
-                  <p className="mt-2 max-w-2xl text-sm font-medium text-white/90">
-                    Click Shop Now, choose your perfume, and the extra 10% discount will be applied at checkout. For account safety, this offer is locked to the first device you use.
-                  </p>
-                </div>
-              </div>
-              <Button
-                type="button"
-                size="lg"
-                onClick={handleShopNow}
-                disabled={shopLinkLoading}
-                className="h-12 rounded-2xl bg-white px-6 font-extrabold text-emerald-700 shadow-lg hover:bg-emerald-50"
-              >
-                <ShoppingBag className="mr-2 h-5 w-5" />
-                {shopLinkLoading ? "Opening..." : "Shop Now"}
-              </Button>
-            </CardContent>
-          </Card>
 
           <Card className="rounded-[24px] border-white bg-white shadow-[0_18px_48px_-38px_rgba(15,23,42,0.75)]">
             <CardContent className="grid gap-4 p-4 sm:grid-cols-[1fr_180px] sm:p-5">
@@ -523,6 +506,33 @@ const Dashboard = () => {
                 </div>
                 <Button type="submit" className="nexo-gradient text-primary-foreground">Submit</Button>
               </form>
+            </CardContent>
+          </Card>
+
+          <Card className="overflow-hidden rounded-[24px] border-2 border-emerald-300 bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 text-white shadow-[0_24px_60px_-34px_rgba(13,148,136,0.95)]">
+            <CardContent className="grid gap-4 p-4 sm:grid-cols-[1fr_auto] sm:items-center sm:p-5">
+              <div className="flex items-start gap-3">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/18 ring-1 ring-white/30">
+                  <Sparkles className="h-6 w-6" />
+                </div>
+                <div>
+                  <p className="text-xs font-extrabold uppercase tracking-wide text-white/80">Exclusive Nexocart Member Deal</p>
+                  <h2 className="mt-1 font-display text-2xl font-extrabold leading-tight sm:text-3xl">Buy perfumes with 10% extra off</h2>
+                  <p className="mt-2 max-w-2xl text-sm font-medium text-white/90">
+                    Click Shop Now, choose your perfume, and the extra 10% discount will be applied at checkout. For account safety, this offer is locked to the first device you use.
+                  </p>
+                </div>
+              </div>
+              <Button
+                type="button"
+                size="lg"
+                onClick={handleShopNow}
+                disabled={shopLinkLoading}
+                className="h-12 rounded-2xl bg-white px-6 font-extrabold text-emerald-700 shadow-lg hover:bg-emerald-50"
+              >
+                <ShoppingBag className="mr-2 h-5 w-5" />
+                {shopLinkLoading ? "Opening..." : "Shop Now"}
+              </Button>
             </CardContent>
           </Card>
         </div>
