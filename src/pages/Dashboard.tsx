@@ -37,6 +37,11 @@ type EarnedReward = {
   rewardedAt: string;
 };
 
+type HistoryPoint = {
+  label: string;
+  amount: number;
+};
+
 const clampPercent = (value: number, target: number) => {
   if (!value || !target || target <= 0) return 0;
   return Math.min(100, Math.max(0, Math.round((value / target) * 100)));
@@ -57,6 +62,9 @@ const Dashboard = () => {
   const [earnedRewards, setEarnedRewards] = useState<EarnedReward[]>([]);
   const [usdRatePkr, setUsdRatePkr] = useState(0);
   const [displayCurrency, setDisplayCurrency] = useState<"PKR" | "USD">("PKR");
+  const [notifications, setNotifications] = useState<string[]>([]);
+  const [monthlyHistory, setMonthlyHistory] = useState<HistoryPoint[]>([]);
+  const [weeklyIncome, setWeeklyIncome] = useState(0);
   const [feedbackName, setFeedbackName] = useState("");
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const { toast } = useToast();
@@ -68,6 +76,18 @@ const Dashboard = () => {
     api("/api/accounts/settings/")
       .then((settings) => setUsdRatePkr(Number(settings.usdRatePkr || 0)))
       .catch(() => setUsdRatePkr(0));
+    api("/api/accounts/notifications/")
+      .then((data) => setNotifications(Array.isArray(data.messages) ? data.messages : []))
+      .catch(() => setNotifications([]));
+    api("/api/accounts/income-history/")
+      .then((data) => {
+        setMonthlyHistory(Array.isArray(data.monthlyHistory) ? data.monthlyHistory : []);
+        setWeeklyIncome(Number(data.weeklyIncome || 0));
+      })
+      .catch(() => {
+        setMonthlyHistory([]);
+        setWeeklyIncome(0);
+      });
   }, [refreshUser]);
 
   const earnedLevels = useMemo(() => new Set(earnedRewards.map((reward) => reward.level)), [earnedRewards]);
@@ -165,24 +185,24 @@ const Dashboard = () => {
       value: String(user?.rightTeam || 0),
       rawValue: Number(user?.rightTeam || 0),
       target: teamTargetRight,
-      icon: Network,
+      icon: UsersRound,
       bar: "bg-cyan-500",
       tint: "text-cyan-600 bg-cyan-50",
     },
   ];
 
-  const graphValues = [
+  const graphValues = monthlyHistory.length ? monthlyHistory.map((row) => Number(row.amount || 0)) : [
     Number(user?.currentIncome || 0),
     Number(user?.rewardIncome || 0),
     totalIncome,
-    Number(user?.totalWithdraw || 0),
+    weeklyIncome,
   ];
   const graphMax = Math.max(...graphValues, 0);
   const graphPoints =
     graphMax > 0
       ? graphValues
           .map((value, index) => {
-            const x = 10 + index * 30;
+            const x = 10 + index * (90 / Math.max(graphValues.length - 1, 1));
             const y = 58 - (value / graphMax) * 44;
             return `${x},${y}`;
           })
@@ -191,9 +211,17 @@ const Dashboard = () => {
 
   return (
     <DashboardLayout>
-      <div className="relative -m-4 min-h-full overflow-hidden bg-[radial-gradient(circle_at_top_left,rgba(20,184,166,0.22),transparent_30%),radial-gradient(circle_at_88%_10%,rgba(56,189,248,0.20),transparent_28%),linear-gradient(145deg,#d7f5f0_0%,#cfe9f7_48%,#e7f4fb_100%)] px-2.5 py-2.5 sm:px-6 sm:py-4 md:-m-6 lg:px-8">
+      <div className="relative -m-4 min-h-full overflow-hidden bg-[radial-gradient(circle_at_top_left,rgba(20,184,166,0.30),transparent_30%),radial-gradient(circle_at_88%_10%,rgba(14,165,233,0.25),transparent_28%),linear-gradient(145deg,#b9e7df_0%,#b8dff0_48%,#d8edf7_100%)] px-2.5 py-2.5 sm:px-6 sm:py-4 md:-m-6 lg:px-8">
         <div className="pointer-events-none absolute inset-0 opacity-35 [background-image:radial-gradient(circle,rgba(16,185,129,0.40)_1px,transparent_1px)] [background-size:42px_42px]" />
         <div className="relative mx-auto max-w-7xl space-y-3 sm:space-y-5">
+          <div className="overflow-hidden rounded-2xl border border-white/80 bg-white/85 px-3 py-2 shadow-[0_14px_38px_-30px_rgba(15,23,42,0.65)]">
+            <div className="flex animate-[marquee_28s_linear_infinite] whitespace-nowrap text-xs font-medium text-slate-700">
+              {(notifications.length ? notifications : ["Assalam-o-Alaikum. Keep growing your Nexocart network."]).map((message, index) => (
+                <span key={`${message}-${index}`} className="mr-10">{message}</span>
+              ))}
+            </div>
+          </div>
+
           <section className="rounded-[22px] border border-white/80 bg-white p-3 shadow-[0_20px_60px_-38px_rgba(15,23,42,0.65)] sm:rounded-[24px] sm:p-5">
             <div className="flex items-center gap-2.5 sm:gap-4">
               <div className={cn("flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-4 p-1 shadow-lg sm:h-24 sm:w-24", getRingClass(achievementLevel))}>
@@ -240,9 +268,6 @@ const Dashboard = () => {
             {displayCurrency === "USD" && usdRatePkr > 0 ? (
               <p className="mt-2 text-xs text-slate-500">Showing financial amounts at 1 USD = PKR {usdRatePkr.toLocaleString()}.</p>
             ) : null}
-            <Button asChild variant="outline" className="mt-3 h-9 rounded-2xl px-4 text-sm font-bold">
-              <Link to="/leader-board">Leader Board</Link>
-            </Button>
           </section>
 
           <div className="grid grid-cols-2 gap-2.5 sm:gap-3 lg:grid-cols-3">
@@ -284,12 +309,12 @@ const Dashboard = () => {
                   <h2 className="font-display text-lg font-extrabold text-slate-900">Income Analytics</h2>
                 </div>
                 <p className="mt-1 text-sm text-slate-500">
-                  {graphMax > 0 ? "Based on your current dashboard income values." : "No income activity yet."}
+                  {graphMax > 0 ? "Recent earning report from past months to now." : "No income activity yet."}
                 </p>
                 <div className="mt-4 grid grid-cols-3 gap-2">
                   <div className="rounded-2xl bg-slate-50 p-3">
-                    <p className="text-[10px] font-bold uppercase text-slate-500">Sets</p>
-                    <p className="font-display text-lg font-extrabold text-slate-900">{user?.pairCount || 0}</p>
+                    <p className="text-[10px] font-bold uppercase text-slate-500">This Week</p>
+                    <p className="font-display text-lg font-extrabold text-slate-900">{formatMoney(weeklyIncome)}</p>
                   </div>
                   <div className="rounded-2xl bg-slate-50 p-3">
                     <p className="text-[10px] font-bold uppercase text-slate-500">Left</p>
@@ -329,6 +354,14 @@ const Dashboard = () => {
                 <p className="mt-2">1st completed set: <span className="font-bold text-primary">Rs. 400</span></p>
                 <p>Sets 2 to 99: <span className="font-bold text-primary">Rs. 200</span> each</p>
                 <p>Set 100 onward: <span className="font-bold text-primary">Rs. 100</span> each</p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <Button asChild className="rounded-2xl">
+                    <Link to="/my-tree">Open My Tree</Link>
+                  </Button>
+                  <Button asChild variant="outline" className="rounded-2xl">
+                    <Link to="/networking-posters">Networking / Given Poster</Link>
+                  </Button>
+                </div>
               </div>
               <div className="rounded-2xl bg-slate-50 p-4">
                 <h3 className="font-bold text-slate-900">Withdraw Policy</h3>

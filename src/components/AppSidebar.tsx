@@ -15,29 +15,33 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import {
-  LayoutDashboard,
-  Trophy,
-  Ticket,
+  BarChart3,
+  Images,
   Key,
-  UserPlus,
-  TreePine,
-  Wallet,
+  LayoutDashboard,
   Lock,
-  Settings,
   LogOut,
+  Settings,
+  Ticket,
+  TreePine,
+  Trophy,
+  UserPlus,
+  Wallet,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export const userMenuItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
-  { title: "Leader Board", url: "/leader-board", icon: Trophy },
+  { title: "Profile Setting", url: "/profile", icon: Settings },
+  { title: "Add New User", url: "/add-user", icon: UserPlus },
   { title: "Pin Code Request", url: "/pin-request", icon: Ticket },
   { title: "My Pins", url: "/my-pins", icon: Key },
-  { title: "Add New User", url: "/add-user", icon: UserPlus },
   { title: "My Tree", url: "/my-tree", icon: TreePine },
   { title: "Withdraw History", url: "/withdraw-history", icon: Wallet },
-  { title: "Change Password 🔑", url: "/change-password", icon: Lock },
-  { title: "Profile Setting", url: "/profile", icon: Settings },
+  { title: "Change Password", url: "/change-password", icon: Lock },
+  { title: "Leader Board", url: "/leader-board", icon: Trophy },
+  { title: "Income Records", url: "/income-records", icon: BarChart3 },
+  { title: "Networking Posters", url: "/networking-posters", icon: Images },
 ];
 
 export function AppSidebar() {
@@ -45,7 +49,6 @@ export function AppSidebar() {
   const collapsed = state === "collapsed";
   const { logout, user } = useAuth();
   const navigate = useNavigate();
-  const items = userMenuItems;
 
   const handleLogout = () => {
     logout();
@@ -59,11 +62,11 @@ export function AppSidebar() {
           <img
             src="/ChatGPT_Image_Mar_3__2026__02_42_58_PM-removebg-preview.png"
             alt="Nexocart"
-            className="h-16 w-auto flex-shrink-0"
+            className="h-20 w-auto flex-shrink-0"
           />
           {!collapsed && (
             <div>
-              <h2 className="font-display text-lg font-bold text-sidebar-foreground">Nexocart</h2>
+              <h2 className="font-display text-lg font-semibold text-sidebar-foreground">Nexocart</h2>
               <p className="text-xs text-sidebar-foreground/60">Binary System</p>
             </div>
           )}
@@ -77,7 +80,7 @@ export function AppSidebar() {
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
+              {userMenuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <NavLink

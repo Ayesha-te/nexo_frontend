@@ -6,7 +6,9 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import LoginPage from "./pages/LoginPage";
 import Dashboard from "./pages/Dashboard";
+import IncomeRecords from "./pages/IncomeRecords";
 import LeaderBoard from "./pages/LeaderBoard";
+import NetworkingPosters from "./pages/NetworkingPosters";
 import PinRequest from "./pages/PinRequest";
 import MyPins from "./pages/MyPins";
 import AddUser from "./pages/AddUser";
@@ -36,6 +38,8 @@ const AppRoutes = () => {
 
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       <Route path="/leader-board" element={<ProtectedRoute><LeaderBoard /></ProtectedRoute>} />
+      <Route path="/income-records" element={<ProtectedRoute><IncomeRecords /></ProtectedRoute>} />
+      <Route path="/networking-posters" element={<ProtectedRoute><NetworkingPosters /></ProtectedRoute>} />
       <Route path="/pin-request" element={<ProtectedRoute><PinRequest /></ProtectedRoute>} />
       <Route path="/my-pins" element={<ProtectedRoute><MyPins /></ProtectedRoute>} />
       <Route path="/add-user" element={<ProtectedRoute><AddUser /></ProtectedRoute>} />

@@ -108,6 +108,14 @@
 }
 
 @layer utilities {
+  @keyframes marquee {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
   .nexo-gradient {
     background: linear-gradient(135deg, #15E6A5 0%, #15E6A5 65%, #53AEDD 100%);
   }

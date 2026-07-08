@@ -35,17 +35,16 @@ const LoginPage = () => {
       <div className="pointer-events-none absolute inset-0 opacity-45 [background-image:radial-gradient(circle,hsl(var(--primary)/0.35)_1px,transparent_1px),radial-gradient(circle,hsl(var(--secondary)/0.25)_1px,transparent_1px)] [background-position:0_0,22px_28px] [background-size:46px_46px,64px_64px]" />
 
       <div className="relative z-10 w-full max-w-md space-y-4">
-        <Card className="overflow-hidden rounded-2xl border-white/60 bg-white/65 shadow-[0_22px_70px_-38px_hsl(var(--nexo-dark)/0.65)] backdrop-blur-xl">
+        <Card className="overflow-hidden rounded-2xl border-white/60 bg-white/70 shadow-[0_22px_70px_-38px_hsl(var(--nexo-dark)/0.65)] backdrop-blur-xl">
           <CardHeader className="text-center pb-2">
-            <div className="mx-auto mb-3 rounded-full border border-white/70 bg-background/70 px-5 py-2 shadow-sm">
+            <div className="mx-auto mb-2 inline-flex items-center justify-center rounded-full border border-white/70 bg-background/70 px-6 py-2 shadow-sm">
               <img
                 src="/ChatGPT_Image_Mar_3__2026__02_42_58_PM-removebg-preview.png"
                 alt="Nexocart"
-                className="mx-auto h-16 w-auto"
+                className="mx-auto h-24 w-auto"
               />
             </div>
-            <CardTitle className="font-display text-3xl font-extrabold text-foreground">Nexocart</CardTitle>
-            <p className="text-sm text-muted-foreground mt-1">The Binary System</p>
+            <CardTitle className="font-display text-base font-medium tracking-wide text-muted-foreground">The Binary System</CardTitle>
           </CardHeader>
           <CardContent className="p-5 pt-6 sm:p-6">
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -104,8 +103,8 @@ const LoginPage = () => {
               </svg>
             </div>
             <div className="min-w-0 flex-1">
-              <h3 className="font-display text-base font-extrabold text-foreground">For joining, contact us on WhatsApp</h3>
-              <p className="text-sm font-semibold text-muted-foreground">+92 344 8252109</p>
+              <h3 className="text-sm font-normal text-foreground">For joining, contact us on WhatsApp</h3>
+              <p className="text-xs font-normal text-muted-foreground">+92 344 8252109</p>
             </div>
             <a
               href="https://wa.me/923448252109"

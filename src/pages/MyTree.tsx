@@ -2,7 +2,7 @@ import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import { GitBranch, User, ArrowLeft } from "lucide-react";
+import { GitBranch, User, ArrowLeft, TreePine } from "lucide-react";
 import { api } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { glassCardClass, PageShell } from "@/components/PageShell";
@@ -197,6 +197,23 @@ const MyTree = () => {
         maxWidth="max-w-7xl"
       >
         <div className="min-w-0 space-y-6">
+          <Card className={glassCardClass}>
+            <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h2 className="font-display text-lg font-semibold text-foreground">Open Your Network Tree</h2>
+                <p className="text-sm text-muted-foreground">Tap the button below, then click any 4th-level account to open its next tree levels.</p>
+              </div>
+              <Button
+                type="button"
+                className="gap-2 rounded-2xl"
+                onClick={() => document.getElementById("binary-tree-view")?.scrollIntoView({ behavior: "smooth", block: "start" })}
+              >
+                <TreePine className="h-4 w-4" />
+                Open My Tree
+              </Button>
+            </CardContent>
+          </Card>
+
           {canGoBack && (
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <Button
@@ -211,7 +228,7 @@ const MyTree = () => {
             </div>
           )}
 
-          <Card className={`${glassCardClass} min-w-0`}>
+          <Card id="binary-tree-view" className={`${glassCardClass} min-w-0`}>
             <CardHeader>
               <CardTitle className="font-display text-lg">Binary Tree View</CardTitle>
               <p className="text-sm text-muted-foreground">Showing 4 levels at a time. Click a 4th-level account to open its next tree levels.</p>

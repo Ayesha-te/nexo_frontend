@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -17,15 +17,23 @@ const ProfileSettings = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { toast } = useToast();
 
-  const handleProfilePicChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    if (user?.profilePic) {
+      setProfilePicPreview(user.profilePic);
+    }
+  }, [user?.profilePic]);
+
+  const handleProfilePicChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     const url = URL.createObjectURL(file);
     setProfilePicPreview(url);
-    updateProfile({ profilePic: file }).catch(() => {
+    try {
+      await updateProfile({ profilePic: file });
+      toast({ title: "Profile Picture Updated", description: "Your profile picture has been saved." });
+    } catch {
       toast({ title: "Error", description: "Failed to upload profile picture.", variant: "destructive" });
-    });
-    toast({ title: "Profile Picture Updated", description: "Preview updated. Click Save Changes to keep profile details." });
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -51,10 +59,10 @@ const ProfileSettings = () => {
                   <img
                     src={profilePicPreview}
                     alt="Profile"
-                    className="h-28 w-28 rounded-full border-4 border-white/70 object-cover shadow-xl"
+                    className="h-36 w-36 rounded-full border-4 border-white/70 object-cover shadow-xl"
                   />
                 ) : (
-                  <div className="flex h-28 w-28 items-center justify-center rounded-full border-4 border-white/70 nexo-gradient text-3xl font-bold text-primary-foreground shadow-xl font-display">
+                  <div className="flex h-36 w-36 items-center justify-center rounded-full border-4 border-white/70 nexo-gradient text-4xl font-semibold text-primary-foreground shadow-xl font-display">
                     {user?.firstName?.[0]}{user?.lastName?.[0]}
                   </div>
                 )}
@@ -73,7 +81,7 @@ const ProfileSettings = () => {
                   onChange={handleProfilePicChange}
                 />
               </div>
-              <p className="text-xs text-muted-foreground mt-2">Editable: Profile pic and Name</p>
+              <p className="text-xs text-muted-foreground mt-2">Editable: profile picture and name</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -108,7 +116,7 @@ const ProfileSettings = () => {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full nexo-gradient text-primary-foreground font-semibold">
+              <Button type="submit" className="w-full nexo-gradient text-primary-foreground font-medium">
                 Save Changes
               </Button>
             </form>
