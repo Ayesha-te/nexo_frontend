@@ -285,33 +285,6 @@ const Dashboard = () => {
             ) : null}
           </section>
 
-          <Card className="overflow-hidden rounded-[24px] border-2 border-emerald-300 bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 text-white shadow-[0_24px_60px_-34px_rgba(13,148,136,0.95)]">
-            <CardContent className="grid gap-4 p-4 sm:grid-cols-[1fr_auto] sm:items-center sm:p-5">
-              <div className="flex items-start gap-3">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/18 ring-1 ring-white/30">
-                  <Sparkles className="h-6 w-6" />
-                </div>
-                <div>
-                  <p className="text-xs font-extrabold uppercase tracking-wide text-white/80">Exclusive Nexocart Member Deal</p>
-                  <h2 className="mt-1 font-display text-2xl font-extrabold leading-tight sm:text-3xl">Buy perfumes with 10% extra off</h2>
-                  <p className="mt-2 max-w-2xl text-sm font-medium text-white/90">
-                    Click Shop Now, choose your perfume, and the extra 10% discount will be applied at checkout. For account safety, this offer is locked to the first device you use.
-                  </p>
-                </div>
-              </div>
-              <Button
-                type="button"
-                size="lg"
-                onClick={handleShopNow}
-                disabled={shopLinkLoading}
-                className="h-12 rounded-2xl bg-white px-6 font-extrabold text-emerald-700 shadow-lg hover:bg-emerald-50"
-              >
-                <ShoppingBag className="mr-2 h-5 w-5" />
-                {shopLinkLoading ? "Opening..." : "Shop Now"}
-              </Button>
-            </CardContent>
-          </Card>
-
           <div className="grid grid-cols-2 gap-2.5 sm:gap-3 lg:grid-cols-3">
             {stats.map((stat, index) => {
               const progress = clampPercent(stat.rawValue, stat.target);
@@ -342,6 +315,33 @@ const Dashboard = () => {
               );
             })}
           </div>
+
+          <Card className="overflow-hidden rounded-[24px] border-2 border-emerald-300 bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 text-white shadow-[0_24px_60px_-34px_rgba(13,148,136,0.95)]">
+            <CardContent className="grid gap-4 p-4 sm:grid-cols-[1fr_auto] sm:items-center sm:p-5">
+              <div className="flex items-start gap-3">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/18 ring-1 ring-white/30">
+                  <Sparkles className="h-6 w-6" />
+                </div>
+                <div>
+                  <p className="text-xs font-extrabold uppercase tracking-wide text-white/80">Exclusive Nexocart Member Deal</p>
+                  <h2 className="mt-1 font-display text-2xl font-extrabold leading-tight sm:text-3xl">Buy perfumes with 10% extra off</h2>
+                  <p className="mt-2 max-w-2xl text-sm font-medium text-white/90">
+                    Click Shop Now, choose your perfume, and the extra 10% discount will be applied at checkout. For account safety, this offer is locked to the first device you use.
+                  </p>
+                </div>
+              </div>
+              <Button
+                type="button"
+                size="lg"
+                onClick={handleShopNow}
+                disabled={shopLinkLoading}
+                className="h-12 rounded-2xl bg-white px-6 font-extrabold text-emerald-700 shadow-lg hover:bg-emerald-50"
+              >
+                <ShoppingBag className="mr-2 h-5 w-5" />
+                {shopLinkLoading ? "Opening..." : "Shop Now"}
+              </Button>
+            </CardContent>
+          </Card>
 
           <Card className="rounded-[24px] border-white bg-white shadow-[0_18px_48px_-38px_rgba(15,23,42,0.75)]">
             <CardContent className="grid gap-4 p-4 sm:grid-cols-[1fr_180px] sm:p-5">
