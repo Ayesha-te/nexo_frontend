@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import { api, clearAuth } from "@/lib/api";
+import { API_URL, api, clearAuth } from "@/lib/api";
 
 interface AuthContextType {
   isLoggedIn: boolean;
@@ -38,6 +38,12 @@ export interface FrontendUser {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
+const resolveProfilePic = (value: string) => {
+  if (!value) return "";
+  if (value.startsWith("data:") || value.startsWith("http://") || value.startsWith("https://")) return value;
+  return `${API_URL}${value.startsWith("/") ? value : `/${value}`}`;
+};
+
 export const useAuth = () => {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error("useAuth must be used within AuthProvider");
@@ -55,7 +61,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     lastName: raw.last_name || "",
     email: raw.email || "",
     phone: raw.phone || "",
-    profilePic: raw.profile_picture || "",
+    profilePic: resolveProfilePic(raw.profile_picture || ""),
     referralEmail: raw.referral_email || "",
     position: raw.placement_side || "left",
     paymentMethod: raw.payment_method || "easypaisa",
