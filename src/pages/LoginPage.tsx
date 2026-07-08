@@ -36,15 +36,17 @@ const LoginPage = () => {
 
       <div className="relative z-10 w-full max-w-md space-y-4">
         <Card className="overflow-hidden rounded-2xl border-white/60 bg-white/70 shadow-[0_22px_70px_-38px_hsl(var(--nexo-dark)/0.65)] backdrop-blur-xl">
-          <CardHeader className="text-center pb-2">
-            <img
-              src="/ChatGPT_Image_Mar_3__2026__02_42_58_PM-removebg-preview.png"
-              alt="Nexocart"
-              className="mx-auto mb-2 h-40 w-auto"
-            />
+          <CardHeader className="text-center pb-0 pt-5">
+            <div className="mx-auto flex h-28 w-56 items-center justify-center overflow-hidden">
+              <img
+                src="/ChatGPT_Image_Mar_3__2026__02_42_58_PM-removebg-preview.png"
+                alt="Nexocart"
+                className="h-44 w-auto max-w-none"
+              />
+            </div>
             <CardTitle className="font-display text-base font-medium tracking-wide text-muted-foreground">The Binary System</CardTitle>
           </CardHeader>
-          <CardContent className="p-5 pt-6 sm:p-6">
+          <CardContent className="p-5 pt-5 sm:p-6 sm:pt-5">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="identifier" className="text-foreground/80">Email</Label>
@@ -101,8 +103,8 @@ const LoginPage = () => {
               </svg>
             </div>
             <div className="min-w-0 flex-1">
-              <h3 className="text-sm font-normal text-foreground">For joining, contact us on WhatsApp</h3>
-              <p className="text-xs font-normal text-muted-foreground">+92 344 8252109</p>
+              <h3 className="text-sm font-normal leading-snug text-foreground">Need system details before joining?</h3>
+              <p className="text-xs font-normal text-muted-foreground">Contact us on WhatsApp: +92 344 8252109</p>
             </div>
             <a
               href="https://wa.me/923448252109"

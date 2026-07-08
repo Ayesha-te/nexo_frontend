@@ -83,7 +83,7 @@ const TreeNodeComponent = ({
           <User className="h-3.5 w-3.5 opacity-70 sm:h-4 sm:w-4" />
         </div>
         <p className="truncate text-[10px] font-semibold sm:text-sm" title={node.name}>{node.name}</p>
-        <p className="mt-1 hidden truncate text-[11px] opacity-75 sm:block" title={node.email}>{node.email}</p>
+        <p className="mt-1 truncate text-[8px] opacity-75 sm:text-[11px]" title={node.email}>{node.email}</p>
         <div className="mt-2 grid grid-cols-2 gap-1 text-[9px] sm:mt-3 sm:gap-2 sm:text-xs">
           <span className="rounded border border-primary/20 bg-primary/15 px-1 py-0.5 sm:px-2 sm:py-1">L {getLeftCount(node)}</span>
           <span className="rounded border border-secondary/20 bg-secondary/15 px-1 py-0.5 sm:px-2 sm:py-1">R {getRightCount(node)}</span>

@@ -112,9 +112,9 @@ const IncomeRecords = () => {
               <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
                 {[
                   ["Current Month", history.currentMonthIncome],
+                  ["Weekly Income", history.weeklyIncome],
                   ["Last Month", history.lastMonthIncome],
                   ["Last 3 Months", history.last3MonthsIncome],
-                  ["Weekly Income", history.weeklyIncome],
                 ].map(([label, value]) => (
                   <Card key={label} className="rounded-[22px] border-white bg-white shadow-[0_18px_42px_-35px_rgba(15,23,42,0.75)]">
                     <CardContent className="p-4">

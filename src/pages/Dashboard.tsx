@@ -154,9 +154,9 @@ const Dashboard = () => {
       tint: "text-sky-600 bg-sky-50",
     },
     {
-      title: "Total Income",
-      value: formatMoney(totalIncome),
-      rawValue: totalIncome,
+      title: "Weekly Income",
+      value: formatMoney(weeklyIncome),
+      rawValue: weeklyIncome,
       target: financialTarget,
       icon: Wallet,
       bar: "bg-violet-500",
@@ -223,19 +223,19 @@ const Dashboard = () => {
           </div>
 
           <section className="rounded-[22px] border border-white/80 bg-white p-3 shadow-[0_20px_60px_-38px_rgba(15,23,42,0.65)] sm:rounded-[24px] sm:p-5">
-            <div className="flex items-center gap-2.5 sm:gap-4">
-              <div className={cn("flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-4 p-1 shadow-lg sm:h-24 sm:w-24", getRingClass(achievementLevel))}>
+            <div className="grid grid-cols-[5.5rem_minmax(0,1fr)] items-center gap-3 sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:gap-4">
+              <div className={cn("flex h-20 w-20 shrink-0 items-center justify-center rounded-full border-4 p-1 shadow-lg sm:h-24 sm:w-24", getRingClass(achievementLevel))}>
                 <div className="flex h-full w-full overflow-hidden rounded-full bg-slate-100">
                   {user?.profilePic ? (
                     <img src={user.profilePic} alt={fullName} className="h-full w-full object-cover" />
                   ) : (
-                    <span className="m-auto font-display text-2xl font-extrabold text-slate-700 sm:text-3xl">{avatarLetter}</span>
+                    <span className="m-auto font-display text-3xl font-bold text-slate-700 sm:text-3xl">{avatarLetter}</span>
                   )}
                 </div>
               </div>
-              <div className="min-w-0 flex-1">
-                <p className="text-[11px] font-bold uppercase tracking-wide text-slate-500 sm:text-xs">Welcome Back</p>
-                <h1 className="truncate font-display text-2xl font-extrabold text-slate-900 sm:mt-1 sm:text-3xl" title={fullName}>
+              <div className="min-w-0 self-center">
+                <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500 sm:text-xs">Welcome Back</p>
+                <h1 className="mt-0.5 truncate font-display text-[1.65rem] font-semibold leading-tight text-slate-900 sm:mt-1 sm:text-3xl" title={fullName}>
                   {fullName}
                 </h1>
                 <div className="mt-1.5 inline-flex max-w-full items-center rounded-full border border-emerald-100 bg-emerald-50 px-2.5 py-0.5 text-xs font-bold text-emerald-700 sm:mt-2 sm:px-3 sm:py-1">
