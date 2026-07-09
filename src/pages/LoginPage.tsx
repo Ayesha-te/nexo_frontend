@@ -116,6 +116,7 @@ const LoginPage = () => {
             </a>
           </CardContent>
         </Card>
+
       </div>
     </div>
   );

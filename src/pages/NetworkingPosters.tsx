@@ -2,22 +2,25 @@ import { Images, Share2 } from "lucide-react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import foundersPoster from "../1st.jpeg";
+import incomeSystemPoster from "../2nd.jpeg";
+import rewardPlanPoster from "../3rd.jpeg";
 
 const posters = [
   {
-    title: "Networking Poster",
-    description: "Use this poster when introducing Nexocart to new team members.",
-    tone: "from-emerald-500 to-cyan-500",
+    title: "Meet Our Founders",
+    description: "Introduce Nexocart leadership and platform vision to new prospects.",
+    image: foundersPoster,
   },
   {
-    title: "Given Poster",
-    description: "Share this poster with prospects who need a simple earning overview.",
-    tone: "from-sky-500 to-violet-500",
+    title: "Side Income System",
+    description: "Share this poster to explain the binary earning flow and basic income journey.",
+    image: incomeSystemPoster,
   },
   {
-    title: "Income System Poster",
-    description: "Quickly explain binary set income, rewards, and team growth.",
-    tone: "from-amber-400 to-emerald-500",
+    title: "Rewards Plan",
+    description: "Show the level-wise left/right team targets and reward milestones.",
+    image: rewardPlanPoster,
   },
 ];
 
@@ -42,13 +45,21 @@ const NetworkingPosters = () => {
           <div className="grid gap-4 md:grid-cols-3">
             {posters.map((poster) => (
               <Card key={poster.title} className="overflow-hidden rounded-[24px] border-white bg-white shadow-[0_18px_48px_-38px_rgba(15,23,42,0.75)]">
-                <div className={`h-28 bg-gradient-to-br ${poster.tone}`} />
+                <a href={poster.image} target="_blank" rel="noopener noreferrer" className="block bg-slate-100">
+                  <img
+                    src={poster.image}
+                    alt={poster.title}
+                    className="h-72 w-full object-cover object-top transition-transform duration-300 hover:scale-[1.02]"
+                  />
+                </a>
                 <CardContent className="p-4">
                   <h2 className="font-display text-lg font-semibold text-slate-900">{poster.title}</h2>
                   <p className="mt-2 min-h-[60px] text-sm text-slate-500">{poster.description}</p>
-                  <Button variant="outline" className="mt-4 w-full gap-2 rounded-2xl">
-                    <Share2 className="h-4 w-4" />
-                    View Poster
+                  <Button asChild variant="outline" className="mt-4 w-full gap-2 rounded-2xl">
+                    <a href={poster.image} target="_blank" rel="noopener noreferrer">
+                      <Share2 className="h-4 w-4" />
+                      View Poster
+                    </a>
                   </Button>
                 </CardContent>
               </Card>
