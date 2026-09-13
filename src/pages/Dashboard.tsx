@@ -22,6 +22,7 @@ import {
 import { api } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { useCurrency } from "@/hooks/useCurrency";
 
 type RewardPlanItem = {
   level: number;
@@ -62,8 +63,7 @@ const Dashboard = () => {
   const { user, refreshUser } = useAuth();
   const [rewardPlan, setRewardPlan] = useState<RewardPlanItem[]>([]);
   const [earnedRewards, setEarnedRewards] = useState<EarnedReward[]>([]);
-  const [usdRatePkr, setUsdRatePkr] = useState(0);
-  const [displayCurrency, setDisplayCurrency] = useState<"PKR" | "USD">("PKR");
+  const { usdRatePkr, displayCurrency, setDisplayCurrency, formatMoney } = useCurrency();
   const [notifications, setNotifications] = useState<string[]>([]);
   const [monthlyHistory, setMonthlyHistory] = useState<HistoryPoint[]>([]);
   const [weeklyIncome, setWeeklyIncome] = useState(0);
@@ -71,15 +71,33 @@ const Dashboard = () => {
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const [shopLinkLoading, setShopLinkLoading] = useState(false);
   const [profileImageFailed, setProfileImageFailed] = useState(false);
+  const [attendancePresentDays, setAttendancePresentDays] = useState(0);
+  const [attendanceStreak, setAttendanceStreak] = useState(0);
+  const [attendanceMarkedToday, setAttendanceMarkedToday] = useState(false);
+  const [attendanceLoading, setAttendanceLoading] = useState(false);
   const { toast } = useToast();
+
+  const loadAttendance = () => {
+    api("/api/attendance/me/history/")
+      .then((data) => {
+        const records = Array.isArray(data.records) ? data.records : [];
+        const today = new Date().toISOString().slice(0, 10);
+        setAttendanceMarkedToday(records.some((record: { date: string }) => record.date === today));
+        setAttendancePresentDays(Number(data.summary?.presentDays || 0));
+        setAttendanceStreak(Number(data.currentStreak || 0));
+      })
+      .catch(() => {
+        setAttendancePresentDays(0);
+        setAttendanceStreak(0);
+        setAttendanceMarkedToday(false);
+      });
+  };
 
   useEffect(() => {
     refreshUser().catch(() => undefined);
+    loadAttendance();
     api("/api/rewards/plan/").then(setRewardPlan).catch(() => setRewardPlan([]));
     api("/api/rewards/me/").then(setEarnedRewards).catch(() => setEarnedRewards([]));
-    api("/api/accounts/settings/")
-      .then((settings) => setUsdRatePkr(Number(settings.usdRatePkr || 0)))
-      .catch(() => setUsdRatePkr(0));
     api("/api/accounts/notifications/")
       .then((data) => setNotifications(Array.isArray(data.messages) ? data.messages : []))
       .catch(() => setNotifications([]));
@@ -113,14 +131,6 @@ const Dashboard = () => {
   const teamTargetLeft = Number(nextReward?.left || Math.max(Number(user?.leftTeam || 0), 1));
   const teamTargetRight = Number(nextReward?.right || Math.max(Number(user?.rightTeam || 0), 1));
 
-  const formatMoney = (amount: number) => {
-    const value = Number(amount || 0);
-    if (displayCurrency === "USD" && usdRatePkr > 0) {
-      return `$${(value / usdRatePkr).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    }
-    return `Rs. ${value.toLocaleString()}`;
-  };
-
   const getRewardLabel = (reward: string, amount: number) => (amount > 0 ? formatMoney(amount) : reward);
 
   const handleFeedbackSubmit = async (e: React.FormEvent) => {
@@ -139,6 +149,19 @@ const Dashboard = () => {
       setFeedbackMessage("");
     } catch (err: any) {
       toast({ title: "Error", description: err.message || "Submission failed", variant: "destructive" });
+    }
+  };
+
+  const handleMarkAttendance = async () => {
+    setAttendanceLoading(true);
+    try {
+      await api("/api/attendance/me/mark/", { method: "POST" });
+      toast({ title: "Attendance Marked", description: "Your attendance for today has been recorded." });
+      loadAttendance();
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message || "Unable to mark attendance", variant: "destructive" });
+    } finally {
+      setAttendanceLoading(false);
     }
   };
 
@@ -294,6 +317,29 @@ const Dashboard = () => {
               <p className="mt-2 text-xs text-slate-500">Showing financial amounts at 1 USD = PKR {usdRatePkr.toLocaleString()}.</p>
             ) : null}
           </section>
+
+          <Card className="overflow-hidden rounded-[20px] border-white bg-white shadow-[0_18px_42px_-35px_rgba(15,23,42,0.75)] sm:rounded-[22px]">
+            <CardContent className="flex flex-col gap-3 p-3 sm:flex-row sm:items-center sm:justify-between sm:p-5">
+              <div>
+                <p className="font-display text-base font-extrabold text-slate-900 sm:text-lg">{"📅"} Daily Attendance</p>
+                <div className="mt-2 flex flex-wrap gap-4 text-sm text-slate-600">
+                  <span>This month: <span className="font-bold text-slate-900">{attendancePresentDays}</span> days</span>
+                  <span>Current streak: <span className="font-bold text-slate-900">{attendanceStreak}</span> days</span>
+                </div>
+              </div>
+              <Button
+                type="button"
+                onClick={handleMarkAttendance}
+                disabled={attendanceMarkedToday || attendanceLoading}
+                className={cn(
+                  "rounded-2xl px-5",
+                  attendanceMarkedToday ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-100" : "nexo-gradient text-primary-foreground",
+                )}
+              >
+                {attendanceMarkedToday ? "✅ Attendance Marked Today" : attendanceLoading ? "Marking..." : "Mark Today's Attendance"}
+              </Button>
+            </CardContent>
+          </Card>
 
           <div className="grid grid-cols-2 gap-2.5 sm:gap-3 lg:grid-cols-3">
             {stats.map((stat, index) => {

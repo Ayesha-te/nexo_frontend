@@ -16,11 +16,13 @@ import {
 } from "@/components/ui/sidebar";
 import {
   BarChart3,
+  Bell,
   Images,
   Key,
   LayoutDashboard,
   Lock,
   LogOut,
+  MonitorPlay,
   Settings,
   Ticket,
   TreePine,
@@ -38,6 +40,8 @@ export const userMenuItems = [
   { title: "My Pins", url: "/my-pins", icon: Key },
   { title: "My Tree", url: "/my-tree", icon: TreePine },
   { title: "Withdraw History", url: "/withdraw-history", icon: Wallet },
+  { title: "Ads Earning", url: "/ads-earning", icon: MonitorPlay },
+  { title: "Notifications", url: "/notifications", icon: Bell },
   { title: "Change Password", url: "/change-password", icon: Lock },
   { title: "Leader Board", url: "/leader-board", icon: Trophy },
   { title: "Income Records", url: "/income-records", icon: BarChart3 },

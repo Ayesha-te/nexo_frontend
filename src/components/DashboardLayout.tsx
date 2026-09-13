@@ -1,12 +1,14 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar, userMenuItems } from "@/components/AppSidebar";
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { LogOut, MoreHorizontal } from "lucide-react";
+import { LogOut, MoreHorizontal, Bell } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { api } from "@/lib/api";
 
 const getMobileNavLabel = (title: string) =>
   title
@@ -20,11 +22,29 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
   const { logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [recentNotifications, setRecentNotifications] = useState<any[]>([]);
 
   const handleSignOut = () => {
     logout();
     navigate("/login");
   };
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const data = await api("/api/notifications/me/");
+        setRecentNotifications(data.results || []);
+        setUnreadCount(data.unreadCount || 0);
+      } catch {
+        // ignore errors so a failed fetch doesn't break the layout
+      }
+    };
+
+    fetchNotifications();
+    const interval = setInterval(fetchNotifications, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   const primaryMobileItems = userMenuItems.filter((item) =>
     ["/dashboard", "/pin-request", "/my-pins", "/my-tree"].includes(item.url),
@@ -49,6 +69,43 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
               />
             </div>
             <div className="flex-1" />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="relative mr-2 h-9 w-9 p-0">
+                  <Bell className="h-4 w-4" />
+                  {unreadCount > 0 && (
+                    <span className="absolute -right-1 -top-1 flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold leading-none text-destructive-foreground">
+                      {unreadCount > 99 ? "99+" : unreadCount}
+                    </span>
+                  )}
+                  <span className="sr-only">Notifications</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-80">
+                {recentNotifications.length === 0 && (
+                  <div className="px-2 py-4 text-center text-sm text-muted-foreground">No notifications yet.</div>
+                )}
+                {recentNotifications.slice(0, 5).map((n) => (
+                  <DropdownMenuItem
+                    key={n.id}
+                    className="flex flex-col items-start gap-0.5 whitespace-normal py-2"
+                    onClick={() => navigate("/notifications")}
+                  >
+                    <div className="flex w-full items-center gap-2">
+                      {!n.isRead && <span className="h-2 w-2 flex-shrink-0 rounded-full bg-primary" />}
+                      <span className={cn("truncate text-sm", n.isRead ? "font-normal text-muted-foreground" : "font-semibold text-foreground")}>
+                        {n.title}
+                      </span>
+                    </div>
+                    <p className="line-clamp-2 text-xs text-muted-foreground">{n.message}</p>
+                    <p className="text-[11px] text-muted-foreground">{new Date(n.createdAt).toLocaleString()}</p>
+                  </DropdownMenuItem>
+                ))}
+                <DropdownMenuItem className="justify-center text-sm font-semibold text-primary" onClick={() => navigate("/notifications")}>
+                  View All
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Button variant="outline" size="sm" onClick={handleSignOut}>Sign Out</Button>
           </header>
           <main className="min-w-0 flex-1 overflow-x-hidden overflow-y-auto p-4 pb-40 md:p-6 md:pb-6">
