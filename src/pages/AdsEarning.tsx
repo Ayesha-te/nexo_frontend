@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useCurrency } from "@/hooks/useCurrency";
 import { api } from "@/lib/api";
 import { glassCardClass, PageShell } from "@/components/PageShell";
-import { Clapperboard, Lock, PlayCircle } from "lucide-react";
+import { Clapperboard, History, Lock, PlayCircle, Volume2, VolumeX } from "lucide-react";
 
 type AdsStatus = {
   enabled: boolean;
@@ -22,13 +22,44 @@ type AdsStatus = {
   canWatch: boolean;
 };
 
-const WATCH_SECONDS = 5;
+type WatchVideo = {
+  id: number;
+  title: string;
+  url: string | null;
+  durationSeconds: number;
+};
+
+type WatchStart = {
+  watchId: number;
+  video: WatchVideo;
+  rewardPerAd: number;
+};
+
+type AdsHistoryEntry = {
+  id: number;
+  date: string;
+  rewardPkr: number;
+  cycleType: "welcome" | "pair" | null;
+  completedAt: string;
+};
 
 const AdsEarning = () => {
   const [status, setStatus] = useState<AdsStatus | null>(null);
   const [loading, setLoading] = useState(true);
-  const [watching, setWatching] = useState(false);
-  const [countdown, setCountdown] = useState(WATCH_SECONDS);
+
+  const [starting, setStarting] = useState(false);
+  const [watch, setWatch] = useState<WatchStart | null>(null);
+  const [completing, setCompleting] = useState(false);
+  const [countdown, setCountdown] = useState(0);
+  const [needsPlayTap, setNeedsPlayTap] = useState(false);
+  const [muted, setMuted] = useState(false);
+
+  const [history, setHistory] = useState<AdsHistoryEntry[]>([]);
+  const [historyLoading, setHistoryLoading] = useState(true);
+
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const lastTimeRef = useRef(0);
+
   const { formatMoney } = useCurrency();
   const { toast } = useToast();
 
@@ -44,38 +75,130 @@ const AdsEarning = () => {
       });
   };
 
-  useEffect(() => {
-    setLoading(true);
-    loadStatus().finally(() => setLoading(false));
-  }, []);
-
-  const handleStartWatch = () => {
-    if (!status || !status.canWatch) return;
-    setWatching(true);
-    setCountdown(WATCH_SECONDS);
+  const loadHistory = () => {
+    setHistoryLoading(true);
+    return api("/api/ads/me/history/")
+      .then((data) => {
+        setHistory(Array.isArray(data) ? data : []);
+      })
+      .catch(() => {
+        setHistory([]);
+      })
+      .finally(() => setHistoryLoading(false));
   };
 
   useEffect(() => {
-    if (!watching) return;
-    if (countdown <= 0) {
-      const rewardBeforeWatch = status?.rewardPerAd || 0;
-      api("/api/ads/me/watch/", { method: "POST" })
-        .then((data) => {
-          setStatus(data);
-          toast({ title: "Ad Watched", description: `You earned ${formatMoney(rewardBeforeWatch)}!` });
-        })
-        .catch((err: any) => {
-          toast({ title: "Error", description: err.message || "Unable to record ad watch", variant: "destructive" });
-        })
-        .finally(() => setWatching(false));
-      return;
+    setLoading(true);
+    loadStatus().finally(() => setLoading(false));
+    loadHistory();
+  }, []);
+
+  const resetWatchDialog = () => {
+    setWatch(null);
+    setStarting(false);
+    setCompleting(false);
+    setNeedsPlayTap(false);
+    setCountdown(0);
+    setMuted(false);
+    lastTimeRef.current = 0;
+  };
+
+  const handleStartWatch = () => {
+    if (!status || !status.canWatch || starting || watch) return;
+    setStarting(true);
+    api("/api/ads/me/watch/start/", { method: "POST" })
+      .then((data: WatchStart) => {
+        setWatch(data);
+        setCountdown(Math.ceil(data.video?.durationSeconds || 0));
+        lastTimeRef.current = 0;
+      })
+      .catch((err: any) => {
+        toast({ title: "Error", description: err.message || "Unable to start ad watch", variant: "destructive" });
+      })
+      .finally(() => setStarting(false));
+  };
+
+  const handleComplete = () => {
+    if (!watch || completing) return;
+    setCompleting(true);
+    api(`/api/ads/me/watch/${watch.watchId}/complete/`, { method: "POST" })
+      .then((data: AdsStatus) => {
+        setStatus(data);
+        toast({ title: "Ad Watched", description: `You earned ${formatMoney(watch.rewardPerAd)}!` });
+        resetWatchDialog();
+        loadHistory();
+      })
+      .catch((err: any) => {
+        toast({ title: "Error", description: err.message || "Unable to record ad watch", variant: "destructive" });
+        resetWatchDialog();
+      })
+      .finally(() => setCompleting(false));
+  };
+
+  // Try to autoplay as soon as the video element mounts with a source.
+  useEffect(() => {
+    if (!watch || !watch.video?.url) return;
+    const el = videoRef.current;
+    if (!el) return;
+    setNeedsPlayTap(false);
+    const playPromise = el.play();
+    if (playPromise && typeof playPromise.then === "function") {
+      playPromise.catch(() => {
+        setNeedsPlayTap(true);
+      });
     }
-    const timer = setTimeout(() => setCountdown((c) => c - 1), 1000);
-    return () => clearTimeout(timer);
-  }, [watching, countdown]);
+  }, [watch?.watchId]);
+
+  const handleManualPlay = () => {
+    const el = videoRef.current;
+    if (!el) return;
+    el.muted = false;
+    setMuted(false);
+    el.play()
+      .then(() => setNeedsPlayTap(false))
+      .catch(() => {
+        // Fall back to a muted autoplay attempt.
+        el.muted = true;
+        setMuted(true);
+        el.play()
+          .then(() => setNeedsPlayTap(false))
+          .catch(() => setNeedsPlayTap(true));
+      });
+  };
+
+  const toggleMute = () => {
+    const el = videoRef.current;
+    if (!el) return;
+    el.muted = !el.muted;
+    setMuted(el.muted);
+  };
+
+  const handleTimeUpdate = () => {
+    const el = videoRef.current;
+    if (!el || !watch) return;
+    lastTimeRef.current = el.currentTime;
+    const duration = watch.video?.durationSeconds || el.duration || 0;
+    const remaining = Math.max(0, Math.ceil(duration - el.currentTime));
+    setCountdown(remaining);
+  };
+
+  const handleSeeking = () => {
+    const el = videoRef.current;
+    if (!el) return;
+    // Never allow the user (or any external trigger) to jump the playhead forward.
+    if (Math.abs(el.currentTime - lastTimeRef.current) > 0.35) {
+      el.currentTime = lastTimeRef.current;
+    }
+  };
+
+  const handleEnded = () => {
+    handleComplete();
+  };
 
   const cycleActive = status?.cycleType === "welcome" || status?.cycleType === "pair";
   const progressPercent = status && status.dailyLimit > 0 ? Math.min(100, Math.round((status.watchedToday / status.dailyLimit) * 100)) : 0;
+
+  const dialogOpen = starting || Boolean(watch) || completing;
 
   return (
     <DashboardLayout>
@@ -138,29 +261,114 @@ const AdsEarning = () => {
                 type="button"
                 size="lg"
                 onClick={handleStartWatch}
-                disabled={!status.canWatch}
+                disabled={!status.canWatch || starting}
                 className="w-full gap-2 rounded-2xl sm:w-auto"
               >
                 <PlayCircle className="h-5 w-5" />
-                {status.canWatch ? "Watch Ad" : "No Ads Available Right Now"}
+                {starting ? "Starting..." : status.canWatch ? "Watch Ad" : "No Ads Available Right Now"}
               </Button>
             </CardContent>
           </Card>
         )}
+
+        <Card className={glassCardClass}>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 font-display text-lg">
+              <History className="h-5 w-5" />
+              Ads Earning History
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {historyLoading ? (
+              <p className="text-sm text-muted-foreground">Loading ads history...</p>
+            ) : history.length === 0 ? (
+              <p className="text-sm text-muted-foreground">No Ads watched yet.</p>
+            ) : (
+              <div className="divide-y divide-border/60">
+                {history.map((entry) => (
+                  <div key={entry.id} className="flex items-center justify-between gap-3 py-2.5 text-sm">
+                    <div>
+                      <p className="font-semibold text-foreground">
+                        {entry.date ? new Date(entry.date).toLocaleDateString() : "-"}
+                      </p>
+                      <p className="text-xs capitalize text-muted-foreground">
+                        {entry.cycleType ? `${entry.cycleType} cycle` : "-"}
+                      </p>
+                    </div>
+                    <p className="font-semibold text-foreground">{formatMoney(entry.rewardPkr)}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </PageShell>
 
-      <Dialog open={watching} onOpenChange={() => undefined}>
-        <DialogContent className="sm:max-w-sm" onInteractOutside={(e) => e.preventDefault()}>
+      <Dialog open={dialogOpen} onOpenChange={() => undefined}>
+        <DialogContent
+          className="sm:max-w-sm"
+          onInteractOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}
+        >
           <DialogHeader>
             <DialogTitle>Watching Ad...</DialogTitle>
             <DialogDescription>Please wait while your ad plays. Do not close this window.</DialogDescription>
           </DialogHeader>
-          <div className="flex flex-col items-center justify-center gap-3 py-6">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-2xl font-bold text-primary">
-              {countdown > 0 ? countdown : "..."}
+
+          {starting || !watch ? (
+            <div className="flex flex-col items-center justify-center gap-3 py-10">
+              <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary/30 border-t-primary" />
+              <p className="text-sm text-muted-foreground">Loading your ad...</p>
             </div>
-            <p className="text-sm text-muted-foreground">Ad will finish shortly.</p>
-          </div>
+          ) : (
+            <div className="flex flex-col items-center gap-3 py-2">
+              <div className="relative w-full overflow-hidden rounded-xl bg-black">
+                {watch.video.url ? (
+                  <video
+                    ref={videoRef}
+                    src={watch.video.url}
+                    className="aspect-video w-full"
+                    playsInline
+                    muted={muted}
+                    onTimeUpdate={handleTimeUpdate}
+                    onSeeking={handleSeeking}
+                    onEnded={handleEnded}
+                  />
+                ) : (
+                  <div className="flex aspect-video w-full items-center justify-center text-sm text-white/70">
+                    Video unavailable
+                  </div>
+                )}
+
+                <button
+                  type="button"
+                  onClick={toggleMute}
+                  className="absolute bottom-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-black/60 text-white"
+                  aria-label={muted ? "Unmute" : "Mute"}
+                >
+                  {muted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+                </button>
+
+                {needsPlayTap && (
+                  <button
+                    type="button"
+                    onClick={handleManualPlay}
+                    className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/70 text-white"
+                  >
+                    <PlayCircle className="h-10 w-10" />
+                    <span className="text-sm font-semibold">Tap to play</span>
+                  </button>
+                )}
+              </div>
+
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-xl font-bold text-primary">
+                {completing ? "..." : countdown}
+              </div>
+              <p className="text-center text-sm text-muted-foreground">
+                {completing ? "Recording your reward..." : "Ad will finish shortly. Please keep this window open."}
+              </p>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </DashboardLayout>
