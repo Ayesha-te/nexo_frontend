@@ -130,6 +130,9 @@ const Dashboard = () => {
   );
   const teamTargetLeft = Number(nextReward?.left || Math.max(Number(user?.leftTeam || 0), 1));
   const teamTargetRight = Number(nextReward?.right || Math.max(Number(user?.rightTeam || 0), 1));
+  const todayDate = new Date();
+  const todayMonthLabel = todayDate.toLocaleDateString(undefined, { month: "short" }).toUpperCase();
+  const todayDayLabel = todayDate.getDate();
 
   const getRewardLabel = (reward: string, amount: number) => (amount > 0 ? formatMoney(amount) : reward);
 
@@ -320,11 +323,21 @@ const Dashboard = () => {
 
           <Card className="overflow-hidden rounded-[20px] border-white bg-white shadow-[0_18px_42px_-35px_rgba(15,23,42,0.75)] sm:rounded-[22px]">
             <CardContent className="flex flex-col gap-3 p-3 sm:flex-row sm:items-center sm:justify-between sm:p-5">
-              <div>
-                <p className="font-display text-base font-extrabold text-slate-900 sm:text-lg">{"📅"} Daily Attendance</p>
-                <div className="mt-2 flex flex-wrap gap-4 text-sm text-slate-600">
-                  <span>This month: <span className="font-bold text-slate-900">{attendancePresentDays}</span> days</span>
-                  <span>Current streak: <span className="font-bold text-slate-900">{attendanceStreak}</span> days</span>
+              <div className="flex items-center gap-3">
+                <div className="flex w-11 flex-shrink-0 flex-col overflow-hidden rounded-lg border border-slate-200 shadow-sm">
+                  <div className="bg-rose-500 py-0.5 text-center text-[9px] font-bold uppercase tracking-wide text-white">
+                    {todayMonthLabel}
+                  </div>
+                  <div className="bg-white py-1 text-center font-display text-lg font-extrabold text-slate-900">
+                    {todayDayLabel}
+                  </div>
+                </div>
+                <div>
+                  <p className="font-display text-base font-extrabold text-slate-900 sm:text-lg">Daily Attendance</p>
+                  <div className="mt-2 flex flex-wrap gap-4 text-sm text-slate-600">
+                    <span>This month: <span className="font-bold text-slate-900">{attendancePresentDays}</span> days</span>
+                    <span>Current streak: <span className="font-bold text-slate-900">{attendanceStreak}</span> days</span>
+                  </div>
                 </div>
               </div>
               <Button
