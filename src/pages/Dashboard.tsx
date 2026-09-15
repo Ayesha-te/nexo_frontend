@@ -273,9 +273,9 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <section className="rounded-[22px] border border-white/80 bg-white p-3 shadow-[0_20px_60px_-38px_rgba(15,23,42,0.65)] sm:rounded-[24px] sm:p-5">
-            <div className="grid grid-cols-[5.5rem_minmax(0,1fr)] items-center gap-3 sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:gap-4">
-              <div className={cn("flex h-20 w-20 shrink-0 items-center justify-center rounded-full border-4 p-1 shadow-lg sm:h-24 sm:w-24", getRingClass(achievementLevel))}>
+          <section className="rounded-[16px] border border-white/80 bg-white p-2.5 shadow-[0_14px_36px_-30px_rgba(15,23,42,0.65)] sm:rounded-[18px] sm:p-3.5">
+            <div className="grid grid-cols-[4rem_minmax(0,1fr)] items-center gap-2.5 sm:grid-cols-[4.5rem_minmax(0,1fr)] sm:gap-3">
+              <div className={cn("flex h-14 w-14 shrink-0 items-center justify-center rounded-full border-[3px] p-0.5 shadow-md sm:h-16 sm:w-16", getRingClass(achievementLevel))}>
                 <div className="flex h-full w-full overflow-hidden rounded-full bg-slate-100">
                   {user?.profilePic && !profileImageFailed ? (
                     <img
@@ -285,30 +285,30 @@ const Dashboard = () => {
                       className="h-full w-full object-cover"
                     />
                   ) : (
-                    <span className="m-auto font-display text-3xl font-bold text-slate-700 sm:text-3xl">{avatarLetter}</span>
+                    <span className="m-auto font-display text-xl font-bold text-slate-700 sm:text-2xl">{avatarLetter}</span>
                   )}
                 </div>
               </div>
               <div className="min-w-0 self-center">
-                <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500 sm:text-xs">Welcome Back</p>
-                <h1 className="mt-0.5 truncate font-display text-[1.65rem] font-semibold leading-tight text-slate-900 sm:mt-1 sm:text-3xl" title={fullName}>
+                <p className="text-[9px] font-semibold uppercase tracking-wide text-slate-500 sm:text-[11px]">Welcome Back</p>
+                <h1 className="mt-0.5 truncate font-display text-lg font-semibold leading-tight text-slate-900 sm:text-xl" title={fullName}>
                   {fullName}
                 </h1>
-                <div className="mt-1.5 inline-flex max-w-full items-center rounded-full border border-emerald-100 bg-emerald-50 px-2.5 py-0.5 text-xs font-bold text-emerald-700 sm:mt-2 sm:px-3 sm:py-1">
+                <div className="mt-1 inline-flex max-w-full items-center rounded-full border border-emerald-100 bg-emerald-50 px-2 py-0.5 text-[11px] font-bold text-emerald-700 sm:px-2.5">
                   <span className="truncate">{achievementLevel}{"\u2605"} Nexo Leader</span>
                 </div>
               </div>
             </div>
 
-            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 sm:mt-4 sm:gap-3">
-              <div className="inline-flex rounded-2xl border border-slate-100 bg-slate-50 p-1">
+            <div className="mt-2.5 flex flex-wrap items-center justify-between gap-2 sm:mt-3">
+              <div className="inline-flex rounded-xl border border-slate-100 bg-slate-50 p-0.5">
                 {(["PKR", "USD"] as const).map((currency) => (
                   <Button
                     key={currency}
                     type="button"
                     size="sm"
                     variant={displayCurrency === currency ? "default" : "ghost"}
-                    className="h-8 rounded-xl px-4 sm:h-9 sm:px-5"
+                    className="h-7 rounded-lg px-3 text-xs sm:h-8 sm:px-4"
                     onClick={() => setDisplayCurrency(currency)}
                     disabled={currency === "USD" && usdRatePkr <= 0}
                   >
@@ -316,13 +316,13 @@ const Dashboard = () => {
                   </Button>
                 ))}
               </div>
-              <div className="text-right text-xs font-medium text-slate-500">
+              <div className="text-right text-[11px] font-medium text-slate-500">
                 <p>Total Withdraw</p>
-                <p className="font-display text-sm font-extrabold text-slate-900 sm:text-base">{formatMoney(Number(user?.totalWithdraw || 0))}</p>
+                <p className="font-display text-sm font-extrabold text-slate-900">{formatMoney(Number(user?.totalWithdraw || 0))}</p>
               </div>
             </div>
             {displayCurrency === "USD" && usdRatePkr > 0 ? (
-              <p className="mt-2 text-xs text-slate-500">Showing financial amounts at 1 USD = PKR {usdRatePkr.toLocaleString()}.</p>
+              <p className="mt-1.5 text-[11px] text-slate-500">Showing financial amounts at 1 USD = PKR {usdRatePkr.toLocaleString()}.</p>
             ) : null}
           </section>
 
