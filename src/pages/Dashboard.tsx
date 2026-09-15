@@ -326,24 +326,24 @@ const Dashboard = () => {
             ) : null}
           </section>
 
-          <Card className="relative overflow-hidden rounded-[16px] border-white text-white shadow-[0_14px_32px_-22px_rgba(15,23,42,0.85)] nexo-gradient">
-            <div className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full bg-white/15 blur-2xl" />
-            <CardContent className="relative flex flex-col gap-2.5 p-3 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:p-3.5">
-              <div className="flex items-center gap-2.5">
-                <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-white/20">
-                  <Clapperboard className="h-4.5 w-4.5" />
+          <Card className="relative overflow-hidden rounded-[14px] border-white text-white shadow-[0_10px_24px_-18px_rgba(15,23,42,0.85)] nexo-gradient">
+            <div className="pointer-events-none absolute -right-6 -top-6 h-16 w-16 rounded-full bg-white/15 blur-2xl" />
+            <CardContent className="relative flex flex-col gap-2 p-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-2.5 sm:p-2.5">
+              <div className="flex items-center gap-2">
+                <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-white/20">
+                  <Clapperboard className="h-3.5 w-3.5" />
                 </div>
                 <div>
                   <div className="flex items-center gap-1.5">
-                    <p className="font-display text-sm font-extrabold sm:text-base">🎬 Ads Earning</p>
-                    <span className="rounded-full bg-white/25 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide">New</span>
+                    <p className="font-display text-xs font-extrabold sm:text-sm">🎬 Ads Earning</p>
+                    <span className="rounded-full bg-white/25 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wide">New</span>
                   </div>
-                  <p className="mt-0.5 max-w-md text-xs text-white/90">Watch short daily ads and boost your income automatically.</p>
+                  <p className="mt-0.5 max-w-md text-[11px] text-white/90">Watch short daily ads and boost your income automatically.</p>
                 </div>
               </div>
-              <Button asChild size="sm" className="w-full flex-shrink-0 gap-1.5 rounded-xl bg-white text-primary hover:bg-white/90 sm:w-auto">
+              <Button asChild size="sm" className="h-8 w-full flex-shrink-0 gap-1.5 rounded-lg bg-white text-xs text-primary hover:bg-white/90 sm:w-auto">
                 <Link to="/ads-earning">
-                  <PlayCircle className="h-4 w-4" />
+                  <PlayCircle className="h-3.5 w-3.5" />
                   Watch Ads
                 </Link>
               </Button>
