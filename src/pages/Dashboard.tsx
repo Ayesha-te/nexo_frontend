@@ -9,6 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
+  Calendar,
+  CalendarCheck,
   Clapperboard,
   Gift,
   KeyRound,
@@ -193,6 +195,16 @@ const Dashboard = () => {
       tint: "text-emerald-600 bg-emerald-50",
     },
     {
+      title: "Daily Attendance",
+      value: attendanceMarkedToday ? "✅ Marked Today" : "Tap to Mark",
+      rawValue: attendancePresentDays,
+      target: Math.max(todayDayLabel, 1),
+      icon: attendanceMarkedToday ? CalendarCheck : Calendar,
+      bar: attendanceMarkedToday ? "bg-emerald-500" : "bg-rose-400",
+      tint: attendanceMarkedToday ? "text-emerald-600 bg-emerald-50" : "text-rose-500 bg-rose-50",
+      onClick: attendanceMarkedToday || attendanceLoading ? undefined : handleMarkAttendance,
+    },
+    {
       title: "Reward Income",
       value: formatMoney(Number(user?.rewardIncome || 0)),
       rawValue: Number(user?.rewardIncome || 0),
@@ -200,15 +212,6 @@ const Dashboard = () => {
       icon: Gift,
       bar: "bg-sky-500",
       tint: "text-sky-600 bg-sky-50",
-    },
-    {
-      title: "Weekly Income",
-      value: formatMoney(weeklyIncome),
-      rawValue: weeklyIncome,
-      target: financialTarget,
-      icon: Wallet,
-      bar: "bg-violet-500",
-      tint: "text-violet-600 bg-violet-50",
     },
     {
       title: "Available Pins",
@@ -323,89 +326,59 @@ const Dashboard = () => {
             ) : null}
           </section>
 
-          <Card className="overflow-hidden rounded-[20px] border-white bg-white shadow-[0_18px_42px_-35px_rgba(15,23,42,0.75)] sm:rounded-[22px]">
-            <CardContent className="flex flex-col gap-3 p-3 sm:flex-row sm:items-center sm:justify-between sm:p-5">
-              <div className="flex items-center gap-3">
-                <div className="flex w-11 flex-shrink-0 flex-col overflow-hidden rounded-lg border border-slate-200 shadow-sm">
-                  <div className="bg-rose-500 py-0.5 text-center text-[9px] font-bold uppercase tracking-wide text-white">
-                    {todayMonthLabel}
-                  </div>
-                  <div className="bg-white py-1 text-center font-display text-lg font-extrabold text-slate-900">
-                    {todayDayLabel}
-                  </div>
+          <Card className="relative overflow-hidden rounded-[16px] border-white text-white shadow-[0_14px_32px_-22px_rgba(15,23,42,0.85)] nexo-gradient">
+            <div className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full bg-white/15 blur-2xl" />
+            <CardContent className="relative flex flex-col gap-2.5 p-3 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:p-3.5">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-white/20">
+                  <Clapperboard className="h-4.5 w-4.5" />
                 </div>
                 <div>
-                  <p className="font-display text-base font-extrabold text-slate-900 sm:text-lg">Daily Attendance</p>
-                  <div className="mt-2 flex flex-wrap gap-4 text-sm text-slate-600">
-                    <span>This month: <span className="font-bold text-slate-900">{attendancePresentDays}</span> days</span>
-                    <span>Current streak: <span className="font-bold text-slate-900">{attendanceStreak}</span> days</span>
+                  <div className="flex items-center gap-1.5">
+                    <p className="font-display text-sm font-extrabold sm:text-base">🎬 Ads Earning</p>
+                    <span className="rounded-full bg-white/25 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide">New</span>
                   </div>
+                  <p className="mt-0.5 max-w-md text-xs text-white/90">Watch short daily ads and boost your income automatically.</p>
                 </div>
               </div>
-              <Button
-                type="button"
-                onClick={handleMarkAttendance}
-                disabled={attendanceMarkedToday || attendanceLoading}
-                className={cn(
-                  "rounded-2xl px-5",
-                  attendanceMarkedToday ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-100" : "nexo-gradient text-primary-foreground",
-                )}
-              >
-                {attendanceMarkedToday ? "✅ Attendance Marked Today" : attendanceLoading ? "Marking..." : "Mark Today's Attendance"}
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card className="relative overflow-hidden rounded-[20px] border-white text-white shadow-[0_20px_48px_-30px_rgba(15,23,42,0.85)] sm:rounded-[22px] nexo-gradient">
-            <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/15 blur-2xl" />
-            <div className="pointer-events-none absolute -bottom-14 -left-10 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
-            <CardContent className="relative flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-6">
-              <div className="flex items-center gap-3 sm:gap-4">
-                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-white/20 sm:h-14 sm:w-14">
-                  <Clapperboard className="h-6 w-6 sm:h-7 sm:w-7" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <p className="font-display text-lg font-extrabold sm:text-xl">🎬 Ads Earning</p>
-                    <span className="rounded-full bg-white/25 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide">New</span>
-                  </div>
-                  <p className="mt-1 max-w-md text-sm text-white/90">
-                    Watch short daily ads and boost your income automatically — no extra work, just tap and watch.
-                  </p>
-                </div>
-              </div>
-              <Button asChild size="lg" className="w-full flex-shrink-0 gap-2 rounded-2xl bg-white text-primary hover:bg-white/90 sm:w-auto">
+              <Button asChild size="sm" className="w-full flex-shrink-0 gap-1.5 rounded-xl bg-white text-primary hover:bg-white/90 sm:w-auto">
                 <Link to="/ads-earning">
-                  <PlayCircle className="h-5 w-5" />
+                  <PlayCircle className="h-4 w-4" />
                   Watch Ads
                 </Link>
               </Button>
             </CardContent>
           </Card>
 
-          <div className="grid grid-cols-2 gap-2.5 sm:gap-3 lg:grid-cols-3">
+          <div className="grid grid-cols-2 gap-2 sm:gap-2.5 lg:grid-cols-3">
             {stats.map((stat, index) => {
               const progress = clampPercent(stat.rawValue, stat.target);
               const Icon = stat.icon;
+              const clickable = Boolean((stat as { onClick?: () => void }).onClick);
               return (
                 <Card
                   key={stat.title}
-                  className="overflow-hidden rounded-[20px] border-white bg-white shadow-[0_18px_42px_-35px_rgba(15,23,42,0.75)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_22px_52px_-36px_rgba(15,23,42,0.85)] sm:rounded-[22px]"
+                  role={clickable ? "button" : undefined}
+                  onClick={(stat as { onClick?: () => void }).onClick}
+                  className={cn(
+                    "overflow-hidden rounded-[16px] border-white bg-white shadow-[0_14px_32px_-28px_rgba(15,23,42,0.75)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_40px_-30px_rgba(15,23,42,0.85)] sm:rounded-[18px]",
+                    clickable && "cursor-pointer active:scale-[0.98]",
+                  )}
                   style={{ animationDelay: `${index * 45}ms` }}
                 >
-                  <CardContent className="p-3 sm:p-5">
+                  <CardContent className="p-2.5 sm:p-3.5">
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0">
-                        <p className="text-[10px] font-extrabold uppercase tracking-wide text-slate-500 sm:text-xs">{stat.title}</p>
-                        <p className="mt-1.5 truncate font-display text-xl font-extrabold text-slate-900 sm:mt-2 sm:text-2xl" title={stat.value}>
+                        <p className="text-[9px] font-extrabold uppercase tracking-wide text-slate-500 sm:text-[11px]">{stat.title}</p>
+                        <p className="mt-1 truncate font-display text-base font-extrabold text-slate-900 sm:mt-1.5 sm:text-lg" title={stat.value}>
                           {stat.value}
                         </p>
                       </div>
-                      <div className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl sm:h-11 sm:w-11", stat.tint)}>
-                        <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
+                      <div className={cn("flex h-7 w-7 shrink-0 items-center justify-center rounded-xl sm:h-9 sm:w-9", stat.tint)}>
+                        <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                       </div>
                     </div>
-                    <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-slate-100 sm:mt-4 sm:h-2">
+                    <div className="mt-2 h-1 overflow-hidden rounded-full bg-slate-100 sm:mt-3 sm:h-1.5">
                       <div className={cn("h-full rounded-full transition-all duration-500", stat.bar)} style={{ width: `${progress}%` }} />
                     </div>
                   </CardContent>
