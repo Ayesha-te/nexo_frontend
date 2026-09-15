@@ -9,9 +9,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
+  Clapperboard,
   Gift,
   KeyRound,
   Network,
+  PlayCircle,
   ShoppingBag,
   ShieldCheck,
   Sparkles,
@@ -350,6 +352,33 @@ const Dashboard = () => {
                 )}
               >
                 {attendanceMarkedToday ? "✅ Attendance Marked Today" : attendanceLoading ? "Marking..." : "Mark Today's Attendance"}
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="relative overflow-hidden rounded-[20px] border-white text-white shadow-[0_20px_48px_-30px_rgba(15,23,42,0.85)] sm:rounded-[22px] nexo-gradient">
+            <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/15 blur-2xl" />
+            <div className="pointer-events-none absolute -bottom-14 -left-10 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
+            <CardContent className="relative flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-white/20 sm:h-14 sm:w-14">
+                  <Clapperboard className="h-6 w-6 sm:h-7 sm:w-7" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <p className="font-display text-lg font-extrabold sm:text-xl">🎬 Ads Earning</p>
+                    <span className="rounded-full bg-white/25 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide">New</span>
+                  </div>
+                  <p className="mt-1 max-w-md text-sm text-white/90">
+                    Watch short daily ads and boost your income automatically — no extra work, just tap and watch.
+                  </p>
+                </div>
+              </div>
+              <Button asChild size="lg" className="w-full flex-shrink-0 gap-2 rounded-2xl bg-white text-primary hover:bg-white/90 sm:w-auto">
+                <Link to="/ads-earning">
+                  <PlayCircle className="h-5 w-5" />
+                  Watch Ads
+                </Link>
               </Button>
             </CardContent>
           </Card>
