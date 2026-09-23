@@ -603,11 +603,6 @@ const Dashboard = () => {
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full nexo-gradient text-lg font-bold text-primary-foreground shadow-[0_14px_30px_-18px_hsl(var(--primary)/0.9)]">
                   H
                 </div>
-                <div>
-                  <h3 className="font-display text-lg font-extrabold text-slate-900">Developed by Hamza</h3>
-                  <p className="text-sm text-slate-500">Want a similar system for your business? Contact on WhatsApp.</p>
-                  <p className="mt-1 text-sm font-bold text-slate-900">+92 301 1045668</p>
-                </div>
               </div>
               <a
                 href="https://wa.me/923011045668"
