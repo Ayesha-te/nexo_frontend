@@ -1,13 +1,19 @@
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 
+const DEFAULT_WHATSAPP_NUMBER = "923448252109";
+
 export function useCurrency() {
   const [usdRatePkr, setUsdRatePkr] = useState(0);
   const [displayCurrency, setDisplayCurrency] = useState<"PKR" | "USD">("PKR");
+  const [whatsappNumber, setWhatsappNumber] = useState(DEFAULT_WHATSAPP_NUMBER);
 
   useEffect(() => {
     api("/api/accounts/settings/")
-      .then((settings) => setUsdRatePkr(Number(settings.usdRatePkr || 0)))
+      .then((settings) => {
+        setUsdRatePkr(Number(settings.usdRatePkr || 0));
+        setWhatsappNumber(settings.whatsappNumber || DEFAULT_WHATSAPP_NUMBER);
+      })
       .catch(() => setUsdRatePkr(0));
   }, []);
 
@@ -19,5 +25,5 @@ export function useCurrency() {
     return `Rs. ${value.toLocaleString()}`;
   };
 
-  return { usdRatePkr, displayCurrency, setDisplayCurrency, formatMoney };
+  return { usdRatePkr, displayCurrency, setDisplayCurrency, formatMoney, whatsappNumber };
 }

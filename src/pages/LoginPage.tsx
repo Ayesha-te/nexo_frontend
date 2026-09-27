@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,6 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { api } from "@/lib/api";
+
+const DEFAULT_WHATSAPP_NUMBER = "923448252109";
 
 const LoginPage = () => {
   const [identifier, setIdentifier] = useState("");
@@ -13,8 +16,15 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [whatsappNumber, setWhatsappNumber] = useState(DEFAULT_WHATSAPP_NUMBER);
   const { login } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    api("/api/accounts/settings/")
+      .then((settings) => setWhatsappNumber(settings.whatsappNumber || DEFAULT_WHATSAPP_NUMBER))
+      .catch(() => setWhatsappNumber(DEFAULT_WHATSAPP_NUMBER));
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -104,10 +114,10 @@ const LoginPage = () => {
             </div>
             <div className="min-w-0 flex-1">
               <h3 className="text-sm font-normal leading-snug text-foreground">Need system details before joining?</h3>
-              <p className="text-xs font-normal text-muted-foreground">Contact us on WhatsApp: +92 344 8252109</p>
+              <p className="text-xs font-normal text-muted-foreground">Contact us on WhatsApp: +{whatsappNumber}</p>
             </div>
             <a
-              href="https://wa.me/923448252109"
+              href={`https://wa.me/${whatsappNumber}`}
               target="_blank"
               rel="noopener noreferrer"
               className="rounded-xl bg-[#10c98b] px-3 py-2 text-xs font-bold text-white transition-all hover:bg-[#0fbd82]"

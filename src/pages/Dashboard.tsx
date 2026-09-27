@@ -67,7 +67,7 @@ const Dashboard = () => {
   const { user, refreshUser } = useAuth();
   const [rewardPlan, setRewardPlan] = useState<RewardPlanItem[]>([]);
   const [earnedRewards, setEarnedRewards] = useState<EarnedReward[]>([]);
-  const { usdRatePkr, displayCurrency, setDisplayCurrency, formatMoney } = useCurrency();
+  const { usdRatePkr, displayCurrency, setDisplayCurrency, formatMoney, whatsappNumber } = useCurrency();
   const [notifications, setNotifications] = useState<string[]>([]);
   const [monthlyHistory, setMonthlyHistory] = useState<HistoryPoint[]>([]);
   const [weeklyIncome, setWeeklyIncome] = useState(0);
@@ -534,11 +534,11 @@ const Dashboard = () => {
                 <div>
                   <h3 className="font-display text-lg font-extrabold text-slate-900">Contact Us</h3>
                   <p className="text-sm text-slate-500">Need help? Message us on WhatsApp.</p>
-                  <p className="mt-1 text-sm font-bold text-slate-900">+92 344 8252109</p>
+                  <p className="mt-1 text-sm font-bold text-slate-900">+{whatsappNumber}</p>
                 </div>
               </div>
               <a
-                href="https://wa.me/923448252109"
+                href={`https://wa.me/${whatsappNumber}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex h-11 items-center justify-center rounded-2xl bg-[#10c98b] px-5 text-sm font-bold text-white shadow-[0_14px_30px_-18px_rgba(16,201,139,0.9)] transition-all hover:-translate-y-0.5 hover:bg-[#0fbd82]"
