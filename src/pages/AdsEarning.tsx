@@ -8,18 +8,25 @@ import { useToast } from "@/hooks/use-toast";
 import { useCurrency } from "@/hooks/useCurrency";
 import { api } from "@/lib/api";
 import { glassCardClass, PageShell } from "@/components/PageShell";
-import { Clapperboard, History, Lock, PlayCircle, Volume2, VolumeX } from "lucide-react";
+import { Clapperboard, History, Lock, PlayCircle, Users2, Volume2, VolumeX } from "lucide-react";
+
+type CycleType = "welcome" | "pair";
+
+type AdSlot = {
+  cycleType: CycleType;
+  active: boolean;
+  startDate: string | null;
+  endDate: string | null;
+  rewardPerAd: number;
+  canWatch: boolean;
+};
 
 type AdsStatus = {
   enabled: boolean;
-  cycleType: "welcome" | "pair" | null;
-  startDate: string | null;
-  endDate: string | null;
   dailyLimit: number;
   watchedToday: number;
   remainingToday: number;
-  rewardPerAd: number;
-  canWatch: boolean;
+  ads: AdSlot[];
 };
 
 type WatchVideo = {
@@ -39,16 +46,22 @@ type AdsHistoryEntry = {
   id: number;
   date: string;
   rewardPkr: number;
-  cycleType: "welcome" | "pair" | null;
+  cycleType: CycleType | null;
   completedAt: string;
+};
+
+const SLOT_LABELS: Record<CycleType, { title: string; icon: typeof Clapperboard; activeHeading: string }> = {
+  welcome: { title: "Welcome Ads", icon: Clapperboard, activeHeading: "🎉 Welcome Ads Active" },
+  pair: { title: "Pair Complete Ads", icon: Users2, activeHeading: "🔓 Pair Complete Ads Active" },
 };
 
 const AdsEarning = () => {
   const [status, setStatus] = useState<AdsStatus | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const [starting, setStarting] = useState(false);
+  const [startingType, setStartingType] = useState<CycleType | null>(null);
   const [watch, setWatch] = useState<WatchStart | null>(null);
+  const [watchingType, setWatchingType] = useState<CycleType | null>(null);
   const [completing, setCompleting] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const [needsPlayTap, setNeedsPlayTap] = useState(false);
@@ -95,7 +108,8 @@ const AdsEarning = () => {
 
   const resetWatchDialog = () => {
     setWatch(null);
-    setStarting(false);
+    setWatchingType(null);
+    setStartingType(null);
     setCompleting(false);
     setNeedsPlayTap(false);
     setCountdown(0);
@@ -103,19 +117,21 @@ const AdsEarning = () => {
     lastTimeRef.current = 0;
   };
 
-  const handleStartWatch = () => {
-    if (!status || !status.canWatch || starting || watch) return;
-    setStarting(true);
-    api("/api/ads/me/watch/start/", { method: "POST" })
+  const handleStartWatch = (cycleType: CycleType) => {
+    const slot = status?.ads.find((ad) => ad.cycleType === cycleType);
+    if (!slot || !slot.canWatch || startingType || watch) return;
+    setStartingType(cycleType);
+    api("/api/ads/me/watch/start/", { method: "POST", body: JSON.stringify({ cycleType }) })
       .then((data: WatchStart) => {
         setWatch(data);
+        setWatchingType(cycleType);
         setCountdown(Math.ceil(data.video?.durationSeconds || 0));
         lastTimeRef.current = 0;
       })
       .catch((err: any) => {
         toast({ title: "Error", description: err.message || "Unable to start ad watch", variant: "destructive" });
       })
-      .finally(() => setStarting(false));
+      .finally(() => setStartingType(null));
   };
 
   const handleComplete = () => {
@@ -195,23 +211,24 @@ const AdsEarning = () => {
     handleComplete();
   };
 
-  const cycleActive = status?.cycleType === "welcome" || status?.cycleType === "pair";
-  const progressPercent = status && status.dailyLimit > 0 ? Math.min(100, Math.round((status.watchedToday / status.dailyLimit) * 100)) : 0;
+  const activeAds = status?.ads.filter((ad) => ad.active) || [];
+  const progressPercent =
+    status && status.dailyLimit > 0 ? Math.min(100, Math.round((status.watchedToday / status.dailyLimit) * 100)) : 0;
 
-  const dialogOpen = starting || Boolean(watch) || completing;
+  const dialogOpen = Boolean(startingType) || Boolean(watch) || completing;
 
   return (
     <DashboardLayout>
       <PageShell
         icon={Clapperboard}
         title="Ads Earning"
-        description="Watch short ads during your active cycle to earn extra rewards."
+        description="Watch short ads during your active cycles to earn extra rewards."
       >
         {loading ? (
           <Card className={glassCardClass}>
             <CardContent className="p-6 text-sm text-muted-foreground">Loading ads status...</CardContent>
           </Card>
-        ) : !status || !cycleActive ? (
+        ) : !status || activeAds.length === 0 ? (
           <Card className={glassCardClass}>
             <CardContent className="flex flex-col items-center gap-3 p-8 text-center">
               <div className="flex h-14 w-14 items-center justify-center rounded-full bg-muted">
@@ -220,53 +237,64 @@ const AdsEarning = () => {
               <h3 className="font-display text-lg font-extrabold text-foreground">Ads Locked</h3>
               <p className="max-w-md text-sm text-muted-foreground">
                 Ads earning unlocks during your welcome window or after completing a qualifying Binary Pair. Keep
-                growing your team or check back once your cycle starts.
+                growing your team or check back once a cycle starts.
               </p>
             </CardContent>
           </Card>
         ) : (
+          <div className="grid gap-4 lg:grid-cols-2">
+            {activeAds.map((slot) => {
+              const label = SLOT_LABELS[slot.cycleType];
+              const Icon = label.icon;
+              const isStartingThis = startingType === slot.cycleType;
+              return (
+                <Card key={slot.cycleType} className={glassCardClass}>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 font-display text-lg">
+                      <Icon className="h-5 w-5" />
+                      {label.activeHeading}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-5">
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <div className="rounded-xl bg-background/70 p-3">
+                        <p className="text-[10px] font-bold uppercase text-muted-foreground">Cycle Window</p>
+                        <p className="mt-1 text-sm font-semibold text-foreground">
+                          {slot.startDate ? new Date(slot.startDate).toLocaleDateString() : "-"} -{" "}
+                          {slot.endDate ? new Date(slot.endDate).toLocaleDateString() : "-"}
+                        </p>
+                      </div>
+                      <div className="rounded-xl bg-background/70 p-3">
+                        <p className="text-[10px] font-bold uppercase text-muted-foreground">Reward Per Ad</p>
+                        <p className="mt-1 text-sm font-semibold text-foreground">{formatMoney(slot.rewardPerAd)}</p>
+                      </div>
+                    </div>
+
+                    <Button
+                      type="button"
+                      size="lg"
+                      onClick={() => handleStartWatch(slot.cycleType)}
+                      disabled={!slot.canWatch || Boolean(startingType) || Boolean(watch)}
+                      className="w-full gap-2 rounded-2xl"
+                    >
+                      <PlayCircle className="h-5 w-5" />
+                      {isStartingThis ? "Starting..." : slot.canWatch ? "Watch Ad" : "No Ads Available Right Now"}
+                    </Button>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        )}
+
+        {status && (
           <Card className={glassCardClass}>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 font-display text-lg">
-                {status.cycleType === "welcome" ? "🎉 Welcome Ads Active" : "🔓 Ads Cycle Active"}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-5">
-              <div className="grid gap-3 sm:grid-cols-3">
-                <div className="rounded-xl bg-background/70 p-3">
-                  <p className="text-[10px] font-bold uppercase text-muted-foreground">Cycle Window</p>
-                  <p className="mt-1 text-sm font-semibold text-foreground">
-                    {status.startDate ? new Date(status.startDate).toLocaleDateString() : "-"} -{" "}
-                    {status.endDate ? new Date(status.endDate).toLocaleDateString() : "-"}
-                  </p>
-                </div>
-                <div className="rounded-xl bg-background/70 p-3">
-                  <p className="text-[10px] font-bold uppercase text-muted-foreground">Reward Per Ad</p>
-                  <p className="mt-1 text-sm font-semibold text-foreground">{formatMoney(status.rewardPerAd)}</p>
-                </div>
-                <div className="rounded-xl bg-background/70 p-3">
-                  <p className="text-[10px] font-bold uppercase text-muted-foreground">Today's Progress</p>
-                  <p className="mt-1 text-sm font-semibold text-foreground">
-                    {status.watchedToday} / {status.dailyLimit}
-                  </p>
-                </div>
-              </div>
-
-              <div className="space-y-1">
-                <Progress value={progressPercent} />
-                <p className="text-xs text-muted-foreground">{status.remainingToday} ad(s) remaining today.</p>
-              </div>
-
-              <Button
-                type="button"
-                size="lg"
-                onClick={handleStartWatch}
-                disabled={!status.canWatch || starting}
-                className="w-full gap-2 rounded-2xl sm:w-auto"
-              >
-                <PlayCircle className="h-5 w-5" />
-                {starting ? "Starting..." : status.canWatch ? "Watch Ad" : "No Ads Available Right Now"}
-              </Button>
+            <CardContent className="space-y-1 p-5">
+              <Progress value={progressPercent} />
+              <p className="text-xs text-muted-foreground">
+                {status.watchedToday} / {status.dailyLimit} ads watched today — {status.remainingToday} remaining
+                (shared across all active ad types).
+              </p>
             </CardContent>
           </Card>
         )}
@@ -311,11 +339,13 @@ const AdsEarning = () => {
           onEscapeKeyDown={(e) => e.preventDefault()}
         >
           <DialogHeader>
-            <DialogTitle>Watching Ad...</DialogTitle>
+            <DialogTitle>
+              Watching {watchingType ? SLOT_LABELS[watchingType].title : "Ad"}...
+            </DialogTitle>
             <DialogDescription>Please wait while your ad plays. Do not close this window.</DialogDescription>
           </DialogHeader>
 
-          {starting || !watch ? (
+          {Boolean(startingType) || !watch ? (
             <div className="flex flex-col items-center justify-center gap-3 py-10">
               <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary/30 border-t-primary" />
               <p className="text-sm text-muted-foreground">Loading your ad...</p>
