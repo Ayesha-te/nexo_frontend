@@ -50,6 +50,16 @@ type AdsHistoryEntry = {
   completedAt: string;
 };
 
+const formatDate = (value: string | null) => {
+  if (!value) return "-";
+  // Parse the "YYYY-MM-DD" parts directly rather than via `new Date(value)`, which reads
+  // the string as UTC midnight and can shift a day off in non-UTC timezones.
+  const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(value);
+  if (!match) return "-";
+  const [, year, month, day] = match;
+  return `${day}/${month}/${year}`;
+};
+
 const SLOT_LABELS: Record<CycleType, { title: string; icon: typeof Clapperboard; activeHeading: string }> = {
   welcome: { title: "Welcome Ads", icon: Clapperboard, activeHeading: "🎉 Welcome Ads Active" },
   pair: { title: "Pair Complete Ads", icon: Users2, activeHeading: "🔓 Pair Complete Ads Active" },
@@ -260,8 +270,7 @@ const AdsEarning = () => {
                       <div className="rounded-xl bg-background/70 p-3">
                         <p className="text-[10px] font-bold uppercase text-muted-foreground">Cycle Window</p>
                         <p className="mt-1 text-sm font-semibold text-foreground">
-                          {slot.startDate ? new Date(slot.startDate).toLocaleDateString() : "-"} -{" "}
-                          {slot.endDate ? new Date(slot.endDate).toLocaleDateString() : "-"}
+                          {formatDate(slot.startDate)} - {formatDate(slot.endDate)}
                         </p>
                       </div>
                       <div className="rounded-xl bg-background/70 p-3">
@@ -317,7 +326,7 @@ const AdsEarning = () => {
                   <div key={entry.id} className="flex items-center justify-between gap-3 py-2.5 text-sm">
                     <div>
                       <p className="font-semibold text-foreground">
-                        {entry.date ? new Date(entry.date).toLocaleDateString() : "-"}
+                        {formatDate(entry.date)}
                       </p>
                       <p className="text-xs capitalize text-muted-foreground">
                         {entry.cycleType ? `${entry.cycleType} cycle` : "-"}
