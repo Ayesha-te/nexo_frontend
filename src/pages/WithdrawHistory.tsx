@@ -46,7 +46,7 @@ const WithdrawHistory = () => {
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {[
                 ["Normal tax", "5%"],
-                ["Cap limit", "PKR 4,000"],
+                ["Cap limit", "PKR 2,000"],
                 ["Reward tax", "10%"],
                 ["Clearing", "Automatic"],
               ].map(([label, value]) => (

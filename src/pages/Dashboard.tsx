@@ -437,8 +437,8 @@ const Dashboard = () => {
               <div className="rounded-2xl bg-slate-50 p-4">
                 <h3 className="font-bold text-slate-900">User Set Income</h3>
                 <p className="mt-2">Income is based on completed binary sets from your total left and right teams.</p>
-                <p className="mt-2">1st completed set: <span className="font-bold text-primary">Rs. 400</span></p>
-                <p>Sets 2 to 99: <span className="font-bold text-primary">Rs. 200</span> each</p>
+                <p className="mt-2">1st completed set: <span className="font-bold text-primary">Rs. 200</span></p>
+                <p>Sets 2 to 99: <span className="font-bold text-primary">Rs. 100</span> each</p>
                 <p>Set 100 onward: <span className="font-bold text-primary">Rs. 100</span> each</p>
                 <div className="mt-4 flex flex-wrap gap-2">
                   <Button asChild className="rounded-2xl">
@@ -454,7 +454,7 @@ const Dashboard = () => {
                 <div className="mt-3 grid grid-cols-2 gap-2">
                   {[
                     ["Daily clearing", "Automatic"],
-                    ["Cap limit", "Rs. 4,000"],
+                    ["Cap limit", "Rs. 2,000"],
                     ["Normal tax", "5%"],
                     ["Cap/reward tax", "10%"],
                   ].map(([label, value]) => (
