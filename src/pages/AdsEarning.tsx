@@ -19,6 +19,8 @@ type AdSlot = {
   endDate: string | null;
   rewardPerAd: number;
   canWatch: boolean;
+  watchedToday: number;
+  remainingToday: number;
 };
 
 type AdsStatus = {
@@ -222,8 +224,6 @@ const AdsEarning = () => {
   };
 
   const activeAds = status?.ads.filter((ad) => ad.active) || [];
-  const progressPercent =
-    status && status.dailyLimit > 0 ? Math.min(100, Math.round((status.watchedToday / status.dailyLimit) * 100)) : 0;
 
   const dialogOpen = Boolean(startingType) || Boolean(watch) || completing;
 
@@ -279,6 +279,20 @@ const AdsEarning = () => {
                       </div>
                     </div>
 
+                    <div className="space-y-1">
+                      <Progress
+                        value={
+                          status && status.dailyLimit > 0
+                            ? Math.min(100, Math.round((slot.watchedToday / status.dailyLimit) * 100))
+                            : 0
+                        }
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        {slot.watchedToday} / {status?.dailyLimit ?? 0} watched today — {slot.remainingToday}{" "}
+                        remaining
+                      </p>
+                    </div>
+
                     <Button
                       type="button"
                       size="lg"
@@ -294,18 +308,6 @@ const AdsEarning = () => {
               );
             })}
           </div>
-        )}
-
-        {status && (
-          <Card className={glassCardClass}>
-            <CardContent className="space-y-1 p-5">
-              <Progress value={progressPercent} />
-              <p className="text-xs text-muted-foreground">
-                {status.watchedToday} / {status.dailyLimit} ads watched today — {status.remainingToday} remaining
-                (shared across all active ad types).
-              </p>
-            </CardContent>
-          </Card>
         )}
 
         <Card className={glassCardClass}>
