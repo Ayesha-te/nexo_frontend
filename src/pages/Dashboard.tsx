@@ -597,23 +597,6 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          <Card className="overflow-hidden rounded-[24px] border-white bg-white shadow-[0_18px_48px_-38px_rgba(15,23,42,0.75)]">
-            <CardContent className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
-              <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full nexo-gradient text-lg font-bold text-primary-foreground shadow-[0_14px_30px_-18px_hsl(var(--primary)/0.9)]">
-                  H
-                </div>
-              </div>
-              <a
-                href="https://wa.me/923011045668"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex h-11 items-center justify-center rounded-2xl bg-primary px-5 text-sm font-bold text-primary-foreground shadow-[0_14px_30px_-18px_hsl(var(--primary)/0.9)] transition-all hover:-translate-y-0.5 hover:bg-primary/90"
-              >
-                Contact Hamza
-              </a>
-            </CardContent>
-          </Card>
         </div>
       </div>
     </DashboardLayout>
