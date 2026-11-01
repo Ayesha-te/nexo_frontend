@@ -26,6 +26,8 @@ type PinConfig = {
   availableAgainTime: string;
   disabledMessage: string;
   pinPrice: number;
+  standardPrice: number;
+  promoActive: boolean;
   minQuantity: number;
   maxQuantity: number;
   paymentDetails: {
@@ -54,6 +56,8 @@ const defaultConfig: PinConfig = {
   availableAgainTime: "",
   disabledMessage: "PIN/Token Purchase is temporarily unavailable. Please try again later.",
   pinPrice: 1000,
+  standardPrice: 1000,
+  promoActive: false,
   minQuantity: 1,
   maxQuantity: 1000,
   paymentDetails: {
@@ -221,7 +225,17 @@ const PinRequest = () => {
                 ) : null}
               </div>
             )}
-            <Badge variant="secondary">PIN Cost: PKR {config.pinPrice.toLocaleString()} per token</Badge>
+            {config.promoActive ? (
+              <Badge variant="secondary" className="gap-1.5">
+                <span className="line-through opacity-60">PKR {config.standardPrice.toLocaleString()}</span>
+                <span className="font-bold">PKR {config.pinPrice.toLocaleString()} per token</span>
+                <span className="rounded-full bg-primary/15 px-1.5 py-0.5 text-[10px] font-bold uppercase text-primary">
+                  Limited Offer
+                </span>
+              </Badge>
+            ) : (
+              <Badge variant="secondary">PIN Cost: PKR {config.pinPrice.toLocaleString()} per token</Badge>
+            )}
           </CardContent>
         </Card>
 
