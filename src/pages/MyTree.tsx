@@ -14,6 +14,9 @@ type TreeNodeType = {
   name: string;
   email: string;
   position: "left" | "right" | "root";
+  profilePicture?: string | null;
+  leftTeamCount?: number;
+  rightTeamCount?: number;
   children: { left?: TreeNodeType | null; right?: TreeNodeType | null };
 };
 
@@ -23,11 +26,11 @@ const countTeamMembers = (node: TreeNodeType | undefined): number => {
 };
 
 const getLeftCount = (node: TreeNodeType): number => {
-  return countTeamMembers(node.children.left);
+  return node.leftTeamCount ?? countTeamMembers(node.children.left);
 };
 
 const getRightCount = (node: TreeNodeType): number => {
-  return countTeamMembers(node.children.right);
+  return node.rightTeamCount ?? countTeamMembers(node.children.right);
 };
 
 const findNodeById = (node: TreeNodeType | null | undefined, nodeId: string): TreeNodeType | null => {
@@ -61,48 +64,44 @@ const TreeNodeComponent = ({
       <button
         type="button"
         onClick={() => onNodeClick(node, level)}
-        className={`relative min-h-[92px] w-[82px] rounded-lg border px-1.5 py-2 text-center shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md sm:min-h-[132px] sm:w-[180px] sm:px-3 sm:py-3 ${
-          isCurrentUser
-            ? "nexo-gradient text-primary-foreground nexo-gold-glow"
-            : node.position === "root"
-            ? "bg-card border-border text-foreground"
-            : node.position === "left"
-            ? "bg-primary/10 border-primary/30 text-foreground"
-            : "bg-secondary/10 border-secondary/30 text-foreground"
-        } ${selectedNodeId === node.id ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : ""}`}
+        className="group flex flex-col items-center gap-1.5 text-center"
+        title={`${node.name} - ${node.email}`}
       >
-        <div className="mb-1 flex items-center justify-center gap-1 sm:mb-2 sm:justify-between sm:gap-2">
-          <span className="rounded bg-background/70 px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-wide opacity-80 sm:px-2 sm:text-[10px]">
-            L{level}
-          </span>
-          <span className="hidden rounded bg-background/70 px-2 py-0.5 text-[10px] font-semibold capitalize opacity-80 sm:inline">
-            {node.position}
-          </span>
+        <div
+          className={`relative flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border-2 bg-muted shadow-sm transition-transform duration-200 group-hover:-translate-y-0.5 sm:h-20 sm:w-20 ${
+            isCurrentUser
+              ? "border-primary ring-2 ring-primary/40"
+              : node.position === "left"
+              ? "border-primary/50"
+              : node.position === "right"
+              ? "border-secondary/50"
+              : "border-emerald-400/70"
+          } ${selectedNodeId === node.id ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : ""}`}
+        >
+          {node.profilePicture ? (
+            <img src={node.profilePicture} alt={node.name} className="h-full w-full object-cover" />
+          ) : (
+            <User className="h-6 w-6 text-muted-foreground sm:h-8 sm:w-8" />
+          )}
         </div>
-        <div className="mx-auto mb-1 flex h-6 w-6 items-center justify-center rounded-full bg-background/80 sm:mb-2 sm:h-8 sm:w-8">
-          <User className="h-3.5 w-3.5 opacity-70 sm:h-4 sm:w-4" />
-        </div>
-        <p className="truncate text-[10px] font-semibold sm:text-sm" title={node.name}>{node.name}</p>
-        <p className="mt-1 truncate text-[8px] opacity-75 sm:text-[11px]" title={node.email}>{node.email}</p>
-        <div className="mt-2 grid grid-cols-2 gap-1 text-[9px] sm:mt-3 sm:gap-2 sm:text-xs">
-          <span className="rounded border border-primary/20 bg-primary/15 px-1 py-0.5 sm:px-2 sm:py-1">L {getLeftCount(node)}</span>
-          <span className="rounded border border-secondary/20 bg-secondary/15 px-1 py-0.5 sm:px-2 sm:py-1">R {getRightCount(node)}</span>
-        </div>
+        <p className="w-20 truncate text-[10px] text-muted-foreground sm:w-28 sm:text-xs" title={node.email}>
+          {node.email}
+        </p>
         {canOpenNextLevels && (
-          <p className="mt-1 rounded border border-primary/20 bg-background/80 px-1 py-0.5 text-[8px] font-semibold text-primary sm:mt-2 sm:px-2 sm:py-1 sm:text-[10px]">
-            Open
+          <p className="rounded border border-primary/20 bg-primary/10 px-1.5 py-0.5 text-[8px] font-semibold text-primary sm:text-[10px]">
+            Open More
           </p>
         )}
       </button>
 
       {hasChildren && !isLevelLimit && (
         <>
-          <div className="h-4 w-px bg-border sm:h-7" />
-          <div className="relative flex gap-2 sm:gap-10">
-            {/* connector line */}
-            <div className="absolute left-1/4 right-1/4 top-0 h-px bg-border" />
+          <div className="h-4 w-0 border-l-2 border-dashed border-muted-foreground/40 sm:h-7" />
+          <div className="relative flex gap-3 sm:gap-10">
+            {/* dotted connector bracket */}
+            <div className="absolute left-1/4 right-1/4 top-0 border-t-2 border-dashed border-muted-foreground/40" />
             <div className="flex flex-col items-center">
-              <div className="h-3 w-px bg-border sm:h-4" />
+              <div className="h-3 w-0 border-l-2 border-dashed border-muted-foreground/40 sm:h-4" />
               {node.children.left ? (
                 <TreeNodeComponent
                   node={node.children.left}
@@ -112,13 +111,13 @@ const TreeNodeComponent = ({
                   level={level + 1}
                 />
               ) : (
-                <div className="min-h-[70px] w-[76px] rounded-lg border border-dashed border-border px-2 py-4 text-center text-xs text-muted-foreground sm:min-h-[86px] sm:w-[150px] sm:px-4 sm:py-5 sm:text-sm">
-                  Empty
+                <div className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-dashed border-border text-[9px] text-muted-foreground sm:h-20 sm:w-20 sm:text-xs">
+                  No User
                 </div>
               )}
             </div>
             <div className="flex flex-col items-center">
-              <div className="h-3 w-px bg-border sm:h-4" />
+              <div className="h-3 w-0 border-l-2 border-dashed border-muted-foreground/40 sm:h-4" />
               {node.children.right ? (
                 <TreeNodeComponent
                   node={node.children.right}
@@ -128,8 +127,8 @@ const TreeNodeComponent = ({
                   level={level + 1}
                 />
               ) : (
-                <div className="min-h-[70px] w-[76px] rounded-lg border border-dashed border-border px-2 py-4 text-center text-xs text-muted-foreground sm:min-h-[86px] sm:w-[150px] sm:px-4 sm:py-5 sm:text-sm">
-                  Empty
+                <div className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-dashed border-border text-[9px] text-muted-foreground sm:h-20 sm:w-20 sm:text-xs">
+                  No User
                 </div>
               )}
             </div>
@@ -226,6 +225,29 @@ const MyTree = () => {
                 Back to Previous Tree
               </Button>
             </div>
+          )}
+
+          {activeRoot && (
+            <Card className={glassCardClass}>
+              <CardContent className="p-0">
+                <table className="w-full text-center text-sm">
+                  <thead>
+                    <tr className="border-b border-border/60">
+                      <th className="px-3 py-2 text-left font-semibold text-foreground"> </th>
+                      <th className="px-3 py-2 font-semibold text-foreground">LEFT</th>
+                      <th className="px-3 py-2 font-semibold text-foreground">RIGHT</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className="px-3 py-2 text-left text-muted-foreground">Current Teams</td>
+                      <td className="px-3 py-2 font-semibold text-foreground">{getLeftCount(activeRoot)}</td>
+                      <td className="px-3 py-2 font-semibold text-foreground">{getRightCount(activeRoot)}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </CardContent>
+            </Card>
           )}
 
           <Card id="binary-tree-view" className={`${glassCardClass} min-w-0`}>
