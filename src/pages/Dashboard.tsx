@@ -8,14 +8,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
-  Calendar,
-  CalendarCheck,
-  Clapperboard,
   Gift,
   KeyRound,
   Network,
-  PlayCircle,
+  PiggyBank,
   ShoppingBag,
   ShieldCheck,
   Sparkles,
@@ -75,31 +73,11 @@ const Dashboard = () => {
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const [shopLinkLoading, setShopLinkLoading] = useState(false);
   const [profileImageFailed, setProfileImageFailed] = useState(false);
-  const [attendancePresentDays, setAttendancePresentDays] = useState(0);
-  const [attendanceStreak, setAttendanceStreak] = useState(0);
-  const [attendanceMarkedToday, setAttendanceMarkedToday] = useState(false);
-  const [attendanceLoading, setAttendanceLoading] = useState(false);
+  const [contactUsOpen, setContactUsOpen] = useState(false);
   const { toast } = useToast();
-
-  const loadAttendance = () => {
-    api("/api/attendance/me/history/")
-      .then((data) => {
-        const records = Array.isArray(data.records) ? data.records : [];
-        const today = new Date().toISOString().slice(0, 10);
-        setAttendanceMarkedToday(records.some((record: { date: string }) => record.date === today));
-        setAttendancePresentDays(Number(data.summary?.presentDays || 0));
-        setAttendanceStreak(Number(data.currentStreak || 0));
-      })
-      .catch(() => {
-        setAttendancePresentDays(0);
-        setAttendanceStreak(0);
-        setAttendanceMarkedToday(false);
-      });
-  };
 
   useEffect(() => {
     refreshUser().catch(() => undefined);
-    loadAttendance();
     api("/api/rewards/plan/").then(setRewardPlan).catch(() => setRewardPlan([]));
     api("/api/rewards/me/").then(setEarnedRewards).catch(() => setEarnedRewards([]));
     api("/api/accounts/notifications/")
@@ -134,9 +112,6 @@ const Dashboard = () => {
   );
   const teamTargetLeft = Number(nextReward?.left || Math.max(Number(user?.leftTeam || 0), 1));
   const teamTargetRight = Number(nextReward?.right || Math.max(Number(user?.rightTeam || 0), 1));
-  const todayDate = new Date();
-  const todayMonthLabel = todayDate.toLocaleDateString(undefined, { month: "short" }).toUpperCase();
-  const todayDayLabel = todayDate.getDate();
 
   const getRewardLabel = (reward: string, amount: number) => (amount > 0 ? formatMoney(amount) : reward);
 
@@ -156,19 +131,6 @@ const Dashboard = () => {
       setFeedbackMessage("");
     } catch (err: any) {
       toast({ title: "Error", description: err.message || "Submission failed", variant: "destructive" });
-    }
-  };
-
-  const handleMarkAttendance = async () => {
-    setAttendanceLoading(true);
-    try {
-      await api("/api/attendance/me/mark/", { method: "POST" });
-      toast({ title: "Attendance Marked", description: "Your attendance for today has been recorded." });
-      loadAttendance();
-    } catch (err: any) {
-      toast({ title: "Error", description: err.message || "Unable to mark attendance", variant: "destructive" });
-    } finally {
-      setAttendanceLoading(false);
     }
   };
 
@@ -195,16 +157,6 @@ const Dashboard = () => {
       tint: "text-emerald-600 bg-emerald-50",
     },
     {
-      title: "Daily Attendance",
-      value: attendanceMarkedToday ? "✅ Marked Today" : "Tap to Mark",
-      rawValue: attendancePresentDays,
-      target: Math.max(todayDayLabel, 1),
-      icon: attendanceMarkedToday ? CalendarCheck : Calendar,
-      bar: attendanceMarkedToday ? "bg-emerald-500" : "bg-rose-400",
-      tint: attendanceMarkedToday ? "text-emerald-600 bg-emerald-50" : "text-rose-500 bg-rose-50",
-      onClick: attendanceMarkedToday || attendanceLoading ? undefined : handleMarkAttendance,
-    },
-    {
       title: "Reward Income",
       value: formatMoney(Number(user?.rewardIncome || 0)),
       rawValue: Number(user?.rewardIncome || 0),
@@ -212,6 +164,15 @@ const Dashboard = () => {
       icon: Gift,
       bar: "bg-sky-500",
       tint: "text-sky-600 bg-sky-50",
+    },
+    {
+      title: "Total Income",
+      value: formatMoney(totalIncome),
+      rawValue: totalIncome,
+      target: financialTarget,
+      icon: PiggyBank,
+      bar: "bg-violet-500",
+      tint: "text-violet-600 bg-violet-50",
     },
     {
       title: "Available Pins",
@@ -274,7 +235,7 @@ const Dashboard = () => {
           </div>
 
           <section className="rounded-[16px] border border-white/80 bg-white p-2.5 shadow-[0_14px_36px_-30px_rgba(15,23,42,0.65)] sm:rounded-[18px] sm:p-3.5">
-            <div className="grid grid-cols-[4rem_minmax(0,1fr)] items-center gap-2.5 sm:grid-cols-[4.5rem_minmax(0,1fr)] sm:gap-3">
+            <div className="flex items-center gap-2.5 sm:gap-3">
               <div className={cn("flex h-14 w-14 shrink-0 items-center justify-center rounded-full border-[3px] p-0.5 shadow-md sm:h-16 sm:w-16", getRingClass(achievementLevel))}>
                 <div className="flex h-full w-full overflow-hidden rounded-full bg-slate-100">
                   {user?.profilePic && !profileImageFailed ? (
@@ -289,26 +250,24 @@ const Dashboard = () => {
                   )}
                 </div>
               </div>
-              <div className="min-w-0 self-center">
+              <div className="min-w-0 flex-1 self-center">
                 <p className="text-[9px] font-semibold uppercase tracking-wide text-slate-500 sm:text-[11px]">Welcome Back</p>
-                <h1 className="mt-0.5 truncate font-display text-lg font-semibold leading-tight text-slate-900 sm:text-xl" title={fullName}>
+                <h1 className="mt-0.5 truncate font-display text-base font-semibold leading-tight text-slate-900 sm:text-lg" title={fullName}>
                   {fullName}
                 </h1>
+                <p className="truncate text-[11px] text-slate-500" title={user?.email}>@{user?.email}</p>
                 <div className="mt-1 inline-flex max-w-full items-center rounded-full border border-emerald-100 bg-emerald-50 px-2 py-0.5 text-[11px] font-bold text-emerald-700 sm:px-2.5">
                   <span className="truncate">{achievementLevel}{"\u2605"} Nexo Leader</span>
                 </div>
               </div>
-            </div>
-
-            <div className="mt-2.5 flex flex-wrap items-center justify-between gap-2 sm:mt-3">
-              <div className="inline-flex rounded-xl border border-slate-100 bg-slate-50 p-0.5">
+              <div className="inline-flex shrink-0 rounded-xl border border-slate-100 bg-slate-50 p-0.5">
                 {(["PKR", "USD"] as const).map((currency) => (
                   <Button
                     key={currency}
                     type="button"
                     size="sm"
                     variant={displayCurrency === currency ? "default" : "ghost"}
-                    className="h-7 rounded-lg px-3 text-xs sm:h-8 sm:px-4"
+                    className="h-7 rounded-lg px-2.5 text-xs sm:h-8 sm:px-3.5"
                     onClick={() => setDisplayCurrency(currency)}
                     disabled={currency === "USD" && usdRatePkr <= 0}
                   >
@@ -316,69 +275,33 @@ const Dashboard = () => {
                   </Button>
                 ))}
               </div>
-              <div className="text-right text-[11px] font-medium text-slate-500">
-                <p>Total Withdraw</p>
-                <p className="font-display text-sm font-extrabold text-slate-900">{formatMoney(Number(user?.totalWithdraw || 0))}</p>
-              </div>
             </div>
             {displayCurrency === "USD" && usdRatePkr > 0 ? (
               <p className="mt-1.5 text-[11px] text-slate-500">Showing financial amounts at 1 USD = PKR {usdRatePkr.toLocaleString()}.</p>
             ) : null}
           </section>
 
-          <Card className="relative overflow-hidden rounded-[14px] border-white text-white shadow-[0_10px_24px_-18px_rgba(15,23,42,0.85)] nexo-gradient">
-            <div className="pointer-events-none absolute -right-6 -top-6 h-16 w-16 rounded-full bg-white/15 blur-2xl" />
-            <CardContent className="relative flex flex-col gap-2 p-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-2.5 sm:p-2.5">
-              <div className="flex items-center gap-2">
-                <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-white/20">
-                  <Clapperboard className="h-3.5 w-3.5" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-1.5">
-                    <p className="font-display text-xs font-extrabold sm:text-sm">🎬 Ads Earning</p>
-                    <span className="rounded-full bg-white/25 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wide">New</span>
-                  </div>
-                  <p className="mt-0.5 max-w-md text-[11px] text-white/90">Watch short daily ads and boost your income automatically.</p>
-                </div>
-              </div>
-              <Button asChild size="sm" className="h-8 w-full flex-shrink-0 gap-1.5 rounded-lg bg-white text-xs text-primary hover:bg-white/90 sm:w-auto">
-                <Link to="/ads-earning">
-                  <PlayCircle className="h-3.5 w-3.5" />
-                  Watch Ads
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-
-          <div className="grid grid-cols-2 gap-2 sm:gap-2.5 lg:grid-cols-3">
+          <div className="flex flex-col gap-2 sm:gap-2.5">
             {stats.map((stat, index) => {
               const progress = clampPercent(stat.rawValue, stat.target);
               const Icon = stat.icon;
-              const clickable = Boolean((stat as { onClick?: () => void }).onClick);
               return (
                 <Card
                   key={stat.title}
-                  role={clickable ? "button" : undefined}
-                  onClick={(stat as { onClick?: () => void }).onClick}
-                  className={cn(
-                    "overflow-hidden rounded-[16px] border-white bg-white shadow-[0_14px_32px_-28px_rgba(15,23,42,0.75)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_40px_-30px_rgba(15,23,42,0.85)] sm:rounded-[18px]",
-                    clickable && "cursor-pointer active:scale-[0.98]",
-                  )}
+                  className="h-[64px] w-full overflow-hidden rounded-[16px] border-white bg-white shadow-[0_14px_32px_-28px_rgba(15,23,42,0.75)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_40px_-30px_rgba(15,23,42,0.85)] sm:h-[72px] sm:rounded-[18px]"
                   style={{ animationDelay: `${index * 45}ms` }}
                 >
-                  <CardContent className="p-2.5 sm:p-3.5">
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="min-w-0">
-                        <p className="text-[9px] font-extrabold uppercase tracking-wide text-slate-500 sm:text-[11px]">{stat.title}</p>
-                        <p className="mt-1 truncate font-display text-base font-extrabold text-slate-900 sm:mt-1.5 sm:text-lg" title={stat.value}>
-                          {stat.value}
-                        </p>
-                      </div>
-                      <div className={cn("flex h-7 w-7 shrink-0 items-center justify-center rounded-xl sm:h-9 sm:w-9", stat.tint)}>
-                        <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                      </div>
+                  <CardContent className="flex h-full items-center gap-3 p-2.5 sm:p-3.5">
+                    <div className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-xl sm:h-11 sm:w-11", stat.tint)}>
+                      <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
                     </div>
-                    <div className="mt-2 h-1 overflow-hidden rounded-full bg-slate-100 sm:mt-3 sm:h-1.5">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[9px] font-extrabold uppercase tracking-wide text-slate-500 sm:text-[11px]">{stat.title}</p>
+                      <p className="truncate font-display text-base font-extrabold text-slate-900 sm:text-lg" title={stat.value}>
+                        {stat.value}
+                      </p>
+                    </div>
+                    <div className="hidden h-1.5 w-16 shrink-0 overflow-hidden rounded-full bg-slate-100 sm:block">
                       <div className={cn("h-full rounded-full transition-all duration-500", stat.bar)} style={{ width: `${progress}%` }} />
                     </div>
                   </CardContent>
@@ -521,34 +444,6 @@ const Dashboard = () => {
           </Card>
 
           <Card className="overflow-hidden rounded-[24px] border-white bg-white shadow-[0_18px_48px_-38px_rgba(15,23,42,0.75)]">
-            <CardContent className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
-              <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#10c98b] text-white shadow-[0_14px_30px_-18px_rgba(16,201,139,0.9)]">
-                  <svg viewBox="0 0 32 32" aria-hidden="true" className="h-7 w-7">
-                    <path
-                      fill="currentColor"
-                      d="M16.04 4.8c-6.08 0-11.02 4.86-11.02 10.84 0 1.9.51 3.76 1.48 5.39L4.8 27.2l6.36-1.66a11.16 11.16 0 0 0 4.88 1.13c6.07 0 11.01-4.86 11.01-10.84S22.11 4.8 16.04 4.8Zm0 19.96c-1.55 0-3.06-.39-4.4-1.14l-.31-.18-3.77.98 1.01-3.6-.2-.33a8.84 8.84 0 0 1-1.43-4.85c0-4.92 4.08-8.93 9.1-8.93s9.1 4.01 9.1 8.93-4.08 9.12-9.1 9.12Zm5-6.68c-.27-.13-1.62-.79-1.87-.88-.25-.09-.43-.13-.61.13-.18.26-.7.87-.85 1.05-.16.17-.31.2-.58.07-.27-.13-1.14-.41-2.17-1.31-.8-.7-1.34-1.57-1.5-1.83-.16-.26-.02-.4.12-.53.12-.12.27-.31.41-.46.14-.16.18-.26.27-.43.09-.17.05-.33-.02-.46-.07-.13-.61-1.45-.83-1.98-.22-.51-.44-.44-.61-.45h-.52c-.18 0-.46.07-.7.33-.24.26-.92.89-.92 2.17s.94 2.52 1.07 2.69c.13.17 1.85 2.78 4.49 3.9.63.27 1.12.43 1.5.55.63.2 1.2.17 1.65.1.5-.08 1.62-.65 1.85-1.28.23-.63.23-1.16.16-1.28-.07-.12-.25-.19-.52-.32Z"
-                    />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="font-display text-lg font-extrabold text-slate-900">Contact Us</h3>
-                  <p className="text-sm text-slate-500">Need help? Message us on WhatsApp.</p>
-                  <p className="mt-1 text-sm font-bold text-slate-900">+{whatsappNumber}</p>
-                </div>
-              </div>
-              <a
-                href={`https://wa.me/${whatsappNumber}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex h-11 items-center justify-center rounded-2xl bg-[#10c98b] px-5 text-sm font-bold text-white shadow-[0_14px_30px_-18px_rgba(16,201,139,0.9)] transition-all hover:-translate-y-0.5 hover:bg-[#0fbd82]"
-              >
-                Open WhatsApp
-              </a>
-            </CardContent>
-          </Card>
-
-          <Card className="overflow-hidden rounded-[24px] border-white bg-white shadow-[0_18px_48px_-38px_rgba(15,23,42,0.75)]">
             <CardContent className="p-4 sm:p-5">
               <h3 className="font-display text-lg font-extrabold text-slate-900">Feedback & Complaints</h3>
               <form className="mt-3 space-y-3" onSubmit={handleFeedbackSubmit}>
@@ -599,6 +494,49 @@ const Dashboard = () => {
 
         </div>
       </div>
+
+      <button
+        type="button"
+        onClick={() => setContactUsOpen(true)}
+        aria-label="Contact Us"
+        className="fixed bottom-24 right-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[#10c98b] text-white shadow-[0_14px_30px_-10px_rgba(16,201,139,0.9)] transition-transform hover:scale-105 md:bottom-6 md:right-6"
+      >
+        <svg viewBox="0 0 32 32" aria-hidden="true" className="h-7 w-7">
+          <path
+            fill="currentColor"
+            d="M16.04 4.8c-6.08 0-11.02 4.86-11.02 10.84 0 1.9.51 3.76 1.48 5.39L4.8 27.2l6.36-1.66a11.16 11.16 0 0 0 4.88 1.13c6.07 0 11.01-4.86 11.01-10.84S22.11 4.8 16.04 4.8Zm0 19.96c-1.55 0-3.06-.39-4.4-1.14l-.31-.18-3.77.98 1.01-3.6-.2-.33a8.84 8.84 0 0 1-1.43-4.85c0-4.92 4.08-8.93 9.1-8.93s9.1 4.01 9.1 8.93-4.08 9.12-9.1 9.12Zm5-6.68c-.27-.13-1.62-.79-1.87-.88-.25-.09-.43-.13-.61.13-.18.26-.7.87-.85 1.05-.16.17-.31.2-.58.07-.27-.13-1.14-.41-2.17-1.31-.8-.7-1.34-1.57-1.5-1.83-.16-.26-.02-.4.12-.53.12-.12.27-.31.41-.46.14-.16.18-.26.27-.43.09-.17.05-.33-.02-.46-.07-.13-.61-1.45-.83-1.98-.22-.51-.44-.44-.61-.45h-.52c-.18 0-.46.07-.7.33-.24.26-.92.89-.92 2.17s.94 2.52 1.07 2.69c.13.17 1.85 2.78 4.49 3.9.63.27 1.12.43 1.5.55.63.2 1.2.17 1.65.1.5-.08 1.62-.65 1.85-1.28.23-.63.23-1.16.16-1.28-.07-.12-.25-.19-.52-.32Z"
+          />
+        </svg>
+      </button>
+
+      <Dialog open={contactUsOpen} onOpenChange={setContactUsOpen}>
+        <DialogContent className="max-w-sm rounded-2xl">
+          <DialogHeader>
+            <DialogTitle className="font-display text-xl font-extrabold text-slate-900">Contact Us</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3 text-sm text-slate-700">
+            <p className="font-bold text-slate-900">Helpline Number: +{whatsappNumber} (WhatsApp)</p>
+            <p dir="rtl" className="text-right leading-relaxed">
+              السلام علیکم!
+              <br />
+              <br />
+              کسی بھی قسم کی معلومات یا ٹیکنیکل مسائل کے حل کے لیے آپ اس نمبر پر ہم سے رابطہ کر سکتے ہیں۔ ہماری ٹیم آپ
+              کی رہنمائی کے لیے دستیاب ہے اور آپ کو ایک گھنٹے کے اندر جواب فراہم کرے گی۔
+              <br />
+              <br />
+              شکریہ!
+            </p>
+            <a
+              href={`https://wa.me/${whatsappNumber}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 flex h-11 items-center justify-center rounded-2xl bg-[#10c98b] text-sm font-bold text-white shadow-[0_14px_30px_-18px_rgba(16,201,139,0.9)] transition-all hover:bg-[#0fbd82]"
+            >
+              Open WhatsApp
+            </a>
+          </div>
+        </DialogContent>
+      </Dialog>
     </DashboardLayout>
   );
 };

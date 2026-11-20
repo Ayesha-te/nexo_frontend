@@ -17,6 +17,7 @@ import WithdrawHistory from "./pages/WithdrawHistory";
 import ChangePassword from "./pages/ChangePassword";
 import ProfileSettings from "./pages/ProfileSettings";
 import AdsEarning from "./pages/AdsEarning";
+import Attendance from "./pages/Attendance";
 import Notifications from "./pages/Notifications";
 import NotFound from "./pages/NotFound";
 
@@ -48,6 +49,7 @@ const AppRoutes = () => {
       <Route path="/my-tree" element={<ProtectedRoute><MyTree /></ProtectedRoute>} />
       <Route path="/withdraw-history" element={<ProtectedRoute><WithdrawHistory /></ProtectedRoute>} />
       <Route path="/ads-earning" element={<ProtectedRoute><AdsEarning /></ProtectedRoute>} />
+      <Route path="/attendance" element={<ProtectedRoute><Attendance /></ProtectedRoute>} />
       <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
       <Route path="/change-password" element={<ProtectedRoute><ChangePassword /></ProtectedRoute>} />
       <Route path="/profile" element={<ProtectedRoute><ProfileSettings /></ProtectedRoute>} />

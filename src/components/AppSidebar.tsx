@@ -17,6 +17,7 @@ import {
 import {
   BarChart3,
   Bell,
+  CalendarCheck,
   Images,
   Key,
   LayoutDashboard,
@@ -41,6 +42,7 @@ export const userMenuItems = [
   { title: "My Tree", url: "/my-tree", icon: TreePine },
   { title: "Withdraw History", url: "/withdraw-history", icon: Wallet },
   { title: "Ads Earning", url: "/ads-earning", icon: MonitorPlay },
+  { title: "Attendance", url: "/attendance", icon: CalendarCheck },
   { title: "Notifications", url: "/notifications", icon: Bell },
   { title: "Change Password", url: "/change-password", icon: Lock },
   { title: "Leader Board", url: "/leader-board", icon: Trophy },
