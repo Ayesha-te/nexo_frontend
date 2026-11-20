@@ -47,6 +47,15 @@ type HistoryPoint = {
   amount: number;
 };
 
+const STAT_COLOR_CLASSES = {
+  emerald: { bar: "bg-emerald-500", icon: "text-emerald-600", iconBox: "border-emerald-200 bg-emerald-50" },
+  sky: { bar: "bg-sky-500", icon: "text-sky-600", iconBox: "border-sky-200 bg-sky-50" },
+  violet: { bar: "bg-violet-500", icon: "text-violet-600", iconBox: "border-violet-200 bg-violet-50" },
+  amber: { bar: "bg-amber-500", icon: "text-amber-600", iconBox: "border-amber-200 bg-amber-50" },
+  teal: { bar: "bg-teal-500", icon: "text-teal-600", iconBox: "border-teal-200 bg-teal-50" },
+  cyan: { bar: "bg-cyan-500", icon: "text-cyan-600", iconBox: "border-cyan-200 bg-cyan-50" },
+} as const;
+
 const clampPercent = (value: number, target: number) => {
   if (!value || !target || target <= 0) return 0;
   return Math.min(100, Math.max(0, Math.round((value / target) * 100)));
@@ -153,8 +162,7 @@ const Dashboard = () => {
       rawValue: Number(user?.currentIncome || 0),
       target: financialTarget,
       icon: Wallet,
-      bar: "bg-emerald-500",
-      tint: "text-emerald-600 bg-emerald-50",
+      color: "emerald" as const,
     },
     {
       title: "Reward Income",
@@ -162,8 +170,7 @@ const Dashboard = () => {
       rawValue: Number(user?.rewardIncome || 0),
       target: financialTarget,
       icon: Gift,
-      bar: "bg-sky-500",
-      tint: "text-sky-600 bg-sky-50",
+      color: "sky" as const,
     },
     {
       title: "Total Income",
@@ -171,8 +178,7 @@ const Dashboard = () => {
       rawValue: totalIncome,
       target: financialTarget,
       icon: PiggyBank,
-      bar: "bg-violet-500",
-      tint: "text-violet-600 bg-violet-50",
+      color: "violet" as const,
     },
     {
       title: "Available Pins",
@@ -180,8 +186,7 @@ const Dashboard = () => {
       rawValue: Number(user?.availablePins || 0),
       target: 1000,
       icon: KeyRound,
-      bar: "bg-amber-500",
-      tint: "text-amber-600 bg-amber-50",
+      color: "amber" as const,
     },
     {
       title: "Left Team",
@@ -189,8 +194,7 @@ const Dashboard = () => {
       rawValue: Number(user?.leftTeam || 0),
       target: teamTargetLeft,
       icon: UsersRound,
-      bar: "bg-teal-500",
-      tint: "text-teal-600 bg-teal-50",
+      color: "teal" as const,
     },
     {
       title: "Right Team",
@@ -198,8 +202,7 @@ const Dashboard = () => {
       rawValue: Number(user?.rightTeam || 0),
       target: teamTargetRight,
       icon: UsersRound,
-      bar: "bg-cyan-500",
-      tint: "text-cyan-600 bg-cyan-50",
+      color: "cyan" as const,
     },
   ];
 
@@ -281,28 +284,32 @@ const Dashboard = () => {
             ) : null}
           </section>
 
-          <div className="flex flex-col gap-2 sm:gap-2.5">
+          <div className="flex flex-col gap-3">
             {stats.map((stat, index) => {
               const progress = clampPercent(stat.rawValue, stat.target);
               const Icon = stat.icon;
+              const colors = STAT_COLOR_CLASSES[stat.color];
               return (
                 <Card
                   key={stat.title}
-                  className="h-[64px] w-full overflow-hidden rounded-[16px] border-white bg-white shadow-[0_14px_32px_-28px_rgba(15,23,42,0.75)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_40px_-30px_rgba(15,23,42,0.85)] sm:h-[72px] sm:rounded-[18px]"
+                  className="relative w-full overflow-hidden rounded-2xl border-white bg-white shadow-[0_14px_32px_-28px_rgba(15,23,42,0.75)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_40px_-30px_rgba(15,23,42,0.85)]"
                   style={{ animationDelay: `${index * 45}ms` }}
                 >
-                  <CardContent className="flex h-full items-center gap-3 p-2.5 sm:p-3.5">
-                    <div className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-xl sm:h-11 sm:w-11", stat.tint)}>
-                      <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
+                  <div className={cn("absolute left-0 top-0 h-full w-1.5", colors.bar)} />
+                  <CardContent className="space-y-2.5 py-4 pl-5 pr-4 sm:py-5 sm:pl-6 sm:pr-5">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="text-[10px] font-extrabold uppercase tracking-wide text-slate-500 sm:text-xs">{stat.title}</p>
+                        <p className="mt-1 truncate font-display text-xl font-extrabold text-slate-900 sm:text-2xl" title={stat.value}>
+                          {stat.value}
+                        </p>
+                      </div>
+                      <div className={cn("flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border-2 sm:h-12 sm:w-12", colors.iconBox)}>
+                        <Icon className={cn("h-5 w-5 sm:h-6 sm:w-6", colors.icon)} />
+                      </div>
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-[9px] font-extrabold uppercase tracking-wide text-slate-500 sm:text-[11px]">{stat.title}</p>
-                      <p className="truncate font-display text-base font-extrabold text-slate-900 sm:text-lg" title={stat.value}>
-                        {stat.value}
-                      </p>
-                    </div>
-                    <div className="hidden h-1.5 w-16 shrink-0 overflow-hidden rounded-full bg-slate-100 sm:block">
-                      <div className={cn("h-full rounded-full transition-all duration-500", stat.bar)} style={{ width: `${progress}%` }} />
+                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
+                      <div className={cn("h-full rounded-full transition-all duration-500", colors.bar)} style={{ width: `${progress}%` }} />
                     </div>
                   </CardContent>
                 </Card>
