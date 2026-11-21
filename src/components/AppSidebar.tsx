@@ -15,6 +15,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import {
+  AlertTriangle,
   BarChart3,
   Bell,
   CalendarCheck,
@@ -23,6 +24,7 @@ import {
   LayoutDashboard,
   Lock,
   LogOut,
+  MessageSquarePlus,
   MonitorPlay,
   Settings,
   Ticket,
@@ -47,6 +49,9 @@ export const userMenuItems = [
   { title: "Change Password", url: "/change-password", icon: Lock },
   { title: "Leader Board", url: "/leader-board", icon: Trophy },
   { title: "Income Records", url: "/income-records", icon: BarChart3 },
+  { title: "Rewards", url: "/rewards", icon: Trophy },
+  { title: "Feedback", url: "/feedback", icon: MessageSquarePlus },
+  { title: "Complaint", url: "/complaint", icon: AlertTriangle },
   { title: "Networking Posters", url: "/networking-posters", icon: Images },
 ];
 

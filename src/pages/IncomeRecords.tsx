@@ -3,6 +3,7 @@ import { BarChart3, CalendarDays, TrendingUp } from "lucide-react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/lib/api";
+import { useAuth } from "@/contexts/AuthContext";
 
 type HistoryPoint = {
   label: string;
@@ -63,6 +64,7 @@ const IncomeBars = ({ title, rows }: { title: string; rows: HistoryPoint[] }) =>
 };
 
 const IncomeRecords = () => {
+  const { user } = useAuth();
   const [history, setHistory] = useState<IncomeHistory>(emptyHistory);
   const [loading, setLoading] = useState(true);
 
@@ -123,6 +125,21 @@ const IncomeRecords = () => {
                     </CardContent>
                   </Card>
                 ))}
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <Card className="rounded-[22px] border-white bg-white shadow-[0_18px_42px_-35px_rgba(15,23,42,0.75)]">
+                  <CardContent className="p-4">
+                    <p className="text-[10px] font-medium uppercase tracking-wide text-slate-500">Left Team</p>
+                    <p className="mt-2 font-display text-xl font-semibold text-slate-900">{user?.leftTeam || 0}</p>
+                  </CardContent>
+                </Card>
+                <Card className="rounded-[22px] border-white bg-white shadow-[0_18px_42px_-35px_rgba(15,23,42,0.75)]">
+                  <CardContent className="p-4">
+                    <p className="text-[10px] font-medium uppercase tracking-wide text-slate-500">Right Team</p>
+                    <p className="mt-2 font-display text-xl font-semibold text-slate-900">{user?.rightTeam || 0}</p>
+                  </CardContent>
+                </Card>
               </div>
 
               <Card className="rounded-[24px] border-white bg-white shadow-[0_18px_48px_-38px_rgba(15,23,42,0.75)]">

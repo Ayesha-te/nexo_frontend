@@ -36,6 +36,13 @@ const rankStyles = [
   },
 ];
 
+const defaultRankStyle = {
+  label: "Leader",
+  icon: Medal,
+  ring: "border-slate-300 bg-slate-50 text-slate-600 shadow-slate-200/70",
+  badge: "bg-slate-500 text-white",
+};
+
 const formatPkr = (value: number) => `Rs. ${Number(value || 0).toLocaleString()}`;
 
 const LeaderBoard = () => {
@@ -60,7 +67,7 @@ const LeaderBoard = () => {
                 <Trophy className="h-6 w-6" />
               </div>
               <div>
-                <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Top 3 earning leaders</p>
+                <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Top 10 earning leaders</p>
                 <h1 className="font-display text-2xl font-semibold text-slate-900 sm:text-3xl">Leader Board</h1>
               </div>
             </div>
@@ -77,7 +84,7 @@ const LeaderBoard = () => {
           ) : (
             <div className="grid gap-3">
               {leaders.map((leader, index) => {
-                const style = rankStyles[index] || rankStyles[2];
+                const style = rankStyles[index] || defaultRankStyle;
                 const RankIcon = style.icon;
                 const avatarLetter = (leader.userName || "U").trim().charAt(0).toUpperCase();
 

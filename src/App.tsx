@@ -18,6 +18,9 @@ import ChangePassword from "./pages/ChangePassword";
 import ProfileSettings from "./pages/ProfileSettings";
 import AdsEarning from "./pages/AdsEarning";
 import Attendance from "./pages/Attendance";
+import Rewards from "./pages/Rewards";
+import Feedback from "./pages/Feedback";
+import Complaint from "./pages/Complaint";
 import Notifications from "./pages/Notifications";
 import NotFound from "./pages/NotFound";
 
@@ -50,6 +53,9 @@ const AppRoutes = () => {
       <Route path="/withdraw-history" element={<ProtectedRoute><WithdrawHistory /></ProtectedRoute>} />
       <Route path="/ads-earning" element={<ProtectedRoute><AdsEarning /></ProtectedRoute>} />
       <Route path="/attendance" element={<ProtectedRoute><Attendance /></ProtectedRoute>} />
+      <Route path="/rewards" element={<ProtectedRoute><Rewards /></ProtectedRoute>} />
+      <Route path="/feedback" element={<ProtectedRoute><Feedback /></ProtectedRoute>} />
+      <Route path="/complaint" element={<ProtectedRoute><Complaint /></ProtectedRoute>} />
       <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
       <Route path="/change-password" element={<ProtectedRoute><ChangePassword /></ProtectedRoute>} />
       <Route path="/profile" element={<ProtectedRoute><ProfileSettings /></ProtectedRoute>} />
