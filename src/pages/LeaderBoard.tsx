@@ -67,7 +67,7 @@ const LeaderBoard = () => {
                 <Trophy className="h-6 w-6" />
               </div>
               <div>
-                <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Top 10 earning leaders</p>
+                <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Top 10 by current income</p>
                 <h1 className="font-display text-2xl font-semibold text-slate-900 sm:text-3xl">Leader Board</h1>
               </div>
             </div>
@@ -79,7 +79,7 @@ const LeaderBoard = () => {
             </Card>
           ) : leaders.length === 0 ? (
             <Card className="rounded-[24px] border-white bg-white">
-              <CardContent className="p-5 text-sm text-slate-500">No leaders above PKR 100 income yet.</CardContent>
+              <CardContent className="p-5 text-sm text-slate-500">No leaders with current income yet.</CardContent>
             </Card>
           ) : (
             <div className="grid gap-3">

@@ -201,31 +201,28 @@ const Dashboard = () => {
                   {fullName}
                 </h1>
                 <p className="truncate text-[11px] text-slate-500" title={user?.email}>@{user?.email}</p>
-                <div className="mt-1 inline-flex max-w-full items-center rounded-full border border-emerald-100 bg-emerald-50 px-2 py-0.5 text-[11px] font-bold text-emerald-700 sm:px-2.5">
+              </div>
+              <div className="flex shrink-0 flex-col items-end gap-1.5">
+                <div className="inline-flex max-w-full items-center rounded-full border border-emerald-100 bg-emerald-50 px-2 py-0.5 text-[11px] font-bold text-emerald-700 sm:px-2.5">
                   <span className="truncate">{achievementLevel}{"★"} Nexo Leader</span>
+                </div>
+                <div className="inline-flex rounded-xl border border-slate-100 bg-slate-50 p-0.5">
+                  {(["PKR", "USD"] as const).map((currency) => (
+                    <Button
+                      key={currency}
+                      type="button"
+                      size="sm"
+                      variant={displayCurrency === currency ? "default" : "ghost"}
+                      className="h-7 rounded-lg px-2.5 text-xs sm:h-8 sm:px-3.5"
+                      onClick={() => setDisplayCurrency(currency)}
+                      disabled={currency === "USD" && usdRatePkr <= 0}
+                    >
+                      {currency}
+                    </Button>
+                  ))}
                 </div>
               </div>
             </div>
-            <div className="mt-2.5 flex items-center justify-end border-t border-slate-100 pt-2.5 sm:mt-3 sm:pt-3">
-              <div className="inline-flex shrink-0 rounded-xl border border-slate-100 bg-slate-50 p-0.5">
-                {(["PKR", "USD"] as const).map((currency) => (
-                  <Button
-                    key={currency}
-                    type="button"
-                    size="sm"
-                    variant={displayCurrency === currency ? "default" : "ghost"}
-                    className="h-7 rounded-lg px-2.5 text-xs sm:h-8 sm:px-3.5"
-                    onClick={() => setDisplayCurrency(currency)}
-                    disabled={currency === "USD" && usdRatePkr <= 0}
-                  >
-                    {currency}
-                  </Button>
-                ))}
-              </div>
-            </div>
-            {displayCurrency === "USD" && usdRatePkr > 0 ? (
-              <p className="mt-1.5 text-right text-[11px] text-slate-500">Showing financial amounts at 1 USD = PKR {usdRatePkr.toLocaleString()}.</p>
-            ) : null}
           </section>
 
           <div className="flex flex-col gap-2 sm:gap-2.5">
