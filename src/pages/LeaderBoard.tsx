@@ -10,9 +10,6 @@ type Leader = {
   userName: string;
   profilePic: string;
   currentIncome: number;
-  weeklyIncome: number;
-  monthlyIncome: number;
-  totalIncome: number;
 };
 
 const rankStyles = [
@@ -113,18 +110,9 @@ const LeaderBoard = () => {
                         </div>
                       </div>
 
-                      <div className="mt-4 grid grid-cols-2 gap-2 lg:grid-cols-4">
-                        {[
-                          ["Current Income", leader.currentIncome],
-                          ["Weekly Income", leader.weeklyIncome],
-                          ["Monthly Income", leader.monthlyIncome],
-                          ["Total Income", leader.totalIncome],
-                        ].map(([label, amount]) => (
-                          <div key={label} className="rounded-2xl bg-slate-50 p-3">
-                            <p className="text-[10px] font-medium uppercase text-slate-500">{label}</p>
-                            <p className="mt-1 font-display text-base font-semibold text-slate-900">{formatPkr(Number(amount))}</p>
-                          </div>
-                        ))}
+                      <div className="mt-4 rounded-2xl bg-slate-50 p-3">
+                        <p className="text-[10px] font-medium uppercase text-slate-500">Current Income</p>
+                        <p className="mt-1 font-display text-lg font-semibold text-slate-900">{formatPkr(leader.currentIncome)}</p>
                       </div>
                     </CardContent>
                   </Card>
